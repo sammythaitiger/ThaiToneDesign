@@ -1,131 +1,140 @@
-# Thai Tone Trainer - Development Roadmap
+ а# Thai Tone Trainer - Simplified 4-Month Roadmap
 
-## 📅 Phase 1: Foundation (Weeks 1-4)
-**Goal:** Establish core architecture and basic tone analysis
+## 🚀 Overall Timeline: 4 Months Total
+- **Weeks 1-2:** Design & Planning
+- **Month 1:** Core Tone Analysis Module
+- **Month 2:** Dictionary & Flashcards
+- **Month 3:** Shadowing Module
+- **Month 4:** Polish, Testing & Launch
 
-### Week 1: Project Setup & Planning
+## 📅 Phase 1: Design & Planning (Weeks 1-2)
+**Goal:** Design core interfaces and plan development
+
+### Week 1: Core Design
 - [x] Create GitHub repository
-- [ ] Complete project vision and scope
+- [x] Complete project vision and scope
 - [ ] Design system architecture
-- [ ] Create user flow diagrams
+- [ ] Create user flow diagrams:
+  - Tone practice flow
+  - Shadowing flow  
+  - Dictionary flow
+  - Flashcards flow
+  - Dashboard flow
+- [ ] Wireframe core screens (8-10 screens)
+- [ ] Create basic design system
+
+### Week 2: Technical Planning
+- [ ] Define data structures
+- [ ] Plan API endpoints
 - [ ] Set up development environment
+- [ ] Create component specifications
+- [ ] Finalize design mockups
 
-### Week 2: Core Infrastructure
-- [ ] Set up Next.js project with TypeScript
-- [ ] Configure Tailwind CSS and UI components
-- [ ] Design database schema
-- [ ] Create API architecture specification
-- [ ] Set up audio recording infrastructure
+## 📅 Phase 2: Core Tone Analysis (Month 1)
+**Goal:** Build the core tone practice functionality
 
-### Week 3: Tone Analysis MVP
-- [ ] Implement Web Audio API recording
-- [ ] Create pitch visualization components
-- [ ] Design tone comparison interface
-- [ ] Build basic user authentication
-- [ ] Create mock analysis backend
+### Week 3-4: Foundation
+- [ ] Set up Next.js with TypeScript
+- [ ] Configure Tailwind CSS
+- [ ] Create basic layout and navigation
+- [ ] Implement user authentication (simple)
+- [ ] Set up audio recording (Web Audio API)
 
-### Week 4: Polish & Testing
-- [ ] User testing with basic tone exercises
-- [ ] Refine UI/UX based on feedback
+### Week 5-6: Tone Practice Interface
+- [ ] Build tone selection screen (5 tones)
+- [ ] Create word/syllable selection for each tone
+- [ ] Implement recording interface with real-time waveform
+- [ ] Build native audio playback
+- [ ] Create pitch visualization (D3.js for F0 graphs)
+
+### Week 7-8: Analysis & Comparison
+- [ ] Implement audio upload to Python backend
+- [ ] Create pitch analysis (Librosa for F0 extraction)
+- [ ] Build comparison interface (2 graphs: user vs native)
+- [ ] Implement basic accuracy scoring
+- [ ] Create simple progress tracking
+
+## 📅 Phase 3: Dictionary & Flashcards (Month 2)
+**Goal:** Add vocabulary learning tools
+
+### Week 9-10: Simple Dictionary
+- [ ] Build word database (500+ common Thai words)
+- [ ] Create search functionality (Thai/English)
+- [ ] Implement word detail view with:
+  - Thai script and transcription
+  - Tone pattern display
+  - Native audio
+  - Example sentence
+- [ ] Add "Save to list" functionality
+
+### Week 11-12: Basic Flashcards
+- [ ] Create flashcard system (Anki-like)
+- [ ] Implement card types:
+  - Tone recognition cards
+  - Thai → English vocabulary cards
+  - English → Thai vocabulary cards
+- [ ] Build review interface with simple spaced repetition
+- [ ] Track card mastery status
+
+## 📅 Phase 4: Shadowing Module (Month 3)
+**Goal:** Add YouTube shadowing practice
+
+### Week 13-14: YouTube Integration
+- [ ] Implement YouTube video search/browse
+- [ ] Create video player with custom controls
+- [ ] Set up Whisper transcription service
+- [ ] Generate Thai subtitles with timestamps
+
+### Week 15-16: Shadowing Practice
+- [ ] Build phrase selection interface
+- [ ] Implement recording for shadowing
+- [ ] Create syllable-by-syllable comparison
+- [ ] Visualize pitch comparison per syllable
+- [ ] Implement basic accuracy feedback
+
+## 📅 Phase 5: Polish & Launch (Month 4)
+**Goal:** Final polish, testing, and launch
+
+### Week 17-18: Dashboard & Polish
+- [ ] Create user dashboard with:
+  - Tone practice progress
+  - Vocabulary count
+  - Recent activity
+  - Practice recommendations
+- [ ] Polish UI/UX across all modules
+- [ ] Implement responsive design
+- [ ] Add dark/light theme
+
+### Week 19-20: Testing & Launch
+- [ ] Beta testing with real users
+- [ ] Fix bugs and issues
 - [ ] Performance optimization
-- [ ] Documentation of Phase 1
-- [ ] Plan Phase 2 features
+- [ ] Prepare for launch
+- [ ] Launch MVP
 
-## 📅 Phase 2: Core Features (Weeks 5-8)
-**Goal:** Implement all primary learning modules
+## 🎯 MVP Scope
+**Core Features for Launch:**
+1. **Tone Practice:** 5 tones, word/syllable practice, recording, F0 graph comparison
+2. **Dictionary:** Search 500+ words, view tone patterns, save words
+3. **Flashcards:** Basic Anki-like system for tones and vocabulary
+4. **Shadowing:** YouTube video practice with syllable comparison
+5. **Dashboard:** Progress tracking and recommendations
 
-### Week 5: Dictionary Module
-- [ ] Design dictionary data structure
-- [ ] Create word search and filtering
-- [ ] Implement word detail views
-- [ ] Add tone pattern visualization
-- [ ] Create user word lists
+**Simplified Approach:**
+- No social features
+- No gamification/levels
+- No mobile app (web only)
+- No teacher tools
+- No monetization initially
+- Focus on core learning functionality
 
-### Week 6: Flashcards Module
-- [ ] Implement spaced repetition algorithm
-- [ ] Design card types (tonal, vocabulary, contextual)
-- [ ] Create review session interface
-- [ ] Add progress tracking
-- [ ] Build card management system
 
-### Week 7: Shadowing Infrastructure
-- [ ] YouTube API integration design
-- [ ] Whisper transcription service setup
-- [ ] Phrase segmentation logic
-- [ ] Audio comparison algorithms
-- [ ] Practice session interface design
 
-### Week 8: Integration & Polish
-- [ ] Connect all modules together
-- [ ] Create unified progress dashboard
-- [ ] Implement user preferences
-- [ ] Cross-module recommendations
-- [ ] Phase 2 user testing
 
-## 📅 Phase 3: Advanced Features (Weeks 9-12)
-**Goal:** Add AI features and community elements
 
-### Week 9: AI Analysis Engine
-- [ ] Real pitch analysis with Python backend
-- [ ] Pronunciation scoring algorithms
-- [ ] Personalized feedback generation
-- [ ] Difficulty adaptation logic
-- [ ] Progress prediction models
 
-### Week 10: Shadowing Content
-- [ ] YouTube video processing pipeline
-- [ ] Automated phrase extraction
-- [ ] Difficulty classification
-- [ ] Content recommendation engine
-- [ ] User content upload system
 
-### Week 11: Community Features
-- [ ] User profiles and progress sharing
-- [ ] Leaderboards and achievements
-- [ ] Study groups and challenges
-- [ ] Content sharing and ratings
-- [ ] Social learning features
 
-### Week 12: Polish & Launch Prep
-- [ ] Mobile responsiveness optimization
-- [ ] Performance testing and optimization
-- [ ] Security audit and hardening
-- [ ] Beta testing program
-- [ ] Launch marketing materials
-
-## 📅 Phase 4: Scale & Expand (Months 4-6)
-
-### Month 4: Mobile & Offline
-- [ ] React Native mobile app
-- [ ] Offline functionality
-- [ ] Push notifications
-- [ ] Mobile-optimized practice sessions
-
-### Month 5: Teacher Features
-- [ ] Classroom management
-- [ ] Student progress monitoring
-- [ ] Assignment creation tools
-- [ ] Curriculum integration
-
-### Month 6: Advanced AI
-- [ ] Conversational practice AI
-- [ ] Advanced error detection
-- [ ] Predictive learning paths
-- [ ] Speech recognition improvements
-
-## 📅 Phase 5: Platform Growth (Months 7-12)
-
-### Months 7-9: New Languages
-- [ ] Mandarin Chinese module
-- [ ] Vietnamese module
-- [ ] Cantonese module
-- [ ] Cross-language comparisons
-
-### Months 10-12: Enterprise Features
-- [ ] School and university packages
-- [ ] Corporate training programs
-- [ ] Certification programs
-- [ ] API for third-party integration
 
 ## 🎯 Success Criteria
 

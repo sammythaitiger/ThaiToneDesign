@@ -29,6 +29,8 @@ ThaiToneDesign/
 
 ## 🚀 Getting Started
 
+**Start here:** Read [QUICKSTART.md](./QUICKSTART.md) for complete setup instructions.
+
 ### For Design Team
 1. Review `docs/user-flows/` for understanding user journeys
 2. Check `design/style-guide.md` for design system

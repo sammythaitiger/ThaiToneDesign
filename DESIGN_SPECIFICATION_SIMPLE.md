@@ -152,13 +152,14 @@
 ### Frontend (Cross-Platform)
 - **Framework:** React Native with TypeScript
 - **Development:** Expo SDK 50+
+- **UI Library:** React Native Paper (Material Design components)
 - **Navigation:** React Navigation 6+
 - **State Management:** Zustand (lightweight)
-- **Styling:** React Native StyleSheet + Custom Design System
+- **Styling:** React Native Paper Theme + Custom Design System
 - **Audio Recording:** expo-av (cross-platform audio)
-- **Graph Visualization:** react-native-svg + custom charts
+- **Graph Visualization:** react-native-svg + victory-native
 - **Monetization:** RevenueCat for subscription management
-- **Animation:** Lottie React Native
+- **Animation:** Lottie React Native + React Native Reanimated
 
 ### Platforms:
 - **iOS:** Native build via Expo EAS
@@ -189,29 +190,58 @@
 
 ---
 
-## 🎨 Mobile-First UI/UX Design
+## 🎨 Mobile-First UI/UX Design with React Native Paper
 
 ### Design Philosophy
 - **Mobile-First:** Designed for touch interfaces first
-- **Native Feel:** Follows iOS Human Interface & Material Design guidelines
+- **Material Design:** Following React Native Paper design system
 - **Gesture-Friendly:** Swipe, tap, pinch gestures optimized
 - **Offline-Capable:** Core functionality works without internet
 - **Accessibility:** VoiceOver/TalkBack support, adjustable text sizes
 
+### React Native Paper Theme Configuration
+```typescript
+const theme = {
+  ...DefaultTheme,
+  colors: {
+    primary: '#3B82F6',    // Thai Blue (Mid tone)
+    accent: '#10B981',     // Thai Green (Low tone)
+    falling: '#F59E0B',    // Falling tone orange
+    high: '#EF4444',       // High tone red
+    rising: '#8B5CF6',     // Rising tone purple
+    background: '#FFFFFF',
+    surface: '#F8FAFC',
+    text: '#1F2937',
+    error: '#DC2626',
+  },
+  fonts: {
+    regular: { fontFamily: 'Inter_400Regular' },
+    medium: { fontFamily: 'Inter_500Medium' },
+    light: { fontFamily: 'Inter_300Light' },
+  },
+  roundness: 12,
+};
+```
+
+### Core UI Components (React Native Paper)
+- **Navigation:** Bottom Navigation + Stack Navigation
+- **Cards:** Elevated cards for content grouping with ripple effect
+- **Buttons:** Contained, outlined, text variants with proper touch targets
+- **Inputs:** TextInput with labels, helper text, and error states
+- **Progress Indicators:** LinearProgressBar and CircularProgress
+- **Chips:** Compact elements for filters, tags, and selections
+- **Dialogs:** Modal dialogs for actions and confirmations
+- **Snackbars:** Temporary notifications with actions
+- **Lists:** List.Accordion for expandable content
+- **Avatars & Icons:** For user profiles and visual indicators
+
 ### Mobile-Specific Considerations
 - **Touch Targets:** Minimum 44x44px for all interactive elements
-- **Gesture Navigation:** Swipe back, pull to refresh
-- **Haptic Feedback:** Subtile vibrations for key interactions
-- **Keyboard Avoidance:** Automatic view adjustment when keyboard appears
-- **Battery Efficiency:** Optimized audio processing to conserve battery
-
-### Core Mobile Components
-- **Recording Interface:** Large circular record button with haptic feedback
-- **Pitch Graph Visualization:** Touch-interactive zoomable graphs
-- **Video Player:** Custom controls with gesture support (seek, volume)
-- **Card Interface:** Swipe gestures for flashcards (left=hard, right=easy)
-- **Bottom Navigation:** Standard mobile navigation pattern
-- **Pull-to-Refresh:** For updating content
+- **Gesture Navigation:** Swipe back, pull to refresh, swipe actions
+- **Haptic Feedback:** React Native Haptic Feedback for key interactions
+- **Keyboard Avoidance:** KeyboardAwareScrollView for forms
+- **Safe Areas:** SafeAreaView for notch and home indicator accommodation
+- **Battery Efficiency:** Optimized audio processing and background tasks
 
 ### Color Scheme (Mobile Optimized)
 - **Primary:** Thai Blue (#3B82F6)
@@ -226,21 +256,24 @@
 - **Safe Areas:** Respects notches and home indicators
 
 ### Typography (Mobile Optimized)
-- **English:** SF Pro (iOS) / Roboto (Android) / Inter (Web)
+- **English:** Inter (primary), SF Pro (iOS), Roboto (Android)
 - **Thai:** Noto Sans Thai (system fallbacks)
 - **Dynamic Type:** Supports system text size adjustments
 - **Line Heights:** Optimized for mobile reading
+- **Font Weights:** Regular, Medium, Bold for hierarchy
 
 ### Iconography
-- **Standard Icons:** Tab bar, buttons use platform-appropriate icons
-- **Custom Icons:** Tone symbols, recording indicators
+- **Standard Icons:** Material Community Icons for consistency
+- **Custom Icons:** Tone symbols, recording indicators, learning badges
 - **Adaptive Icons:** Changes between light/dark mode
+- **Tab Bar Icons:** Platform-appropriate navigation icons
 
 ### Animation Principles
-- **Purposeful Animation:** Guides user attention
-- **Performance First:** 60fps animations, avoid jank
-- **Native Driver:** Use React Native's native animation driver
-- **Gesture Responder:** Smooth interactive feedback
+- **Purposeful Animation:** Guides user attention and provides feedback
+- **Performance First:** 60fps animations using React Native Reanimated
+- **Native Driver:** Use native animation driver for smooth interactions
+- **Gesture Responder:** Smooth interactive feedback for swipes and touches
+- **Micro-interactions:** Subtle animations for button presses, card flips
 
 ---
 

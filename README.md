@@ -14,13 +14,16 @@ Professional Thai language learning platform focused on tone mastery through AI-
 6. **Monetization** - Freemium subscriptions via App Store/Google Play
 
 ### Tech Stack:
-- **Frontend:** React Native + Expo + TypeScript
+- **Frontend:** React Native + Expo + TypeScript + React Native Paper
+- **UI Library:** React Native Paper (Material Design components)
 - **Backend:** Python FastAPI + Librosa + Whisper
 - **Platforms:** iOS, Android, Web (single codebase)
 - **Monetization:** RevenueCat for subscription management
+- **Visualization:** react-native-svg + victory-native for pitch graphs
 
 ### Key Design Documents:
-- **[DESIGN_SPECIFICATION_SIMPLE.md](./DESIGN_SPECIFICATION_SIMPLE.md)** - Mobile-first technical specification
+- **[DESIGN_SPECIFICATION_SIMPLE.md](./DESIGN_SPECIFICATION_SIMPLE.md)** - Mobile-first technical specification with React Native Paper
+- **[docs/MODULES_SPEC.md](./docs/MODULES_SPEC.md)** - Detailed module specifications for wireframing
 - **[project/ROADMAP.md](./project/ROADMAP.md)** - 4-month React Native development plan
 - **[PROJECT_STATUS.md](./PROJECT_STATUS.md)** - Current project status & progress
 
@@ -34,21 +37,30 @@ Professional Thai language learning platform focused on tone mastery through AI-
 ### Repository Structure:
 ```
 ThaiToneDesign/
-├── docs/user-flows/        # Mobile user flows (syllable-aware)
-│   ├── tone-practice-syllable-aware.md
-│   ├── shadowing-simple.md
-│   ├── dictionary-simple.md
-│   ├── flashcards-simple.md
-│   └── dashboard-simple.md
-├── project/               # Project management
-│   ├── VISION.md         # Product vision
-│   ├── ROADMAP.md        # 4-month React Native roadmap
-│   └── ROADMAP_ORIGINAL.md  # Original detailed roadmap
+├── docs/
+│   ├── MODULES_SPEC.md           # Detailed module specifications for wireframing
+│   ├── user-flows/               # Mobile user flows (syllable-aware)
+│   │   ├── tone-practice-syllable-aware.md
+│   │   ├── shadowing-simple.md
+│   │   ├── dictionary-simple.md
+│   │   ├── flashcards-simple.md
+│   │   └── dashboard-simple.md
+│   ├── architecture/             # System diagrams (to create)
+│   ├── wireframes/              # UI mockups (to create)
+│   └── api-specs/               # API specifications (to create)
+├── project/                     # Project management
+│   ├── VISION.md                # Product vision
+│   ├── ROADMAP.md               # 4-month React Native roadmap
+│   └── ROADMAP_ORIGINAL.md     # Original detailed roadmap
+├── design/                      # Design assets (to create)
+│   ├── components/              # Reusable components
+│   ├── screens/                 # Screen designs
+│   └── style-guide.md          # React Native Paper design system
 ├── DESIGN_SPECIFICATION_SIMPLE.md # Mobile-first technical specification
-├── PROJECT_STATUS.md     # Current project status & progress
-├── QUICKSTART.md         # Getting started guide
-├── GIT_WORKFLOW.md       # Git instructions
-└── README.md            # This file
+├── PROJECT_STATUS.md           # Current project status & progress
+├── QUICKSTART.md               # Getting started guide
+├── GIT_WORKFLOW.md             # Git instructions
+└── README.md                   # This file
 ```
 
 ## 🚀 Getting Started
@@ -56,18 +68,20 @@ ThaiToneDesign/
 **Start here:** Read [QUICKSTART.md](./QUICKSTART.md) for complete setup instructions.
 
 ### For Design Team
-1. Review mobile user flows in `docs/user-flows/`
-2. Focus on touch interfaces and mobile gestures
-3. Create mobile wireframes for React Native components
-4. Design pitch visualization for mobile screens
-5. Plan haptic feedback and gesture interactions
+1. Review `docs/MODULES_SPEC.md` for detailed module specifications
+2. Study React Native Paper component system and theme configuration
+3. Create mobile wireframes using Material Design patterns
+4. Design pitch visualization with react-native-svg and victory-native
+5. Plan haptic feedback and gesture interactions for mobile
+6. Develop React Native Paper theme with Thai tone colors
 
 ### For Development Team  
 1. Review `DESIGN_SPECIFICATION_SIMPLE.md` for React Native architecture
-2. Focus on syllable segmentation and normalized pitch comparison
-3. Plan Python backend (Librosa) + React Native frontend
-4. Check `project/ROADMAP.md` for 4-month mobile development timeline
-5. Set up Expo development environment
+2. Study `docs/MODULES_SPEC.md` for component specifications
+3. Set up Expo with React Native Paper, TypeScript, and required dependencies
+4. Implement React Native Paper theme with Thai tone colors
+5. Check `project/ROADMAP.md` for 4-month mobile development timeline
+6. Configure expo-av for cross-platform audio recording and playback
 
 ## 🔄 Git Workflow
 

@@ -50,12 +50,14 @@ Add to `docs/wireframes/`:
 - `shadowing-mobile.md` - YouTube practice with mobile controls
 - `dictionary-mobile.md` - Mobile search and word details
 
-### Step 3: Design System
+### Step 3: React Native Paper Design System
 Create `design/style-guide.md`:
-- Color palette (Thai-inspired)
-- Typography (readable for language learning)
-- UI component specifications
-- Iconography and illustrations
+- **Theme Configuration:** React Native Paper theme with tone colors
+- **Color Palette:** Thai-inspired colors with tone-specific coding
+- **Typography:** Inter font for English, Noto Sans Thai for Thai script
+- **Component Library:** React Native Paper components (Cards, Buttons, Inputs, etc.)
+- **Touch Targets:** 44x44px minimum for all interactive elements
+- **Gesture Patterns:** Swipe, tap, pinch interactions optimized for mobile
 
 ### Step 4: Technical Specifications
 Create in `specs/`:
@@ -89,30 +91,31 @@ git status
 git log --oneline -3  # See last 3 commits
 ```
 
-## 💡 Pro Tips for Design Phase
+## 💡 Pro Tips for React Native Paper Design
 
-### 1. Start with User Stories
-Before wireframes, write user stories:
-- "As a beginner, I want to practice basic tones..."
-- "As an intermediate learner, I want to shadow news clips..."
-- "As a teacher, I want to track student progress..."
+### 1. React Native Paper Component-First Design
+- Design using React Native Paper components (Cards, Buttons, Dialogs)
+- Follow Material Design guidelines for mobile interfaces
+- Use theme provider for consistent styling across screens
+- Reference the MODULES_SPEC.md for detailed component specifications
 
-### 2. Use Visual Tools
-- **Figma/Adobe XD** for wireframes (save screenshots in `design/screens/`)
-- **Draw.io/Lucidchart** for flow diagrams (export to `docs/user-flows/`)
-- **Miro/Whimsical** for brainstorming (save images in appropriate folders)
+### 2. Mobile-First Wireframing
+- Design for touch interfaces first (44x44px touch targets)
+- Plan gesture interactions (swipe for flashcards, pull-to-refresh)
+- Consider safe areas (notches, home indicators on modern phones)
+- Design for both portrait and landscape orientations where applicable
 
-### 3. Keep Documentation Organized
-- One file per user flow
-- One file per screen design  
-- Use consistent naming: `module-purpose-version.md`
-- Include both text description and visual references
+### 3. React Native Paper Theme Development
+- Define color scheme with tone-specific colors
+- Configure typography for English and Thai scripts
+- Set up consistent spacing and roundness
+- Create reusable component variants using theme
 
-### 4. Version Control for Design
-- Commit small changes frequently
-- Use descriptive commit messages
-- Push to GitHub daily for backup
-- Create branches for major design explorations
+### 4. Tools for React Native Design
+- **Figma/Adobe XD:** Design screens with React Native Paper components
+- **React Native Paper Documentation:** Reference for component APIs
+- **Expo Snack:** Quick prototyping of React Native components
+- **React Native Web:** Test designs in browser during development
 
 ## 🛠️ VS Code Setup Recommendations
 
@@ -139,17 +142,23 @@ Create `.vscode/settings.json`:
 
 ## 🔗 Useful Resources
 
-### For Design Inspiration:
-- **Duolingo** - Gamified language learning
-- **Speechling** - Pronunciation feedback
-- **HelloTalk** - Language exchange community
-- **Anki** - Spaced repetition system
+### For React Native Paper Design:
+- **React Native Paper Documentation:** Component library and theming
+- **Material Design Guidelines:** Design principles for mobile interfaces
+- **Expo Documentation:** Setup and development with Expo
+- **React Navigation:** Navigation patterns for mobile apps
 
-### For Technical Reference:
-- **Web Audio API** - Browser audio processing
-- **Whisper OpenAI** - Speech transcription
-- **YouTube Data API** - Video content access
-- **FFT Analysis** - Pitch detection algorithms
+### For Technical Implementation:
+- **expo-av:** Cross-platform audio recording and playback
+- **react-native-svg:** Vector graphics for pitch visualization
+- **RevenueCat Documentation:** Subscription management for mobile apps
+- **React Native Reanimated:** High-performance animations
+
+### For Language Learning Inspiration:
+- **Duolingo:** Gamified language learning interfaces
+- **Anki:** Spaced repetition system patterns
+- **Speechling:** Pronunciation feedback mechanisms
+- **HelloTalk:** Community and language exchange features
 
 ## 🆘 Getting Help
 
@@ -177,14 +186,15 @@ git push origin main --force  # Careful!
 ## 🎯 Ready to Start?
 
 Begin with:
-1. Open `docs/user-flows/` folder
-2. Review existing flows (all created)
-3. Create mobile wireframes for React Native components
-4. Commit and push:
+1. Review `MODULES_SPEC.md` for detailed module specifications
+2. Open `docs/user-flows/` folder and review existing flows
+3. Create mobile wireframes using React Native Paper components
+4. Set up React Native Paper theme with Thai tone colors
+5. Commit and push:
 ```bash
-git add docs/wireframes/*.md
-git commit -m "design: mobile wireframes for React Native"
+git add design/style-guide.md docs/wireframes/*.md
+git commit -m "design: React Native Paper wireframes and theme"
 git push origin main
 ```
 
-Happy designing! 🎨
+Happy designing with React Native Paper! 🎨

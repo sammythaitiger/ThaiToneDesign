@@ -23,49 +23,49 @@
 ### Week 1: Mobile Design & React Native Setup
 - [x] Create GitHub repository
 - [x] Complete project vision and scope
-- [ ] Set up Expo development environment
-- [ ] Design React Native component architecture
+- [ ] Set up Expo development environment with React Native Paper
+- [ ] Design React Native Paper component architecture
 - [ ] Create mobile user flow diagrams:
-  - Tone practice with touch gestures
-  - Shadowing with mobile video player
-  - Dictionary with mobile search
-  - Flashcards with swipe gestures
-  - Dashboard with mobile stats
-- [ ] Wireframe mobile screens (8-10 screens)
-- [ ] Create React Native design system
-- [ ] Plan navigation structure (React Navigation)
+  - Tone practice with touch gestures and haptic feedback
+  - Shadowing with mobile video player and gesture controls
+  - Dictionary with mobile search and autocomplete
+  - Flashcards with swipe gestures and card flip animations
+  - Dashboard with mobile stats and progress visualization
+- [ ] Wireframe mobile screens using React Native Paper components (8-10 screens)
+- [ ] Create React Native Paper design system with Thai tone colors
+- [ ] Plan navigation structure (React Navigation with bottom tabs)
 
 ### Week 2: Technical Planning & Backend Architecture
-- [ ] Define TypeScript data structures
-- [ ] Plan Python FastAPI backend endpoints
-- [ ] Set up Expo project with TypeScript
-- [ ] Create React Native component specifications
-- [ ] Finalize mobile design mockups
-- [ ] Plan audio recording strategy (expo-av)
-- [ ] Design pitch visualization with react-native-svg
-- [ ] Plan subscription system (RevenueCat integration)
-- [ ] Set up CI/CD pipeline for Expo builds
+- [ ] Define TypeScript data structures for React Native Paper components
+- [ ] Plan Python FastAPI backend endpoints for pitch analysis
+- [ ] Set up Expo project with TypeScript and React Native Paper
+- [ ] Create React Native Paper component specifications and theme
+- [ ] Finalize mobile design mockups with Material Design patterns
+- [ ] Plan audio recording strategy (expo-av with cross-platform support)
+- [ ] Design pitch visualization with react-native-svg and victory-native
+- [ ] Plan subscription system (RevenueCat integration with feature gating)
+- [ ] Set up CI/CD pipeline for Expo EAS builds
 
 ## 📅 Phase 2: MVP on React Native Web (Month 1)
 **Goal:** Build core tone practice MVP using Expo Web
 
-### Week 3-4: React Native Foundation
-- [ ] Set up Expo project with TypeScript
-- [ ] Configure React Navigation for web/mobile
-- [ ] Create mobile-first layout system
+### Week 3-4: React Native Foundation with React Native Paper
+- [ ] Set up Expo project with TypeScript and React Native Paper
+- [ ] Configure React Navigation with Material Design bottom tabs
+- [ ] Create mobile-first layout system with SafeAreaView
 - [ ] Implement user authentication (Firebase/backend)
 - [ ] Set up audio recording with expo-av (web compatible)
-- [ ] Create basic design system components
-- [ ] Set up state management (Zustand)
+- [ ] Create React Native Paper theme with Thai tone colors
+- [ ] Set up state management (Zustand) with persistent storage
 
-### Week 5-6: Tone Practice Mobile Interface
-- [ ] Build tone selection screen with touch feedback
-- [ ] Create word selection with syllable visualization
-- [ ] Implement recording interface with haptic feedback
-- [ ] Build waveform visualization during recording
-- [ ] Create pitch graph visualization with react-native-svg
-- [ ] Implement native audio playback
-- [ ] Add mobile gestures (swipe between tones)
+### Week 5-6: Tone Practice Mobile Interface with React Native Paper
+- [ ] Build tone selection screen with React Native Paper Cards and touch feedback
+- [ ] Create word selection with syllable visualization using Chips
+- [ ] Implement recording interface with large circular Button and haptic feedback
+- [ ] Build waveform visualization during recording with react-native-svg
+- [ ] Create pitch graph visualization with react-native-svg and victory-native
+- [ ] Implement native audio playback with expo-av and ProgressBar
+- [ ] Add mobile gestures (swipe between tones) with gesture handlers
 
 ### Week 7-8: Mobile Analysis & Backend Integration
 - [ ] Implement audio upload to Python backend
@@ -80,30 +80,30 @@
 ## 📅 Phase 3: Mobile Features & Offline Support (Month 2)
 **Goal:** Add mobile-optimized features and offline capability
 
-### Week 9-10: Mobile Dictionary & Audio
+### Week 9-10: Mobile Dictionary & Audio with React Native Paper
 - [ ] Build word database (500+ free words, 2000+ premium)
-- [ ] Create mobile search with autocomplete
-- [ ] Implement word detail view with touch interactions:
-  - Syllable breakdown with tone colors
-  - Audio playback with progress bar
-  - Example sentence with tap-to-practice
-  - Save to lists with swipe gestures
-- [ ] Add audio caching for offline playback
+- [ ] Create mobile search with TextInput autocomplete
+- [ ] Implement word detail view with React Native Paper components:
+  - Syllable breakdown with colored Chips for tones
+  - Audio playback with Slider and Button controls
+  - Example sentence with Card and tap-to-practice
+  - Save to lists with IconButton and swipe gestures
+- [ ] Add audio caching for offline playback with expo-av
 - [ ] Implement dictionary download for premium users
-- [ ] Create "My Words" list with cloud sync
+- [ ] Create "My Words" list with List.Accordion and cloud sync
 
-### Week 11-12: Mobile Flashcards & Gestures
-- [ ] Create flashcard system with swipe gestures
-- [ ] Implement card types optimized for mobile:
-  - Tone recognition cards (audio playback)
-  - Thai → English cards (tap to flip)
+### Week 11-12: Mobile Flashcards & Gestures with React Native Paper
+- [ ] Create flashcard system with swipe gestures using PanResponder
+- [ ] Implement card types using React Native Paper Cards:
+  - Tone recognition cards with Button audio playback
+  - Thai → English cards with Card flip animation
   - English → Thai cards
-  - Minimal pair cards (tone discrimination)
-- [ ] Build review interface with spaced repetition
+  - Minimal pair cards with RadioButton selection
+- [ ] Build review interface with spaced repetition algorithm
 - [ ] Add local notifications for review reminders
-- [ ] Implement offline review capability
-- [ ] Add haptic feedback for card ratings
-- [ ] Create card management with bulk operations
+- [ ] Implement offline review capability with AsyncStorage
+- [ ] Add haptic feedback for card ratings using react-native-haptic-feedback
+- [ ] Create card management with FAB and Dialog for bulk operations
 
 ## 📅 Phase 4: Premium Features & Store Prep (Month 3)
 **Goal:** Add premium features and prepare for store submission
@@ -135,19 +135,19 @@
 ## 📅 Phase 5: App Store Launch & Growth (Month 4)
 **Goal:** Launch on app stores and activate monetization
 
-### Week 17-18: Final Polish & Testing
-- [ ] Create mobile dashboard with:
-  - Tone progress visualization
-  - Vocabulary statistics
-  - Activity feed with gestures
-  - Personalized recommendations
-- [ ] Polish mobile UI/UX across all screens
-- [ ] Implement dark/light theme with system detection
-- [ ] Add accessibility features (VoiceOver/TalkBack)
-- [ ] Beta testing on real iOS/Android devices
-- [ ] Performance optimization for older devices
-- [ ] Battery usage optimization
-- [ ] Memory leak testing
+### Week 17-18: Final Polish & Testing with React Native Paper
+- [ ] Create mobile dashboard with React Native Paper components:
+  - Tone progress visualization with ProgressBar and Card
+  - Vocabulary statistics with DataTable and Avatar
+  - Activity feed with List and gesture interactions
+  - Personalized recommendations with Chip filters
+- [ ] Polish mobile UI/UX using React Native Paper theme system
+- [ ] Implement dark/light theme with system detection using useColorScheme
+- [ ] Add accessibility features (VoiceOver/TalkBack) to all components
+- [ ] Beta testing on real iOS/Android devices with Expo Dev Client
+- [ ] Performance optimization for older devices (Hermes engine)
+- [ ] Battery usage optimization (background audio processing)
+- [ ] Memory leak testing with React Native debug tools
 
 ### Week 19-20: Store Launch & Monetization
 - [ ] Submit to Apple App Store

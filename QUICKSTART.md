@@ -35,19 +35,20 @@ Thai Tone Designer/
 
 ## 🚀 Next Steps for Design Phase
 
-### Step 1: Define User Flows
+### Step 1: Define Mobile User Flows
 Create files in `docs/user-flows/`:
-- `tone-learning-flow.md` - Path through tone practice
-- `shadowing-flow.md` - YouTube content practice flow  
-- `vocabulary-flow.md` - Dictionary and flashcards
-- `onboarding-flow.md` - New user experience
+- `tone-practice-syllable-aware.md` - Syllable-by-syllable tone practice flow
+- `shadowing-simple.md` - YouTube shadowing with syllable comparison
+- `dictionary-simple.md` - Word lookup with tone information
+- `flashcards-simple.md` - Anki-like spaced repetition system
+- `dashboard-simple.md` - Progress tracking and recommendations
 
-### Step 2: Create Wireframes
+### Step 2: Create Mobile Wireframes
 Add to `docs/wireframes/`:
-- `homepage-wireframe.md` - Landing page
-- `tone-practice-wireframe.md` - Core tone analysis interface
-- `shadowing-wireframe.md` - YouTube practice interface
-- `dictionary-wireframe.md` - Word search and details
+- `homepage-mobile.md` - Mobile landing screen
+- `tone-practice-mobile.md` - Tone practice interface for touch
+- `shadowing-mobile.md` - YouTube practice with mobile controls
+- `dictionary-mobile.md` - Mobile search and word details
 
 ### Step 3: Design System
 Create `design/style-guide.md`:
@@ -177,12 +178,12 @@ git push origin main --force  # Careful!
 
 Begin with:
 1. Open `docs/user-flows/` folder
-2. Create `tone-learning-flow.md`
-3. Describe the ideal user journey for tone practice
+2. Review existing flows (all created)
+3. Create mobile wireframes for React Native components
 4. Commit and push:
 ```bash
-git add docs/user-flows/tone-learning-flow.md
-git commit -m "docs: initial tone learning user flow"
+git add docs/wireframes/*.md
+git commit -m "design: mobile wireframes for React Native"
 git push origin main
 ```
 

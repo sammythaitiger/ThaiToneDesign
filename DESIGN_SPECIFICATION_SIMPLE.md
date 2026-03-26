@@ -1,8 +1,10 @@
-# Thai Tone Trainer - Simplified Design Specification
-*Version 2.0 | Focused on Core Functionality | Last Updated: 2024-03-25*
+# Thai Tone Trainer - Mobile-First Design Specification
+*Version 3.0 | React Native + Expo | Last Updated: 2024-03-25*
 
 ## 📋 Project Overview
-**Thai Tone Trainer** - Web application for learning Thai tones through scientific pronunciation analysis.
+**Thai Tone Trainer** - Cross-platform mobile application for learning Thai tones through scientific pronunciation analysis. Built with React Native + Expo for iOS, Android, and Web.
+
+**Monetization:** Freemium model with in-app subscriptions via App Store/Google Play.
 
 **Core Focus Areas:**
 1. **Tone Practice** - Record and compare pitch contours for 5 Thai tones
@@ -13,7 +15,13 @@
 
 **Timeline:** 4 months total
 - **Weeks 1-2:** Design & Planning
-- **Months 1-4:** Development with focused MVP
+- **Months 1-2:** MVP on React Native Web
+- **Months 3-4:** Mobile App Development & Store Launch
+
+**Monetization Timeline:**
+- Month 1-3: Free features only
+- Month 4: Premium subscriptions activated
+- Store launch: Month 4 (iOS App Store + Google Play)
 
 ---
 
@@ -46,11 +54,13 @@
 4. **Results** - Syllable-by-syllable comparison graphs
 
 **Technical:**
-- Web Audio API for recording
-- Python/Librosa for pitch extraction and normalization
-- Syllable segmentation algorithm
-- Dynamic Time Warping (DTW) for time alignment
-- Normalized pitch comparison (not raw F0)
+- **expo-av** for cross-platform audio recording
+- **Python/Librosa** for pitch extraction and normalization
+- **Syllable segmentation algorithm** (server-side)
+- **Dynamic Time Warping (DTW)** for time alignment
+- **Normalized pitch comparison** (shape comparison, not raw F0)
+- **Haptic feedback** during recording (react-native-haptics)
+- **Offline recording cache** for poor connections
 
 ### Module 2: Shadowing Practice  
 **Purpose:** Imitate native speakers with syllable-level feedback
@@ -70,31 +80,35 @@
 4. **Results** - Per-syllable pitch comparison
 
 **Technical:**
-- YouTube Data API v3
-- Whisper for Thai transcription
-- Same syllable segmentation as tone module
-- Per-syllable normalized pitch comparison
+- **YouTube Data API v3** for video search
+- **Whisper** for Thai transcription (server-side)
+- **Same syllable segmentation** as tone module
+- **Per-syllable normalized pitch comparison**
+- **Video caching** for offline practice
+- **Adaptive bitrate** for different connection speeds
 
 ### Module 3: Simple Dictionary
-**Purpose:** Look up Thai words with tone information
+**Purpose:** Look up Thai words with syllable-level tone information
 
-**Simple Features:**
-- Search words (Thai script or English)
-- View word details: Thai, transcription, tone pattern, translation
-- Listen to native pronunciation
+**Key Features:**
+- Search words (Thai script, English, or transcription)
+- View syllable breakdown with tone for each syllable
+- Listen to native pronunciation (whole word)
 - Save words to personal list
-- View example sentence
+- See example sentence in context
+- Quick actions: Practice word, Create flashcard
 
 **Screens:**
-1. **Search** - Find words
-2. **Word Details** - Complete word information
+1. **Search** - Find words with autocomplete
+2. **Word Details** - Syllable breakdown, audio, translation
 3. **My Words** - Saved vocabulary list
 
 **Technical:**
-- Basic word database (500+ common words)
-- Audio playback
-- Simple search functionality
-- User word lists
+- **Word database** with syllable segmentation (500+ free, 2000+ premium)
+- **Audio playback** using expo-av
+- **Tone determination** from Thai orthography
+- **User word lists** with cloud sync
+- **Offline dictionary** download for premium users
 
 ### Module 4: Basic Flashcards
 **Purpose:** Review tones and vocabulary like Anki
@@ -111,9 +125,11 @@
 3. **Progress** - Review statistics
 
 **Technical:**
-- Simple spaced repetition algorithm
-- Card database
-- Review scheduling
+- **Simple spaced repetition algorithm** (SM-2 variant)
+- **Card database** with cloud sync
+- **Review scheduling** with local notifications
+- **Swipe gestures** for card rating (left=hard, right=easy)
+- **Offline review capability**
 
 ### Module 5: User Dashboard
 **Purpose:** Track progress and get recommendations
@@ -131,58 +147,220 @@
 
 ---
 
-## 🏗️ Technical Stack (Simplified)
+## 🏗️ Technical Stack (React Native + Expo)
 
-### Frontend
-- **Framework:** Next.js 14 with TypeScript
-- **Styling:** Tailwind CSS
-- **Visualization:** D3.js for graphs
-- **Audio:** Web Audio API
-- **State:** React Context or Zustand (simple)
+### Frontend (Cross-Platform)
+- **Framework:** React Native with TypeScript
+- **Development:** Expo SDK 50+
+- **Navigation:** React Navigation 6+
+- **State Management:** Zustand (lightweight)
+- **Styling:** React Native StyleSheet + Custom Design System
+- **Audio Recording:** expo-av (cross-platform audio)
+- **Graph Visualization:** react-native-svg + custom charts
+- **Monetization:** RevenueCat for subscription management
+- **Animation:** Lottie React Native
 
-### Backend
-- **API:** Python FastAPI
-- **Audio Processing:** Librosa for F0 extraction
-- **Transcription:** Whisper for Thai subtitles
-- **Database:** PostgreSQL for user data and words
-- **Hosting:** Vercel (frontend), Railway/Render (backend)
+### Platforms:
+- **iOS:** Native build via Expo EAS
+- **Android:** Native build via Expo EAS  
+- **Web:** Progressive Web App via Expo Web
 
-### Key APIs
-- YouTube Data API v3
-- Custom audio processing API (Python/FastAPI)
-- Database API (user, words, progress)
+### Backend Services
+- **API Framework:** Python FastAPI
+- **Audio Processing:** Librosa for pitch extraction & normalization
+- **Transcription:** Whisper for Thai subtitle generation
+- **Database:** PostgreSQL with SQLAlchemy ORM
+- **Hosting:** Cloud platform (AWS/Railway/Render)
+- **Caching:** Redis (optional for scaling)
+
+### Key Integrations
+- **YouTube Data API v3:** Video search and metadata
+- **RevenueCat API:** Subscription management & validation
+- **App Store Connect API:** iOS app management
+- **Google Play Console API:** Android app management
+- **Analytics:** Optional (Amplitude, Mixpanel)
+
+### Development Tools
+- **Expo EAS:** Cloud builds for iOS/Android
+- **Expo Dev Client:** Development on physical devices
+- **TypeScript:** Full type safety
+- **Jest/Testing Library:** Unit & integration tests
+- **GitHub Actions:** CI/CD pipeline
 
 ---
 
-## 🎨 UI/UX Principles
+## 🎨 Mobile-First UI/UX Design
 
 ### Design Philosophy
-- **Clean & Focused:** No distractions, focus on learning
-- **Visual Feedback:** Clear graphs and comparisons
-- **Simple Navigation:** Easy to find what you need
-- **Mobile-Friendly:** Works well on all devices
+- **Mobile-First:** Designed for touch interfaces first
+- **Native Feel:** Follows iOS Human Interface & Material Design guidelines
+- **Gesture-Friendly:** Swipe, tap, pinch gestures optimized
+- **Offline-Capable:** Core functionality works without internet
+- **Accessibility:** VoiceOver/TalkBack support, adjustable text sizes
 
-### Core Components
-- **Recording Interface:** Large record button, waveform display
-- **Graph Comparison:** Side-by-side F0 pitch graphs
-- **Video Player:** Custom controls for shadowing
-- **Card Interface:** Simple flip cards for flashcards
-- **Progress Indicators:** Clear visual progress
+### Mobile-Specific Considerations
+- **Touch Targets:** Minimum 44x44px for all interactive elements
+- **Gesture Navigation:** Swipe back, pull to refresh
+- **Haptic Feedback:** Subtile vibrations for key interactions
+- **Keyboard Avoidance:** Automatic view adjustment when keyboard appears
+- **Battery Efficiency:** Optimized audio processing to conserve battery
 
-### Color Scheme
-- **Primary:** Blue (#3B82F6) - Thai inspired
+### Core Mobile Components
+- **Recording Interface:** Large circular record button with haptic feedback
+- **Pitch Graph Visualization:** Touch-interactive zoomable graphs
+- **Video Player:** Custom controls with gesture support (seek, volume)
+- **Card Interface:** Swipe gestures for flashcards (left=hard, right=easy)
+- **Bottom Navigation:** Standard mobile navigation pattern
+- **Pull-to-Refresh:** For updating content
+
+### Color Scheme (Mobile Optimized)
+- **Primary:** Thai Blue (#3B82F6)
+- **Secondary:** Thai Green (#10B981)
 - **Tone Colors:**
   - Mid: Blue (#3B82F6)
   - Low: Green (#10B981)
   - Falling: Orange (#F59E0B)
   - High: Red (#EF4444)
   - Rising: Purple (#8B5CF6)
-- **Background:** Light/Dark theme support
+- **Background:** System-aware light/dark themes
+- **Safe Areas:** Respects notches and home indicators
 
-### Typography
-- **English:** Inter (clean, readable)
-- **Thai:** Noto Sans Thai (clear Thai script)
-- **Sizes:** Comfortable reading sizes
+### Typography (Mobile Optimized)
+- **English:** SF Pro (iOS) / Roboto (Android) / Inter (Web)
+- **Thai:** Noto Sans Thai (system fallbacks)
+- **Dynamic Type:** Supports system text size adjustments
+- **Line Heights:** Optimized for mobile reading
+
+### Iconography
+- **Standard Icons:** Tab bar, buttons use platform-appropriate icons
+- **Custom Icons:** Tone symbols, recording indicators
+- **Adaptive Icons:** Changes between light/dark mode
+
+### Animation Principles
+- **Purposeful Animation:** Guides user attention
+- **Performance First:** 60fps animations, avoid jank
+- **Native Driver:** Use React Native's native animation driver
+- **Gesture Responder:** Smooth interactive feedback
+
+---
+
+## 💰 Monetization & Subscription Model
+
+### Freemium Strategy
+**Goal:** Maximize user acquisition while generating sustainable revenue
+
+#### Free Tier (User Acquisition)
+- **Daily Limits:** 5 tone practices, 3 dictionary lookups, 10 flashcards per day
+- **Content Access:** Basic word database (300 most common words)
+- **Features:** Basic pitch comparison, no syllable-by-syllable analysis
+- **YouTube Shadowing:** Limited to 2 minutes per day
+- **Ads:** Optional rewarded video ads for extra practice
+
+#### Premium Tier (Revenue Generation)
+**Pricing:**
+- **Monthly:** $9.99/month
+- **Yearly:** $79.99/year (33% discount)
+- **Lifetime:** $199.99 (one-time payment)
+
+**Premium Features:**
+- **Unlimited Practice:** No daily limits on any module
+- **Advanced Analysis:** Syllable-by-syllable pitch comparison
+- **Full Dictionary:** Access to 2000+ words with detailed examples
+- **YouTube Shadowing:** Unlimited video practice
+- **Personalized Learning:** AI-powered recommendations
+- **Offline Mode:** Download content for offline use
+- **Export Data:** Export progress and vocabulary lists
+- **Priority Support:** Faster customer support
+
+### Technical Implementation
+
+#### Subscription Management
+```typescript
+// RevenueCat integration for cross-platform subscriptions
+interface Subscription {
+  id: string;
+  user_id: string;
+  product_id: 'monthly' | 'yearly' | 'lifetime';
+  platform: 'ios' | 'android' | 'web';
+  status: 'active' | 'expired' | 'cancelled';
+  purchase_date: Date;
+  expiration_date?: Date;
+  receipt_data: string; // Platform-specific receipt
+}
+
+// Frontend subscription check
+const checkSubscription = async (): Promise<boolean> => {
+  // 1. Check RevenueCat for local subscription status
+  // 2. Validate with backend for security
+  // 3. Cache result for performance
+  // 4. Grace period for subscription issues
+};
+```
+
+#### Feature Gating
+```typescript
+// Example: Feature gate based on subscription status
+const canUseFeature = (feature: string, user: User): boolean => {
+  switch (feature) {
+    case 'unlimited_practice':
+      return user.subscription?.status === 'active';
+    case 'syllable_analysis':
+      return user.subscription?.status === 'active';
+    case 'dictionary_full':
+      return user.subscription?.status === 'active' || 
+             user.free_daily_uses < USER_LIMITS.dictionary;
+    default:
+      return true;
+  }
+};
+```
+
+#### Payment Flow
+```
+1. User taps "Upgrade" button
+2. Show subscription options (Monthly/Yearly/Lifetime)
+3. User selects option → RevenueCat purchase flow
+4. Platform-native payment sheet appears
+5. Purchase confirmed → RevenueCat webhook to backend
+6. Backend validates receipt & activates premium features
+7. UI updates instantly with premium features
+```
+
+### App Store Optimization
+#### Keywords for App Store:
+- Thai language learning
+- Thai tones practice
+- Pronunciation coach
+- Language tutor
+- Speech analysis
+- Thai speaking practice
+
+#### Screenshots & Preview Video:
+- Before/After pitch comparison
+- Real-time recording visualization
+- YouTube shadowing demo
+- Progress dashboard
+- Premium features highlight
+
+### User Retention Strategies
+1. **Daily Streaks:** Visual progress tracking
+2. **Achievements:** Badges for milestones
+3. **Weekly Challenges:** Community events
+4. **Personalized Reminders:** Practice notifications
+5. **Progress Sharing:** Social media integration
+
+### Revenue Projections (Conservative)
+| Month | Users | Conversion | Monthly Revenue |
+|-------|-------|------------|-----------------|
+| 1     | 1,000 | 2%         | $200           |
+| 3     | 5,000 | 3%         | $1,500         |
+| 6     | 15,000| 4%         | $6,000         |
+| 12    | 50,000| 5%         | $25,000        |
+
+**Assumptions:**
+- 30% yearly retention rate
+- Average subscription value: $10/month
+- Organic growth + basic ASO
 
 ---
 
@@ -235,12 +413,55 @@
 
 ### Core Data Types
 ```typescript
-// User
+// User with subscription info
 interface User {
   id: string;
   email: string;
   name: string;
   created_at: Date;
+  subscription?: Subscription;
+  free_limits: FreeLimits;
+  settings: UserSettings;
+}
+
+// Subscription model
+interface Subscription {
+  id: string;
+  user_id: string;
+  product_id: 'monthly' | 'yearly' | 'lifetime';
+  platform: 'ios' | 'android' | 'web';
+  status: 'active' | 'expired' | 'cancelled' | 'grace_period';
+  purchase_date: Date;
+  expiration_date?: Date;
+  original_transaction_id: string;
+  receipt_data: string; // Platform-specific receipt
+  is_trial?: boolean;
+  trial_end_date?: Date;
+}
+
+// Free tier limits
+interface FreeLimits {
+  daily: {
+    tone_practice: number; // e.g., 5 per day
+    dictionary_lookups: number; // e.g., 3 per day
+    flashcard_reviews: number; // e.g., 10 per day
+    shadowing_minutes: number; // e.g., 2 minutes per day
+  };
+  total_words: number; // e.g., 300 words in free dictionary
+  reset_time: Date; // When daily limits reset
+}
+
+// User settings
+interface UserSettings {
+  theme: 'light' | 'dark' | 'system';
+  notifications: {
+    daily_reminder: boolean;
+    streak_reminder: boolean;
+    practice_reminders: boolean;
+  };
+  audio_quality: 'low' | 'medium' | 'high';
+  download_over_wifi_only: boolean;
+  haptic_feedback: boolean;
 }
 
 // Tone Practice Progress
@@ -250,20 +471,38 @@ interface ToneProgress {
   accuracy: number; // 0-100
   practice_count: number;
   last_practiced: Date;
+  best_accuracy: number;
+  improvement_rate: number; // % improvement per week
 }
 
 // Word (Dictionary with syllables)
 interface Word {
   id: string;
-  thai: string;
-  transcription: string;
-  english: string;
-  syllables: {
-    thai: string;
-    tone: 'mid' | 'low' | 'falling' | 'high' | 'rising';
-  }[];
-  audio_url: string;
-  example_sentence: string;
+  thai: string;                    // Thai script
+  transcription: string;           // Phonetic transcription
+  english: string;                 // English meaning
+  syllables: SyllableInfo[];       // Syllable breakdown
+  audio_url: string;               // Native pronunciation audio
+  example_sentence: string;        // Example usage
+  difficulty: 'beginner' | 'intermediate' | 'advanced';
+  is_premium: boolean;             // Requires subscription
+  category: string[];              // e.g., ['food', 'travel']
+}
+
+interface SyllableInfo {
+  thai: string;                    // Thai character(s) for this syllable
+  transcription: string;           // Phonetic transcription of syllable
+  tone: ThaiTone;                  // 'mid' | 'low' | 'falling' | 'high' | 'rising'
+  start_time?: number;             // Start time in audio (seconds)
+  end_time?: number;               // End time in audio (seconds)
+}
+
+// Reference audio for tone practice (more detailed)
+interface PracticeWord extends Word {
+  reference_audio_url: string;     // High-quality audio for practice
+  syllable_audio_urls?: string[];  // Optional: separate audio per syllable
+  pitch_contours?: number[][];     // Pre-extracted normalized pitch contours
+  difficulty_score: number;        // 1-5 difficulty rating
 }
 
 // Flashcard
@@ -273,18 +512,51 @@ interface Flashcard {
   front: string;
   back: string;
   card_type: 'thai_english' | 'english_thai' | 'tone_recognition';
-  difficulty: number; // 1-3
+  difficulty: number; // 1-5 (ease factor)
   next_review: Date;
+  interval: number;   // Days until next review
+  review_count: number;
+  correct_count: number;
+  tags: string[];
+  is_premium: boolean; // Requires subscription for certain card types
 }
 
 // Practice Session
 interface PracticeSession {
   id: string;
   user_id: string;
-  module: 'tone' | 'shadowing' | 'flashcards';
+  module: 'tone' | 'shadowing' | 'flashcards' | 'dictionary';
   duration: number; // seconds
   accuracy?: number;
   created_at: Date;
+  data: Record<string, any>; // Module-specific data
+}
+
+// User streak and achievements
+interface UserAchievements {
+  user_id: string;
+  current_streak: number; // Consecutive days
+  longest_streak: number;
+  total_practice_days: number;
+  total_practice_time: number; // minutes
+  achievements: Achievement[];
+  badges: Badge[];
+}
+
+interface Achievement {
+  id: string;
+  name: string;
+  description: string;
+  unlocked_at: Date;
+  progress?: number; // For progressive achievements
+  target?: number;   // Target value
+}
+
+interface Badge {
+  id: string;
+  name: string;
+  icon_url: string;
+  unlocked_at: Date;
 }
 ```
 

@@ -1,193 +1,213 @@
 # Thai Tone Trainer - Project Status
-*Week 1 of 2 Design Phase | Last Updated: 2024-03-25*
+*Week 1 of 2 Design Phase | React Native Mobile App | Last Updated: 2024-03-25*
 
-## ✅ Что сделано (Week 1):
+## ✅ Completed (Week 1):
 
-### 1. **Репозиторий настроен**
-- GitHub репозиторий: `https://github.com/sammythaitiger/ThaiToneDesign.git`
-- Git настроен, первые коммиты отправлены
-- Структура проекта создана
+### 1. **Repository Setup**
+- GitHub repository: `https://github.com/sammythaitiger/ThaiToneDesign.git`
+- Git configured, initial commits pushed
+- Project structure created
 
-### 2. **Документация создана:**
-- ✅ `QUICKSTART.md` - Быстрый старт
-- ✅ `GIT_WORKFLOW.md` - Инструкции по Git
-- ✅ `DESIGN_SPECIFICATION_SIMPLE.md` - Упрощенная техническая спецификация
-- ✅ `project/ROADMAP.md` - Упрощенный роадмап на 4 месяца
-- ✅ `project/VISION.md` - Видение продукта
+### 2. **Documentation Created (Updated):**
+- ✅ `QUICKSTART.md` - Quick start guide
+- ✅ `GIT_WORKFLOW.md` - Git instructions
+- ✅ `DESIGN_SPECIFICATION_SIMPLE.md` - **Updated:** Mobile-first specification with React Native + monetization
+- ✅ `project/ROADMAP.md` - **Updated:** React Native mobile app roadmap for 4 months
+- ✅ `project/VISION.md` - Product vision
+- ✅ `PROJECT_STATUS.md` - This file
 
-### 3. **Упрощенные User Flows:**
-Все флоу теперь сфокусированы на core functionality:
+### 3. **Simplified User Flows:**
+All flows now focused on core functionality:
 
 #### **Tone Practice (Syllable-Aware):**
 - ✅ `docs/user-flows/tone-practice-syllable-aware.md`
-- **Фокус:** Сравнение по слогам с нормализацией pitch
-- **Ключевое:** Слова → слоги → тональность каждого слога
-- **Сравнение:** Нормализованные pitch contours (не raw F0)
+- **Focus:** Syllable-by-syllable comparison with pitch normalization
+- **Key:** Words → syllables → tone per syllable
+- **Comparison:** Normalized pitch contours (not raw F0)
 
 #### **Shadowing Practice:**
 - ✅ `docs/user-flows/shadowing-simple.md`  
-- **Фокус:** YouTube + Whisper субтитры
-- **Анализ:** Сравнение по слогам (как в tone practice)
-- **Процесс:** Выбор фразы → запись → syllable-by-syllable сравнение
+- **Focus:** YouTube + Whisper subtitles
+- **Analysis:** Syllable-by-syllable comparison (like tone practice)
+- **Process:** Select phrase → record → syllable-by-syllable comparison
 
 #### **Dictionary:**
 - ✅ `docs/user-flows/dictionary-simple.md`
-- **Упрощено:** Поиск слов + tone информация
-- **Без:** Сложных фильтров, категорий, уровней сложности
-- **Фокус:** Thai script → тональность слогов → аудио → пример
+- **Simplified:** Word search + tone information
+- **Removed:** Complex filters, categories, difficulty levels
+- **Focus:** Thai script → syllable tones → audio → example
 
 #### **Flashcards:**
 - ✅ `docs/user-flows/flashcards-simple.md`
-- **Как Anki:** Spaced repetition
-- **Типы карточек:** Thai→English, English→Thai, Tone recognition
-- **Просто:** Создание/редактирование/обзор
+- **Like Anki:** Spaced repetition
+- **Card types:** Thai→English, English→Thai, Tone recognition
+- **Simple:** Create/edit/review
 
 #### **Dashboard:**
 - ✅ `docs/user-flows/dashboard-simple.md`
-- **Обзор:** Прогресс по тонам, словарь, активность
-- **Быстрые действия:** Practice weakest tone, review flashcards
-- **Рекомендации:** Что практиковать дальше
+- **Overview:** Tone progress, vocabulary, activity
+- **Quick actions:** Practice weakest tone, review flashcards
+- **Recommendations:** What to practice next
 
-### 4. **Удалено/Упрощено:**
-- ❌ Сложные API спецификации (пользователь сказал сконцентрироваться на интерфейсе)
-- ❌ Множество уровней сложности
-- ❌ Геймификация/социальные фичи
-- ❌ Мобильное приложение (начально web only)
-- ❌ Монетизация (на старте)
+### 4. **Key Decisions (Updated):**
+- ✅ **Tech Stack:** React Native + Expo + TypeScript
+- ✅ **Platforms:** iOS, Android, Web (single codebase)
+- ✅ **Monetization:** Freemium with subscriptions via App Store/Google Play
+- ✅ **Architecture:** Mobile-first design, offline support
+- ❌ Simplified: Complex API specifications (focus on UI)
+- ❌ Simplified: Multiple difficulty levels
+- ✅ Added: Basic gamification (streaks, achievements)
+- ✅ Added: Monetization from Month 4
 
 ## 🎯 Core Technical Approach:
 
-### **Анализ Pitch (Критически важно):**
-1. **Нормализация, не raw F0:**
-   - Разные голоса → разные базовые частоты
-   - Сравниваем shape контура, не абсолютные значения
-   - Справедливое сравнение для всех голосов
+### **Pitch Analysis (Critically Important):**
+1. **Normalization, not raw F0:**
+   - Different voices → different base frequencies
+   - Compare contour shape, not absolute values
+   - Fair comparison for all voice types
 
-2. **Syllable-Level анализ:**
-   - Слова делятся на слоги
-   - Каждый слог имеет свой тон
-   - Сравниваем pitch contour для каждого слога отдельно
-   - Dynamic Time Warping (DTW) для временного выравнивания
+2. **Syllable-Level Analysis:**
+   - Words divided into syllables
+   - Each syllable has its own tone
+   - Compare pitch contour for each syllable separately
+   - Dynamic Time Warping (DTW) for time alignment
 
-3. **Для Tone Practice:**
-   - Слова с разным количеством слогов
-   - Односложные слова для изоляции тонов
-   - Многосложные слова для tone patterns
+3. **For Tone Practice:**
+   - Words with different syllable counts
+   - Single-syllable words for tone isolation
+   - Multi-syllable words for tone patterns
 
-4. **Для Shadowing:**
-   - YouTube видео → Whisper субтитры
-   - Выбор фразы → syllable segmentation
-   - Запись пользователя → то же segmentation
-   - Сравнение по слогам
+4. **For Shadowing:**
+   - YouTube video → Whisper subtitles
+   - Select phrase → syllable segmentation
+   - User recording → same segmentation
+   - Compare syllable-by-syllable
 
-## 🚀 Что дальше (Week 2):
+## 🚀 Next Steps (Week 2 - Mobile Focus):
 
-### **Design Tasks:**
-1. **Wireframes для всех core screens (8-10):**
-   - Tone selection screen
-   - Word practice with syllable breakdown
-   - Recording interface with real-time feedback
-   - Syllable-by-syllable comparison results
-   - YouTube video browser
-   - Shadowing practice interface
-   - Dictionary search and word details
-   - Flashcard review interface
-   - Dashboard
+### **Mobile Design Tasks:**
+1. **Mobile wireframes for all core screens (8-10):**
+   - Tone selection screen (touch gestures)
+   - Word practice with syllable breakdown (mobile layout)
+   - Recording interface with haptic feedback
+   - Syllable-by-syllable comparison results (mobile graphs)
+   - YouTube video browser (mobile player)
+   - Shadowing practice interface (touch controls)
+   - Dictionary search (mobile keyboard handling)
+   - Flashcard review (swipe gestures)
+   - Dashboard (mobile stats visualization)
 
-2. **Компонентная система:**
-   - Recording controls (крупная кнопка, waveform)
-   - Pitch graph visualization (D3.js)
-   - Syllable visualization (цвета по тонам)
-   - Card flip компонент для flashcards
+2. **React Native Component System:**
+   - Recording controls (expo-av integration)
+   - Pitch graph visualization (react-native-svg)
+   - Syllable visualization (touch interactions)
+   - Card flip component with gestures
+   - Bottom navigation (React Navigation)
+   - Pull-to-refresh components
 
-3. **Мобильный дизайн:**
-   - Вертикальные layouts
-   - Крупные touch targets
-   - Упрощенные взаимодействия
+3. **Mobile-Specific Design:**
+   - Safe area layouts (notches, home indicators)
+   - Touch targets (44x44px minimum)
+   - Gesture navigation (swipe back, pull to refresh)
+   - Haptic feedback patterns
+   - Keyboard avoidance strategies
 
-### **Technical Planning:**
-1. **Database schema:** Упрощенная структура данных
-2. **API endpoints:** Минимальные эндпоинты для core functionality
-3. **Интеграции:** YouTube API, Whisper, Librosa pitch extraction
-4. **Разработка environment:** Next.js + Python FastAPI setup
+### **Technical Planning (React Native):**
+1. **Expo setup:** Development environment configuration
+2. **TypeScript data structures:** Mobile-optimized schemas
+3. **API endpoints:** Python FastAPI for pitch analysis
+4. **Integrations:** RevenueCat (monetization), expo-av (audio)
+5. **Development workflow:** Expo EAS builds, CI/CD pipeline
 
-## 📅 Timeline (4 месяца):
+## 📅 Updated Timeline (4 Months - React Native Mobile):
 
-### **Month 1: Tone Practice MVP**
-- User authentication (простая)
-- Tone selection interface
-- Audio recording and playback
-- Pitch visualization (normalized)
-- Basic comparison and scoring
+### **Month 1: MVP on React Native Web (Expo)**
+- Expo setup with TypeScript
+- React Navigation configuration
+- Tone practice with expo-av recording
+- Pitch visualization with react-native-svg
+- Python backend for pitch analysis
+- Basic user authentication
 
-### **Month 2: Dictionary & Flashcards**
-- Word search and database (500+ слов)
-- Word details with syllable breakdown
-- Flashcard system (spaced repetition)
-- User word lists
+### **Month 2: Mobile Features & Offline Support**
+- Mobile dictionary with audio caching
+- Flashcards with swipe gestures
+- Offline recording capability
+- Local storage for progress
+- Mobile-optimized UI components
 
-### **Month 3: Shadowing Module**
-- YouTube video integration
-- Whisper subtitle generation
-- Shadowing recording interface
-- Syllable-level comparison
+### **Month 3: Premium Features & Store Prep**
+- YouTube shadowing integration
+- Whisper transcription service
+- RevenueCat integration (monetization)
+- Premium feature gating
+- App store assets preparation
 
-### **Month 4: Polish & Launch**
-- Dashboard with progress tracking
-- UI polish and responsiveness
-- Testing and bug fixes
-- Launch preparation
+### **Month 4: App Store Launch & Monetization**
+- Submit to App Store & Google Play
+- Activate premium subscriptions
+- Launch marketing preparation
+- Analytics and tracking setup
+- Customer support system
 
-## 🔧 Tech Stack (Упрощенный):
+## 🔧 Updated Tech Stack (React Native Mobile):
 
-### **Frontend:**
-- Next.js 14 (TypeScript)
-- Tailwind CSS
-- D3.js для графиков
-- Web Audio API
+### **Frontend (React Native + Expo):**
+- React Native with TypeScript
+- Expo SDK 50+
+- React Navigation 6+
+- expo-av for audio recording/playback
+- react-native-svg for graphs
+- Zustand for state management
+- RevenueCat for monetization
 
-### **Backend:**
+### **Backend Services:**
 - Python FastAPI
-- Librosa для pitch extraction
-- Whisper для Thai transcription
-- PostgreSQL для данных
+- Librosa for pitch extraction & normalization
+- Whisper for Thai transcription
+- PostgreSQL with SQLAlchemy
+- Redis for caching (optional)
 
-### **Интеграции:**
-- YouTube Data API v3
-- Custom audio processing API
+### **Platforms & Distribution:**
+- **iOS:** Native build via Expo EAS
+- **Android:** Native build via Expo EAS
+- **Web:** Progressive Web App via Expo Web
+- **Monetization:** In-app subscriptions via App Store/Google Play
 
-## ✅ Критерии успеха MVP:
+## ✅ Updated Success Criteria:
 
-### **После Month 2 (Launch Ready):**
-1. Пользователи могут практиковать 5 Thai tones с визуальной обратной связью
-2. Dictionary с 500+ словами, поиск, tone информация
-3. Basic flashcard система для повторения
-4. User accounts и прогресс трекинг
-5. Responsive web интерфейс
+### **After Month 2 (React Native Web MVP):**
+1. Working tone practice on Expo Web
+2. Dictionary with 500+ words (300 free, 200+ premium)
+3. Flashcards with spaced repetition
+4. Basic authentication and progress tracking
+5. Mobile-responsive design on all platforms
 
-### **После Month 4 (Complete):**
-1. YouTube shadowing функциональность
-2. Syllable-by-syllable сравнение
-3. Улучшенный dashboard и рекомендации
-4. Polished UI/UX
-5. Готово к публичному использованию
+### **After Month 4 (App Store Launch):**
+1. App in App Store and Google Play
+2. Working monetization via subscriptions
+3. YouTube shadowing with Whisper transcription
+4. Syllable-by-syllable pitch comparison
+5. Full offline support for premium users
 
 ---
 
-## 📞 Контакты и Ссылки:
+## 📞 Contacts & Links:
 
 - **GitHub:** https://github.com/sammythaitiger/ThaiToneDesign
-- **Статус:** Design Phase, Week 1 завершен
-- **Документы:** Все упрощенные флоу созданы
-- **Фокус:** Syllable-aware tone analysis with normalized pitch comparison
+- **Status:** Design Phase, Week 1 completed
+- **Update:** Transition to React Native + monetization
+- **Focus:** Mobile-first Thai tone learning with subscriptions
 
-## 🎯 Следующие шаги:
+## 🎯 Next Steps (Week 2):
 
-1. **Создать wireframes** для core screens (начать с tone practice)
-2. **Определить exact data structures** для syllable-aware анализа
-3. **Спланировать development sprints** на Month 1
-4. **Начать implementation planning** для pitch analysis алгоритмов
+1. **Create mobile wireframes** for React Native components
+2. **Set up Expo development environment**
+3. **Plan React Native component architecture**
+4. **Work on monetization with RevenueCat**
+5. **Prepare CI/CD pipeline for Expo builds**
 
 ---
 
-*Проект сфокусирован на core functionality: syllable-aware Thai tone learning через normalized pitch comparison. Все сложные фичи удалены для MVP.*
+*Project updated: Mobile-first app on React Native with freemium monetization. Focus on syllable-aware Thai tone learning with normalized pitch comparison and cross-platform development.*

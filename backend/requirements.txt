@@ -1,0 +1,39 @@
+# Thai Tone Trainer - Backend Dependencies
+# For audio processing with MFA and Thai language support
+
+## Core Audio Processing
+montreal-forced-aligner>=2.0.0  # Montreal Forced Aligner
+librosa>=0.10.0                 # Audio analysis and pitch extraction
+soundfile>=0.12.0               # Audio file I/O
+numpy>=1.24.0                   # Numerical computations
+scipy>=1.10.0                   # Scientific computing
+
+## Thai Language Processing
+pythainlp>=4.0.0               # Thai NLP and syllable segmentation
+g2p-en>=2.1.0                  # English grapheme-to-phoneme (for loanwords)
+
+## TextGrid Processing (MFA output)
+textgrid>=1.5                  # Parse TextGrid files
+praatio>=6.0.0                 # Advanced TextGrid manipulation
+
+## Web Framework (for API)
+fastapi>=0.104.0               # FastAPI web framework
+uvicorn[standard]>=0.24.0      # ASGI server
+python-multipart>=0.0.6        # File upload support
+
+## Utilities
+pydantic>=2.5.0                # Data validation
+python-dotenv>=1.0.0           # Environment variables
+click>=8.1.0                   # Command line interface
+tqdm>=4.66.0                   # Progress bars
+
+## Testing
+pytest>=7.4.0                  # Testing framework
+pytest-asyncio>=0.21.0         # Async testing
+pytest-cov>=4.1.0              # Test coverage
+
+## Development
+black>=23.0.0                  # Code formatting
+flake8>=6.1.0                  # Code linting
+mypy>=1.7.0                    # Type checking
+pre-commit>=3.5.0              # Git hooks

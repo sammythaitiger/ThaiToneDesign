@@ -1,57 +1,57 @@
-# Гайд по компонентам (React Native Paper + навигация)
-*Краткая шпаргалка для согласования экранов из wireframes с реализацией*
+# Components guide (React Native Paper + navigation)
+*Short reference to align wireframes with implementation*
 
-См. также [README](./README.md) — общая навигация и принципы layout.
+See also [README](./README.md) for overall navigation and layout principles.
 
-## Цвета тонов
+## Tone colors
 
-Использовать **один источник правды** в коде (например `theme/toneColors.ts`), те же HEX что в README:
+Use a **single source of truth** in code (e.g. `theme/toneColors.ts`), same HEX as in the README:
 
-| Тон     | HEX     |
-|---------|---------|
-| Mid     | #2196F3 |
-| Low     | #4CAF50 |
-| Falling | #9C27B0 |
-| High    | #FF9800 |
-| Rising  | #F44336 |
+| Tone     | HEX     |
+|----------|---------|
+| Mid      | #2196F3 |
+| Low      | #4CAF50 |
+| Falling  | #9C27B0 |
+| High     | #FF9800 |
+| Rising   | #F44336 |
 
-**Chip / Badge:** `backgroundColor: getToneColor(tone)`, `textStyle={{ color: '#fff' }}` для контраста.
+**Chip / Badge:** `backgroundColor: getToneColor(tone)`, `textStyle={{ color: '#fff' }}` for contrast.
 
-## Паттерны по типам экранов
+## Patterns by screen type
 
-| Задача | Компоненты |
-|--------|------------|
-| Заголовок + действия | `Appbar.Header`, `Appbar.Content`, `Appbar.Action` |
-| Списки слов / уроков | `FlatList` + `Card` или `List.Item` |
-| Фильтры тонов | `Chip` в `ScrollView horizontal` |
-| Поиск | `TextInput` `mode="outlined"` + иконка `magnify` |
-| Главное действие | `Button mode="contained"` или `FAB` |
-| Прогресс | `ProgressBar`, `CircularProgress` |
-| Сообщения | `Snackbar`, диалоги — `Dialog` / `Portal` |
+| Need | Components |
+|------|------------|
+| Title + actions | `Appbar.Header`, `Appbar.Content`, `Appbar.Action` |
+| Word / lesson lists | `FlatList` + `Card` or `List.Item` |
+| Tone filters | `Chip` in horizontal `ScrollView` |
+| Search | `TextInput` `mode="outlined"` + `magnify` icon |
+| Primary action | `Button mode="contained"` or `FAB` |
+| Progress | `ProgressBar`, `CircularProgress` |
+| Messaging | `Snackbar`, dialogs — `Dialog` / `Portal` |
 
-## Навигация
+## Navigation
 
-- **Корень таба** (Home, Dictionary, Flashcards, Shadowing, Dashboard): обычно **без** `BackAction`.
-- **Вложенные экраны** стека: `BackAction` или кастомная стрелка.
-- **Полноэкранные режимы** (запись, shadowing fullscreen): нижние табы **скрыть**, чтобы не прерывать фокус.
+- **Tab root** (Home, Dictionary, Flashcards, Shadowing, Dashboard): usually **no** `BackAction`.
+- **Stack** screens: `BackAction` or custom back affordance.
+- **Fullscreen modes** (recording, shadowing fullscreen): **hide** bottom tabs to avoid breaking focus.
 
-## Доступность
+## Accessibility
 
-- Минимальная область тапа **44×44** для иконок.
-- Подписи у `IconButton` через `accessibilityLabel`.
-- Не полагаться только на цвет тона — дублировать буквой (M/L/F/H/R) или полным названием в `accessibilityState`.
+- Minimum tap target **44×44** for icon buttons.
+- `IconButton` labels via `accessibilityLabel`.
+- Do not rely on tone color alone — duplicate with letter (M/L/F/H/R) or full name in `accessibilityState`.
 
-## Связь wireframes ↔ файлы
+## Wireframes ↔ files
 
-| Экран | Документ |
-|-------|----------|
-| Выбор слова | [word-selection.md](./word-selection.md) |
-| Практика | [word-practice.md](./word-practice.md) |
-| Словарь | [dictionary.md](./dictionary.md) |
-| Карточки | [flashcards.md](./flashcards.md) |
+| Screen | Document |
+|--------|----------|
+| Word selection | [word-selection.md](./word-selection.md) |
+| Word practice | [word-practice.md](./word-practice.md) |
+| Dictionary | [dictionary.md](./dictionary.md) |
+| Flashcards | [flashcards.md](./flashcards.md) |
 | Shadowing | [shadowing.md](./shadowing.md) |
-| Статистика | [dashboard.md](./dashboard.md) |
+| Dashboard | [dashboard.md](./dashboard.md) |
 
 ---
 
-*Последнее обновление: 2026-03-28*
+*Last updated: 2026-03-28*

@@ -1,12 +1,12 @@
 # Word Practice Screen
-*Экран практики конкретного слова (тональный анализ по слогам)*
+*Practice a single word with per-syllable tone analysis*
 
-## 📱 Общая структура экрана
+## Overall screen structure
 
-### Состояние 1: BEFORE RECORDING (до записи)
+### State 1: BEFORE_RECORDING
 ```
 ┌─────────────────────────────────────────────────────┐
-│  ← Practice        สวัสดี           ⏹️ 🔊          │ ← AppBar с кнопками
+│  ← Practice        สวัสดี           ⏹️ 🔊          │ ← AppBar with actions
 ├─────────────────────────────────────────────────────┤
 │  Word: สวัสดี (sà-wàt-dii) - hello                 │
 │                                                    │
@@ -39,14 +39,14 @@
 │                                                    │
 │  [ Back to Word List ]                            │ ← Navigation
 ├─────────────────────────────────────────────────────┤
-│  🏠  📚  🎴  🎥  📊                                │ ← Bottom Navigation
+│  🏠  📚  🎴  🎥  📊                                │ ← Bottom nav
 └─────────────────────────────────────────────────────┘
 ```
 
-### Состояние 2: DURING RECORDING (во время записи)
+### State 2: DURING_RECORDING
 ```
 ┌─────────────────────────────────────────────────────┐
-│  ← Practice        Recording...    ⏱️ 00:03        │ ← Таймер
+│  ← Practice        Recording...    ⏱️ 00:03        │ ← Timer
 ├─────────────────────────────────────────────────────┤
 │  Recording สวัสดี...                              │
 │                                                    │
@@ -80,13 +80,13 @@
 └─────────────────────────────────────────────────────┘
 ```
 
-### Состояние 3: AFTER RECORDING - ANALYSIS (анализ - цель: 2-3 секунды)
+### State 3: AFTER RECORDING - ANALYSIS (target: 2–3 seconds)
 ```
 ┌─────────────────────────────────────────────────────┐
-│  ← Practice        Analyzing...    ⏱️ 2s           │ ← Быстрый анализ (2-3 секунды)
+│  ← Practice        Analyzing...    ⏱️ 2s           │ ← Fast analysis (2–3 s)
 ├─────────────────────────────────────────────────────┤
 │  Processing your recording...                      │
-│  (This usually takes 2-3 seconds)                 │ ← Подсказка о времени
+│  (This usually takes 2-3 seconds)                 │ ← Time hint
 │                                                    │
 │  Steps:                                           │
 │  ┌─────────────────────────────────────────────┐  │
@@ -100,7 +100,7 @@
 │                                                    │
 │  What's happening:                                │
 │  • Your audio is being split into syllables       │
-│  • Pitch contours are extracted (Pitch анализ)    │
+│  • Pitch contours are extracted (pitch analysis)   │
 │  • Comparing with native pronunciation            │
 │  • Generating personalized feedback               │
 │                                                    │
@@ -114,9 +114,9 @@
 └─────────────────────────────────────────────────────┘
 ```
 
-**Цель производительности:** Анализ должен занимать 2-3 секунды для обеспечения плавного пользовательского опыта.
+**Performance goal:** Analysis should finish in 2–3 seconds for a smooth UX.
 
-### Состояние 4: RESULTS (результаты)
+### State 4: RESULTS
 ```
 ┌─────────────────────────────────────────────────────┐
 │  ← Practice        Results          🎯 82%         │ ← Overall Score
@@ -167,9 +167,9 @@
 └─────────────────────────────────────────────────────┘
 ```
 
-**Ключевой элемент результатов:** Каждый слог показывает график Pitch контура - сравнение вашего тона (синяя линия) с нативным произношением (зеленая линия). Это позволяет визуально понять разницу в тональных контурах.
+**Key results UI:** Each syllable shows a pitch contour — your tone (blue) vs native (green) for visual comparison.
 
-### Состояние 5: ERROR PERMISSION (нет доступа к микрофону)
+### State 5: ERROR PERMISSION (no microphone)
 ```
 ┌─────────────────────────────────────────────────────┐
 │  ← Practice        Microphone Access                │
@@ -181,7 +181,7 @@
 │                                                    │
 │  Please grant microphone permission:              │
 │                                                    │
-│  [Grant Permission]                               │ ← Открывает настройки
+│  [Grant Permission]                               │ ← Opens settings
 │                                                    │
 │  How to enable manually:                          │
 │  1. Go to Settings > Privacy > Microphone         │
@@ -194,7 +194,7 @@
 └─────────────────────────────────────────────────────┘
 ```
 
-### Состояние 6: ERROR RECORDING (ошибка записи)
+### State 6: ERROR RECORDING
 ```
 ┌─────────────────────────────────────────────────────┐
 │  ← Practice        Recording Error                 │
@@ -218,7 +218,7 @@
 └─────────────────────────────────────────────────────┘
 ```
 
-### Состояние 7: ERROR ANALYSIS (ошибка анализа)
+### State 7: ERROR ANALYSIS
 ```
 ┌─────────────────────────────────────────────────────┐
 │  ← Practice        Analysis Error                  │
@@ -242,7 +242,7 @@
 └─────────────────────────────────────────────────────┘
 ```
 
-### Состояние 8: ERROR NETWORK (нет интернета)
+### State 8: ERROR NETWORK (no internet)
 ```
 ┌─────────────────────────────────────────────────────┐
 │  ← Practice        No Connection                  │
@@ -266,41 +266,41 @@
 └─────────────────────────────────────────────────────┘
 ```
 
-## 🔗 Навигация
+## Navigation
 
-### Навигация между экранами:
-1. **Из Word Selection → Word Practice:** Нажатие на кнопку "Practice" на карточке слова
-2. **Возврат из Word Practice → Word Selection:**
-   - Кнопка "←" в AppBar (BackAction)
-   - Кнопка "Back to Word List" внизу экрана (только в состоянии BEFORE_RECORDING)
-   - Hardware back button на Android
-   - Swipe back gesture на iOS
+### Between screens:
+1. **Word Selection → Word Practice:** Tap **Practice** on the word card
+2. **Back from Word Practice → Word Selection:**
+   - **←** in AppBar (BackAction)
+   - **Back to Word List** at bottom (only in BEFORE_RECORDING)
+   - Hardware back on Android
+   - Swipe back on iOS
 
-### Навигация внутри экрана:
-- **BEFORE_RECORDING → RECORDING:** Нажатие на красную кнопку RECORD
-- **RECORDING → PROCESSING:** Нажатие на оранжевую кнопку STOP
-- **PROCESSING → RESULTS:** Автоматически после завершения анализа
-- **RESULTS → BEFORE_RECORDING:** Нажатие "Try Again"
-- **Любое состояние → Word Selection:** Кнопка Back в AppBar
+### In-screen flow:
+- **BEFORE_RECORDING → RECORDING:** Tap red RECORD
+- **RECORDING → PROCESSING:** Tap orange STOP
+- **PROCESSING → RESULTS:** Auto after analysis completes
+- **RESULTS → BEFORE_RECORDING:** Tap **Try Again**
+- **Any state → Word Selection:** AppBar Back
 
-### Обработка ошибок навигации:
-- При ошибке записи/анализа → остаемся на текущем экране с сообщением об ошибке
-- При отсутствии интернета → предлагаем оффлайн альтернативы
-- При проблемах с permissions → направляем в настройки устройства
+### Error navigation:
+- Recording/analysis error → stay on screen with message
+- No network → offer offline paths
+- Permission issues → link to system settings
 
-## 🎨 Компоненты React Native Paper
+## React Native Paper components
 
-### 1. AppBar с состоянием
+### 1. AppBar by state
 ```javascript
-// Состояние: Before Recording
+// State: Before Recording
 <Appbar.Header>
   <Appbar.BackAction onPress={() => navigation.goBack()} />
   <Appbar.Content title="สวัสดี" />
-  <Appbar.Action icon="stop-circle" disabled /> // Для будущего
+  <Appbar.Action icon="stop-circle" disabled /> // Reserved
   <Appbar.Action icon="volume-high" onPress={playNativeAudio} />
 </Appbar.Header>
 
-// Состояние: During Recording
+// State: During Recording
 <Appbar.Header>
   <Appbar.BackAction disabled />
   <Appbar.Content title="Recording..." />
@@ -310,7 +310,7 @@
   </View>
 </Appbar.Header>
 
-// Состояние: Results
+// State: Results
 <Appbar.Header>
   <Appbar.BackAction onPress={() => navigation.goBack()} />
   <Appbar.Content title="Results" />
@@ -324,7 +324,7 @@
 </Appbar.Header>
 ```
 
-### 2. Syllable Cards (до записи)
+### 2. Syllable cards (before recording)
 ```javascript
 <ScrollView horizontal showsHorizontalScrollIndicator={false}>
   {word.syllables.map((syllable, index) => (
@@ -363,7 +363,7 @@
     margin: 16,
     right: 0,
     bottom: 0,
-    backgroundColor: '#F44336', // Красный
+    backgroundColor: '#F44336', // Red
   }}
   icon="microphone"
   label="RECORD"
@@ -379,14 +379,14 @@
     margin: 16,
     right: 0,
     bottom: 0,
-    backgroundColor: '#FF9800', // Оранжевый
+    backgroundColor: '#FF9800', // Orange
   }}
   icon="stop"
   label="STOP"
   onPress={stopRecording}
   color="white"
   size="large"
-  loading={isProcessing} // Если обрабатывается
+  loading={isProcessing}
 />
 ```
 
@@ -429,7 +429,7 @@
 </Surface>
 ```
 
-### 5. Results Cards (после анализа)
+### 5. Results cards (after analysis)
 ```javascript
 <List.AccordionGroup>
   {results.syllableResults.map((result, index) => (
@@ -494,99 +494,99 @@
 </List.AccordionGroup>
 ```
 
-## 🎮 Интерактивность и состояния
+## Interactivity and states
 
-### Состояния экрана:
+### Screen states:
 ```
 1. STATE_BEFORE_RECORDING
-   • Показываем слово и слоги
-   • Кнопка записи активна
-   • Можно прослушивать нативное аудио
+   • Show word and syllables
+   • Record button enabled
+   • Can play native audio
 
 2. STATE_RECORDING
-   • Таймер работает
-   • Показываем live waveform
+   • Timer running
+   • Show live waveform
    • Real-time syllable detection
-   • Кнопка STOP активна
+   • STOP enabled
 
 3. STATE_PROCESSING
-   • Показываем прогресс анализа
-   • Кнопки неактивны
-   • Можно отменить
-   • Цель: 2-3 секунды анализа
+   • Show analysis progress
+   • Buttons disabled
+   • Can cancel
+   • Target: 2–3 s analysis
 
 4. STATE_RESULTS
-   • Показываем результаты
-   • Графики сравнения pitch контуров
-   • Кнопки действий
+   • Show results
+   • Pitch comparison charts
+   • Action buttons
 
 5. STATE_ERROR_PERMISSION
-   • Ошибка доступа к микрофону
-   • Кнопка "Grant Permission"
-   • Инструкции как включить
+   • Microphone permission error
+   • **Grant Permission** button
+   • How-to instructions
 
 6. STATE_ERROR_RECORDING
-   • Ошибка записи (шум, тишина, техническая)
-   • Сообщение об ошибке
-   • Кнопка "Try Again"
+   • Recording error (noise, silence, technical)
+   • Error message
+   • **Try Again**
 
 7. STATE_ERROR_ANALYSIS
-   • Ошибка анализа на бэкенде
-   • Сообщение "Analysis failed"
-   • Кнопки "Retry" и "Back to Word List"
+   • Backend analysis error
+   • "Analysis failed" message
+   • **Retry** and **Back to Word List**
 
 8. STATE_ERROR_NETWORK
-   • Нет соединения с сервером
-   • Оффлайн режим
-   • Кнопка "Use Cached Data" или "Retry"
+   • No server connection
+   • Offline mode
+   • **Use Cached Data** or **Retry**
 ```
 
-### Обработка нажатий:
+### Tap handling:
 
-#### 1. Нажатие RECORD:
+#### 1. RECORD tap:
 ```
-1. Проверка permissions (микрофон)
-2. Если нет permission → запросить
-3. Запуск таймера
-4. Начало записи через expo-av
-5. Переход в STATE_RECORDING
-6. Haptic feedback (успешное начало)
-```
-
-#### 2. Нажатие STOP:
-```
-1. Остановка записи
-2. Сохранение аудиофайла
-3. Отправка на бэкенд для анализа
-4. Переход в STATE_PROCESSING
-5. Показ индикатора прогресса
+1. Check mic permission
+2. If missing → request
+3. Start timer
+4. Start recording via expo-av
+5. Go to STATE_RECORDING
+6. Haptic on success
 ```
 
-#### 3. Нажатие Play Audio:
+#### 2. STOP tap:
 ```
-1. Проверка: есть ли аудио (нативное/пользовательское)
-2. Воспроизведение через expo-av
-3. Визуальная обратная связь (кнопка меняется на паузу)
-4. Если воспроизводится слог → подсветка соответствующего слога
-```
-
-#### 4. Нажатие Practice This Syllable:
-```
-1. Переход на экран практики конкретного слога
-2. Параметры: syllableIndex, wordId, targetTone
-3. Экран фокусируется только на одном слоге
-4. Упрощенная запись и анализ
+1. Stop recording
+2. Save audio file
+3. Upload for analysis
+4. Go to STATE_PROCESSING
+5. Show progress
 ```
 
-## 🔧 Логика анализа
+#### 3. Play audio tap:
+```
+1. Check native/user audio exists
+2. Play via expo-av
+3. UI feedback (pause icon)
+4. Highlight syllable while playing
+```
 
-### Поток данных:
+#### 4. Practice This Syllable:
+```
+1. Navigate to single-syllable practice
+2. Params: syllableIndex, wordId, targetTone
+3. Focus one syllable
+4. Simpler record/analyze flow
+```
+
+## Analysis logic
+
+### Data flow:
 ```javascript
-// 1. Запись завершена → получаем audio URI
+// 1. Recording done → audio URI
 const recording = await Audio.Recording.createAsync(...);
 const audioUri = recording.getURI();
 
-// 2. Отправка на бэкенд
+// 2. Upload to backend
 const formData = new FormData();
 formData.append('audio', {
   uri: audioUri,
@@ -596,7 +596,7 @@ formData.append('audio', {
 formData.append('wordId', word.id);
 formData.append('userId', currentUser.id);
 
-// 3. Отправка запроса
+// 3. POST request
 const response = await fetch('https://api.thaitone.com/analyze', {
   method: 'POST',
   body: formData,
@@ -605,10 +605,10 @@ const response = await fetch('https://api.thaitone.com/analyze', {
   },
 });
 
-// 4. Обработка ответа
+// 4. Handle response
 if (response.ok) {
   const results = await response.json();
-  // results содержит:
+  // results has:
   // - overallAccuracy
   // - syllableResults[]
   // - pitchContours
@@ -620,18 +620,18 @@ if (response.ok) {
 }
 ```
 
-### Время анализа:
-- **Цель:** 2-3 секунды
-- **Факторы влияющие на время:**
-  - Длина записи (обычно 1-3 секунды на слово)
-  - Количество слогов (1-4+)
-  - Загрузка сервера
-  - Скорость интернета пользователя
+### Analysis time:
+- **Target:** 2–3 seconds
+- **Factors:**
+  - Clip length (often 1–3 s per word)
+  - Syllable count (1–4+)
+  - Server load
+  - User network speed
 
-### Обработка ошибок:
+### Error handling:
 ```javascript
 try {
-  // Запись и анализ
+  // Record and analyze
 } catch (error) {
   if (error.code === 'PERMISSION_DENIED') {
     setScreenState('STATE_ERROR_PERMISSION');
@@ -647,12 +647,12 @@ try {
 
 ---
 
-## 🔗 Связанные экраны
+## Related screens
 
-**← Назад:** [Word Selection Screen](../word-selection.md)  
-**→ Вперед:** Syllable Practice Screen (при нажатии "Practice This Syllable")
+**← Back:** [Word Selection Screen](./word-selection.md)  
+**→ Next:** Syllable Practice screen (from **Practice This Syllable**)
 
 ---
 
-*Последнее обновление: 2024-03-28*  
-*Статус: ASCII wireframe - Complete с состояниями ошибок и навигацией*
+*Last updated: 2026-03-28*  
+*Status: ASCII wireframe — complete with errors and navigation*

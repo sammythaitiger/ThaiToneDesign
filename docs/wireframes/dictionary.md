@@ -1,9 +1,9 @@
 # Dictionary Screen
-*Экран словаря для поиска и просмотра тайских слов с информацией о тонах*
+*Search and browse Thai words with tone information*
 
-## 📱 Общая структура экрана
+## Overall screen structure
 
-### Состояние 1: SEARCH (поиск)
+### State 1: SEARCH
 ```
 ┌─────────────────────────────────────────────────────┐
 │  Dictionary                    ⚙️ 📚 👤              │ ← AppBar
@@ -37,7 +37,7 @@
 └─────────────────────────────────────────────────────┘
 ```
 
-### Состояние 2: SEARCH RESULTS (результаты поиска)
+### State 2: SEARCH RESULTS
 ```
 ┌─────────────────────────────────────────────────────┐
 │  Dictionary                    ⚙️ 📚 👤              │
@@ -74,10 +74,10 @@
 └─────────────────────────────────────────────────────┘
 ```
 
-### Состояние 3: WORD DETAILS (детали слова)
+### State 3: WORD DETAILS
 ```
 ┌─────────────────────────────────────────────────────┐
-│  ← Dictionary        สวัสดี          ⏹️ 🔊          │ ← AppBar с кнопками
+│  ← Dictionary        สวัสดี          ⏹️ 🔊          │ ← AppBar with actions
 ├─────────────────────────────────────────────────────┤
 │  Word: สวัสดี (sà-wàt-dii)                         │
 │  Meaning: hello, goodbye                           │
@@ -119,7 +119,7 @@
 └─────────────────────────────────────────────────────┘
 ```
 
-### Состояние 4: MY SAVED WORDS (мои сохраненные слова)
+### State 4: MY SAVED WORDS
 ```
 ┌─────────────────────────────────────────────────────┐
 │  My Saved Words              ⚙️ 📚 👤              │
@@ -157,7 +157,7 @@
 └─────────────────────────────────────────────────────┘
 ```
 
-### Состояние 5: LOADING (загрузка)
+### State 5: LOADING
 ```
 ┌─────────────────────────────────────────────────────┐
 │  Dictionary                    ⚙️ 📚 👤              │
@@ -182,7 +182,7 @@
 └─────────────────────────────────────────────────────┘
 ```
 
-### Состояние 6: EMPTY SEARCH (пустой поиск)
+### State 6: EMPTY SEARCH
 ```
 ┌─────────────────────────────────────────────────────┐
 │  Dictionary                    ⚙️ 📚 👤              │
@@ -208,7 +208,7 @@
 └─────────────────────────────────────────────────────┘
 ```
 
-### Состояние 7: ERROR (ошибка)
+### State 7: ERROR
 ```
 ┌─────────────────────────────────────────────────────┐
 │  Dictionary                    ⚙️ 📚 👤              │
@@ -235,7 +235,7 @@
 └─────────────────────────────────────────────────────┘
 ```
 
-### Состояние 8: OFFLINE MODE (оффлайн режим)
+### State 8: OFFLINE MODE
 ```
 ┌─────────────────────────────────────────────────────┐
 │  Dictionary (Offline)        ⚙️ 📚 👤              │
@@ -264,11 +264,11 @@
 └─────────────────────────────────────────────────────┘
 ```
 
-## 🎨 Компоненты React Native Paper
+## React Native Paper components
 
-### 1. AppBar с состоянием
+### 1. AppBar by state
 ```javascript
-// Состояние: Search
+// State: Search
 <Appbar.Header>
   <Appbar.BackAction onPress={() => navigation.goBack()} />
   <Appbar.Content title="Dictionary" />
@@ -277,7 +277,7 @@
   <Appbar.Action icon="account" onPress={() => navigation.navigate('Profile')} />
 </Appbar.Header>
 
-// Состояние: Word Details
+// State: Word Details
 <Appbar.Header>
   <Appbar.BackAction onPress={() => navigation.goBack()} />
   <Appbar.Content title={currentWord.thai} />
@@ -286,7 +286,7 @@
 </Appbar.Header>
 ```
 
-### 2. Search Input с автодополнением
+### 2. Search input with autocomplete
 ```javascript
 <TextInput
   label="Search Thai or English"
@@ -324,7 +324,7 @@
 )}
 ```
 
-### 3. Word Result Cards
+### 3. Word result cards
 ```javascript
 <Card style={{ margin: 16 }}>
   <Card.Content>
@@ -374,7 +374,7 @@
 </Card>
 ```
 
-### 4. Syllable Breakdown Cards
+### 4. Syllable breakdown cards
 ```javascript
 <ScrollView horizontal showsHorizontalScrollIndicator={false}>
   {word.syllables.map((syllable, index) => (
@@ -398,83 +398,83 @@
 </ScrollView>
 ```
 
-## 🔗 Навигация
+## Navigation
 
-### Stack (внутри таба Dictionary)
+### Stack (inside Dictionary tab)
 ```
 DictionaryStack:
-  - DictionarySearch (корень таба: поиск, результаты в том же экране или подстек)
-  - WordDetail (детали слова)
-  - SavedWords (My Saved Words — полноэкранно или модалка)
+  - DictionarySearch (tab root: search, results on same screen or sub-stack)
+  - WordDetail
+  - SavedWords (My Saved Words — full screen or modal)
 ```
 
-### Переходы с Dictionary
-1. **Word Practice Screen** — по «Practice» в карточке результата / деталях / сохранённых (`wordId`, слоги, тоны).
-2. **Flashcards** — по «Card» в деталях (создать/обзор карточки для слова).
-3. **Settings / Profile** — иконки в AppBar (как на других табах).
-4. **Назад с Word Detail** — возврат к списку результатов с сохранённым запросом.
+### Transitions from Dictionary
+1. **Word Practice Screen** — via **Practice** on result card / details / saved list (`wordId`, syllables, tones).
+2. **Flashcards** — via **Card** in details (create / preview card for word).
+3. **Settings / Profile** — AppBar icons (as on other tabs).
+4. **Back from Word Detail** — return to results with preserved query.
 
-### Замечание по AppBar
-Корень таба **Dictionary** обычно **без** `BackAction`; кнопка «назад» нужна на **Word Detail** и **Saved Words**. В ASCII-состояниях поиска можно убрать стрелку назад или показывать её только внутри вложенных экранов стека.
+### AppBar note
+Dictionary **tab root** usually has **no** `BackAction`; back is needed on **Word Detail** and **Saved Words**. In ASCII search states you can omit back or show it only inside nested stack screens.
 
-## 📱 Адаптация под разные экраны
+## Responsive layout
 
 ### Mobile
 ```
 [AppBar]
 [Search + autosuggest]
-[контент: recent / результаты / детали]
+[content: recent / results / details]
 [Bottom Tabs]
 ```
 
 ### Tablet
 ```
 [AppBar]
-[опционально master-detail: слева список результатов, справа Word Detail]
+[optional master-detail: results left, Word Detail right]
 ```
 
 ### Web (Expo)
-Шире поле поиска, боковая панель фильтров (как в word-selection), клавиатурная навигация по подсказкам.
+Wider search field, filter sidebar (like word-selection), keyboard navigation for suggestions.
 
-## 🚀 Производительность
+## Performance
 
-1. **Debounce** поля поиска (например 200–300 ms) перед запросом/API/локальному индексу.
-2. **FlatList** для результатов и сохранённых слов; **виртуализация** при длинных списках.
-3. **Лимит** первой выдачи (например 50) + «Load more» или пагинация.
-4. **Кэш** недавних запросов и популярных слов для офлайна (согласовано с состояниями OFFLINE / ERROR).
-5. **Отмена** in-flight запроса при смене строки поиска (AbortController / флаг поколения запроса).
+1. **Debounce** search field (e.g. 200–300 ms) before API / local index query.
+2. **FlatList** for results and saved words; **virtualize** long lists.
+3. **Limit** first page (e.g. 50) + “Load more” or pagination.
+4. **Cache** recent queries and popular words for offline (OFFLINE / ERROR states).
+5. **Cancel** in-flight requests when query changes (AbortController / request generation flag).
 
-## 🧪 Тестовые сценарии
+## Test cases
 
-### Тест 1: Поиск и детали
+### Test 1: Search and details
 ```
-1. Ввести «สวัสดี»
-2. Проверить подсказки / результаты
-3. Открыть View Details
-4. Воспроизвести аудио (если online)
-5. Practice → Word Practice с верным word id
+1. Enter «สวัสดี»
+2. Verify suggestions / results
+3. Open View Details
+4. Play audio (if online)
+5. Practice → Word Practice with correct word id
 ```
 
-### Тест 2: Сохранённые слова
+### Test 2: Saved words
 ```
 1. Dictionary → My Saved Words
-2. Фильтр по тону
-3. Practice / Remove / возврат в поиск
+2. Filter by tone
+3. Practice / Remove / return to search
 ```
 
-### Тест 3: Пустой и офлайн
+### Test 3: Empty and offline
 ```
-1. Запрос без совпадений → EMPTY SEARCH
-2. В offline → OFFLINE MODE, поиск только по кэшу
-3. Симулировать ошибку API → ERROR + Retry
+1. Query with no matches → EMPTY SEARCH
+2. Offline → OFFLINE MODE, search cache only
+3. Simulate API error → ERROR + Retry
 ```
 
-## 🔗 Связанные экраны
+## Related screens
 
-**← Назад:** другие табы Bottom Navigation  
-**→ Вперёд:** [Word Practice Screen](./word-practice.md), [Flashcards Screen](./flashcards.md)
+**← Back:** other Bottom Navigation tabs  
+**→ Next:** [Word Practice Screen](./word-practice.md), [Flashcards Screen](./flashcards.md)
 
 ---
 
-*Последнее обновление: 2026-03-28*  
-*Статус: ASCII wireframe — в работе (добавлены навигация, производительность, тесты)*
+*Last updated: 2026-03-28*  
+*Status: ASCII wireframe — navigation, performance, tests added*

@@ -1,6 +1,6 @@
 # Thai Tone Trainer - ASCII Wireframes 🇹🇭
 
-## 📱 Экранная навигация
+## Screen navigation
 
 ```
         [TABS NAVIGATION - Bottom Tabs]
@@ -13,55 +13,55 @@
 Select  onary cards owing board
 ```
 
-## 🎨 Цветовая схема тонов
+## Tone color scheme
 
-| Тон | Цвет | HEX | Использование |
-|-----|------|-----|---------------|
-| Mid | Синий | #2196F3 | Средний тон, нейтральный |
-| Low | Зеленый | #4CAF50 | Низкий тон |
-| Falling | Фиолетовый | #9C27B0 | Падающий тон |
-| High | Оранжевый | #FF9800 | Высокий тон |
-| Rising | Красный | #F44336 | Восходящий тон |
+| Tone | Color | HEX | Usage |
+|------|-------|-----|--------|
+| Mid | Blue | #2196F3 | Mid tone, neutral |
+| Low | Green | #4CAF50 | Low tone |
+| Falling | Purple | #9C27B0 | Falling tone |
+| High | Orange | #FF9800 | High tone |
+| Rising | Red | #F44336 | Rising tone |
 
-## 📋 Список экранов
+## Screen list
 
-1. **[Word Selection Screen](./word-selection.md)** - Выбор слова для практики (фильтры по тонам и слогам)
-2. **[Word Practice Screen](./word-practice.md)** - Практика конкретного слова (запись, анализ тонов по слогам)
-3. **[Dictionary Screen](./dictionary.md)** - Поиск и просмотр слов
-4. **[Flashcards Screen](./flashcards.md)** - Карточки для запоминания
-5. **[Shadowing Screen](./shadowing.md)** - Повторение за видео
-6. **[Dashboard Screen](./dashboard.md)** - Статистика и прогресс
+1. **[Word Selection Screen](./word-selection.md)** - Pick a word to practice (tone and syllable filters)
+2. **[Word Practice Screen](./word-practice.md)** - Practice a word (recording, per-syllable tone analysis)
+3. **[Dictionary Screen](./dictionary.md)** - Search and browse words
+4. **[Flashcards Screen](./flashcards.md)** - Memorization cards
+5. **[Shadowing Screen](./shadowing.md)** - Repeat along with video
+6. **[Dashboard Screen](./dashboard.md)** - Stats and progress
 
-**Дополнительно:** **[Гайд по компонентам](./components-guide.md)** — тона, паттерны, связь с экранами.
+**Also:** **[Components guide](./components-guide.md)** — tones, patterns, mapping to screens.
 
-## 🎯 React Native Paper Компоненты
+## React Native Paper components
 
-### Основные компоненты для всех экранов:
-- **AppBar** - Верхняя панель с заголовком
-- **BottomNavigation** - Нижняя навигация (5 табов)
-- **Card** - Карточки для контента
-- **Button** / **FAB** - Кнопки действий
-- **Chip** - Теги для тонов/слогов
-- **ProgressBar** / **CircularProgress** - Индикаторы прогресса
-- **List** / **List.Accordion** - Списки с деталями
-- **TextInput** - Поля ввода
-- **Dialog** / **Snackbar** - Модальные окна и уведомления
-- **Avatar** / **IconButton** - Иконки и аватары
+### Core components for all screens:
+- **AppBar** - Top bar with title
+- **BottomNavigation** - Bottom nav (5 tabs)
+- **Card** - Content cards
+- **Button** / **FAB** - Actions
+- **Chip** - Tags for tones/syllables
+- **ProgressBar** / **CircularProgress** - Progress
+- **List** / **List.Accordion** - Lists with detail
+- **TextInput** - Input fields
+- **Dialog** / **Snackbar** - Modals and toasts
+- **Avatar** / **IconButton** - Icons and avatars
 
-### Навигационные компоненты:
-- **React Navigation** для роутинга
-- **Bottom Tabs** для основных разделов
-- **Stack Navigation** внутри разделов
-- **Drawer** для меню (опционально)
+### Navigation:
+- **React Navigation** for routing
+- **Bottom Tabs** for main sections
+- **Stack Navigation** inside sections
+- **Drawer** optional for menu
 
-## 📐 Layout Принципы
+## Layout principles
 
-### Разметка экранов:
+### Screen layout:
 ```
 ┌─────────────────────────────────┐
 │ AppBar (Title + Actions)        │ ← SafeAreaView top
 ├─────────────────────────────────┤
-│ Content Area (ScrollView)       │ ← Основной контент
+│ Content Area (ScrollView)       │ ← Main content
 │                                 │
 │ [Card / Component 1]            │
 │                                 │
@@ -73,96 +73,96 @@ Select  onary cards owing board
 └─────────────────────────────────┘
 ```
 
-### Отступы и spacing:
-- **SafeArea**: 20px сверху/снизу
-- **Padding**: 16px по бокам
-- **Component spacing**: 8px между компонентами
-- **Section spacing**: 24px между секциями
+### Spacing:
+- **SafeArea**: 20px top/bottom
+- **Padding**: 16px horizontal
+- **Component spacing**: 8px between components
+- **Section spacing**: 24px between sections
 
-## 📱 Состояния экранов
+## Screen states
 
-Каждый экран имеет 4 состояния:
+Each screen has four states:
 
-### 1. **Normal State** - Обычное состояние
-- Данные загружены
-- Пользователь может взаимодействовать
-- Нет активных процессов
+### 1. **Normal State**
+- Data loaded
+- User can interact
+- No active blocking processes
 
-### 2. **Loading State** - Загрузка
-- Skeleton loading для контента
-- ActivityIndicator в центре
-- Кнопки disabled
+### 2. **Loading State**
+- Skeleton loading for content
+- ActivityIndicator centered
+- Buttons disabled
 
-### 3. **Error State** - Ошибка
-- Сообщение об ошибке
-- Кнопка "Повторить"
-- Возможность вернуться назад
+### 3. **Error State**
+- Error message
+- "Retry" button
+- Option to go back
 
-### 4. **Empty State** - Пустое состояние
-- Иконка пустого состояния
-- Сообщение "Данных нет"
-- Кнопка действия (добавить, обновить)
+### 4. **Empty State**
+- Empty-state illustration
+- "No data" message
+- Primary action (add, refresh)
 
-## 🎮 Интерактивность
+## Interactions
 
-### Типы взаимодействий:
-1. **Tap** - Одиночное нажатие
-2. **Long Press** - Долгое нажатие
-3. **Swipe** - Свайп влево/вправо
-4. **Pull to Refresh** - Обновление списка
-5. **Scroll** - Прокрутка контента
+### Types:
+1. **Tap** - Single press
+2. **Long Press** - Long press
+3. **Swipe** - Horizontal swipe
+4. **Pull to Refresh** - List refresh
+5. **Scroll** - Content scroll
 
-### Обратная связь:
-- **Haptic Feedback** для важных действий
-- **Visual Feedback** (изменение цвета, анимация)
-- **Sound Feedback** для аудио действий
+### Feedback:
+- **Haptic Feedback** for important actions
+- **Visual Feedback** (color, animation)
+- **Sound Feedback** for audio actions
 
-## 🔗 Переходы между экранами
+## Transitions between screens
 
-### Основные переходы:
-1. **Tabs** ↔ **Tabs** - Горизонтальная анимация
-2. **List** → **Detail** - Вертикальная анимация
-3. **Modal** → **Parent** - Fade in/out анимация
-4. **Deep Links** - Навигация по URL
+### Main patterns:
+1. **Tabs** ↔ **Tabs** - Horizontal animation
+2. **List** → **Detail** - Vertical animation
+3. **Modal** → **Parent** - Fade in/out
+4. **Deep Links** - URL navigation
 
-### Анимации:
-- **Slide Horizontal** для табов
-- **Slide Vertical** для детальных экранов
-- **Fade** для модальных окон
-- **Scale** для FAB кнопок
+### Animations:
+- **Slide Horizontal** for tabs
+- **Slide Vertical** for detail
+- **Fade** for modals
+- **Scale** for FAB
 
-## 🎛️ Настройки и конфигурация
+## Settings and configuration
 
-### Глобальные настройки:
-- Язык интерфейса (EN/TH)
-- Тема (Light/Dark/System)
-- Размер шрифта
-- Автовоспроизведение аудио
-- Haptic feedback включение
+### Global settings:
+- UI language (EN/TH)
+- Theme (Light/Dark/System)
+- Font size
+- Auto-play audio
+- Haptic feedback on/off
 
-### Пользовательские настройки:
-- Целевые тоны для практики
-- Сложность слов
-- Количество повторений
-- Уведомления о напоминании
+### User preferences:
+- Target tones for practice
+- Word difficulty
+- Repetition count
+- Reminder notifications
 
 ---
 
-## 📁 Структура файлов
+## File structure
 
 ```
 docs/wireframes/
-├── README.md                    # Этот файл
-├── word-selection.md           # Экран выбора слова для практики
-├── word-practice.md           # Экран практики конкретного слова
-├── dictionary.md               # Экран словаря
-├── flashcards.md              # Экран карточек
-├── shadowing.md               # Экран повторения за видео
-├── dashboard.md               # Экран статистики
-└── components-guide.md        # Гайд по компонентам
+├── README.md                    # This file
+├── word-selection.md           # Word picker for practice
+├── word-practice.md            # Single-word practice
+├── dictionary.md               # Dictionary
+├── flashcards.md               # Flashcards
+├── shadowing.md                # Shadowing
+├── dashboard.md                # Dashboard / stats
+└── components-guide.md         # Component patterns
 ```
 
 ---
 
-*Последнее обновление: 2026-03-28*
-*Статус: основные ASCII wireframes готовы; уточнения по мере MVP*
+*Last updated: 2026-03-28*  
+*Status: main ASCII wireframes done; refine as MVP evolves*

@@ -1,11 +1,11 @@
 # Shadowing Screen
-*Просмотр короткого видео/клипа с носителем, субтитры по слогам, повтор и (опционально) запись*
+*Short native-speaker clip, syllable-level subtitles, repeat, and (optional) recording*
 
-**Контент:** не YouTube. Видео и таймкоды **`cues`** поставляет продукт (CDN / пакеты). Модель: [../curated-shadowing-content.md](../curated-shadowing-content.md).
+**Content:** not YouTube. Video and **`cues`** timestamps are supplied by the product (CDN / packs). Model: [../curated-shadowing-content.md](../curated-shadowing-content.md).
 
-## 📱 Общая структура экрана
+## Overall screen structure
 
-### Состояние 1: VIDEO LIBRARY (выбор урока)
+### State 1: VIDEO LIBRARY (lesson picker)
 ```
 ┌─────────────────────────────────────────────────────┐
 │  Shadowing                     ⚙️ 🔍 👤           │
@@ -18,7 +18,7 @@
 │                                                    │
 │  Categories:                                      │
 │  ┌────────┬────────┬────────┐                     │
-│  │Daily   │Food    │Travel  │  ← Chips / фильтр   │
+│  │Daily   │Food    │Travel  │  ← Chips / filter   │
 │  └────────┴────────┴────────┘                     │
 │                                                    │
 │  All lessons:                                      │
@@ -34,7 +34,7 @@
 └─────────────────────────────────────────────────────┘
 ```
 
-### Состояние 2: PLAYER (основной режим)
+### State 2: PLAYER (primary)
 ```
 ┌─────────────────────────────────────────────────────┐
 │  ← Library        Greetings            🔊 ⋮       │
@@ -48,23 +48,23 @@
 │                                                    │
 │  Subtitles (karaoke by syllable):                 │
 │  สวัสดี ครับ  ผม ชื่อ...                           │
-│  [Mid][Low][High] ...  ← подсветка текущего слога │
+│  [Mid][Low][High] ...  ← highlight current syllable │
 │                                                    │
 │  Controls:                                        │
 │  [ A-B Loop ] [ 0.75x ] [ 1x ] [ 1.25x ]          │
 │  [ Replay sentence ]                              │
 │                                                    │
 │  ┌─────────────────────────────────────────────┐  │
-│  │     [ ● Shadow: record my line ]            │  │ ← опционально MVP+1
+│  │     [ ● Shadow: record my line ]            │  │ ← optional MVP+1
 │  └─────────────────────────────────────────────┘  │
 │                                                    │
 │  Tip: Say it together with the speaker, then solo. │
 ├─────────────────────────────────────────────────────┤
-│  (Bottom tabs: скрыть в полноэкранном плеере)      │
+│  (Bottom tabs hidden in fullscreen player)       │
 └─────────────────────────────────────────────────────┘
 ```
 
-### Состояние 3: RECORDING / COMPARE (расширение)
+### State 3: RECORDING / COMPARE (extended)
 ```
 ┌─────────────────────────────────────────────────────┐
 │  ← Player          Recording...        ⏱️ 00:05    │
@@ -78,12 +78,12 @@
 │                                                    │
 │  [ ■ Stop ]   [ Cancel ]                          │
 │                                                    │
-│  After stop → краткий тональный фидбек (как       │
-│  Word Practice) или только самопрослушивание.     │
+│  After stop → short tone feedback (like Word      │
+│  Practice) or listen-back only.                   │
 └─────────────────────────────────────────────────────┘
 ```
 
-### Состояние 4: LESSON COMPLETE
+### State 4: LESSON COMPLETE
 ```
 ┌─────────────────────────────────────────────────────┐
 │  Lesson complete                                  │
@@ -98,7 +98,7 @@
 └─────────────────────────────────────────────────────┘
 ```
 
-### Состояние 5: LOADING
+### State 5: LOADING
 ```
 ┌─────────────────────────────────────────────────────┐
 │  Shadowing                     ⚙️ 🔍 👤           │
@@ -110,7 +110,7 @@
 └─────────────────────────────────────────────────────┘
 ```
 
-### Состояние 6: EMPTY
+### State 6: EMPTY
 ```
 ┌─────────────────────────────────────────────────────┐
 │  Shadowing                     ⚙️ 🔍 👤           │
@@ -124,7 +124,7 @@
 └─────────────────────────────────────────────────────┘
 ```
 
-### Состояние 7: ERROR (воспроизведение)
+### State 7: ERROR (playback)
 ```
 ┌─────────────────────────────────────────────────────┐
 │  ← Library        Error                            │
@@ -137,9 +137,9 @@
 └─────────────────────────────────────────────────────┘
 ```
 
-## 🎨 Компоненты React Native Paper
+## React Native Paper components
 
-### Мини-плеер + меню качества
+### Mini player + quality menu
 ```javascript
 import { Video } from 'expo-av';
 
@@ -159,7 +159,7 @@ import { Video } from 'expo-av';
 </Menu>
 ```
 
-### Субтитры с подсветкой слога
+### Subtitles with syllable highlight
 ```javascript
 <View style={{ flexDirection: 'row', flexWrap: 'wrap', padding: 16 }}>
   {cues.map((cue, i) => (
@@ -175,60 +175,60 @@ import { Video } from 'expo-av';
 </View>
 ```
 
-## 🔗 Навигация
+## Navigation
 
 ### Stack
 ```
 ShadowingStack:
   - VideoLibrary
   - LessonPlayer (fullscreen option)
-  - (optional) RecordingAnalysis — общий модуль с Word Practice
+  - (optional) RecordingAnalysis — shared module with Word Practice
 ```
 
-### Переходы
-1. Тап по слугу в субтитрах → seek видео.
-2. **Dictionary** — долгое нажатие на слово → поиск (если есть разметка слов).
-3. **Flashcards** — из экрана завершения урока.
+### Transitions
+1. Tap syllable in subtitles → seek video.
+2. **Dictionary** — long-press word → search (if word markup exists).
+3. **Flashcards** — from lesson complete screen.
 
-## 📱 Адаптация
+## Responsive behavior
 
-- **Landscape:** видео на всю ширину, субтитры полосой снизу.
-- **PiP / background audio:** опционально позже (iOS/Android политики).
+- **Landscape:** full-width video, subtitle strip below.
+- **PiP / background audio:** optional later (platform policy).
 
-## 🚀 Производительность
+## Performance
 
-1. **Свои** MP4/HLS с CDN; несколько URL качеств в манифесте урока; кэш просмотра и офлайн-пакеты (premium).
-2. **Cue JSON** маленький — отдавать вместе с метаданными урока или отдельным запросом.
-3. Предзагрузка **следующего** урока из плейлиста низким приоритетом.
-4. Рантайм-транскрипция для пользователя **не** требуется — синхронизация только по `startMs`/`endMs` в данных.
+1. Your MP4/HLS from CDN; multiple quality URLs in lesson manifest; watch cache and offline packs (premium).
+2. **Cue JSON** is small — ship with lesson metadata or fetch separately.
+3. Prefetch **next** lesson in playlist at low priority.
+4. No user-facing runtime transcription — sync only via `startMs`/`endMs` in data.
 
-## 🧪 Тестовые сценарии
+## Test cases
 
-### Тест 1: Базовый просмотр
+### Test 1: Basic viewing
 ```
-1. Library → открыть урок
-2. Проверить play/pause, scrubber
-3. A-B loop на одной фразе
-```
-
-### Тест 2: Караоке-слоги
-```
-1. Во время воспроизведения проверить смену activeCue
-2. Tap по чипу → seeks correctly
+1. Library → open lesson
+2. Verify play/pause, scrubber
+3. A-B loop on one phrase
 ```
 
-### Тест 3: Ошибка сети
+### Test 2: Karaoke syllables
 ```
-1. Начать урок, оборвать сеть
-2. Показ ERROR с Retry / audio-only если есть кэш
+1. During playback verify activeCue updates
+2. Tap chip → seeks correctly
 ```
 
-## 🔗 Связанные экраны
+### Test 3: Network error
+```
+1. Start lesson, drop network
+2. Show ERROR with Retry / audio-only if cached
+```
 
-**← Назад:** Bottom tabs  
-**→ Вперёд:** [Dictionary Screen](./dictionary.md), [Word Practice Screen](./word-practice.md), [Flashcards Screen](./flashcards.md)
+## Related screens
+
+**← Back:** Bottom tabs  
+**→ Next:** [Dictionary Screen](./dictionary.md), [Word Practice Screen](./word-practice.md), [Flashcards Screen](./flashcards.md)
 
 ---
 
-*Последнее обновление: 2026-03-28*  
-*Статус: ASCII wireframe — Complete*
+*Last updated: 2026-03-28*  
+*Status: ASCII wireframe — Complete*

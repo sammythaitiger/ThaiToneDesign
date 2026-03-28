@@ -84,7 +84,7 @@ Native:
 
 ## 🛠️ Technical Process
 
-### 1. Content (authoring — не в клиенте)
+### 1. Content (authoring — not in the client)
 ```
 Video file → CDN / storage
 Authoring → cue JSON (timestamps + Thai + optional syllables/tones)

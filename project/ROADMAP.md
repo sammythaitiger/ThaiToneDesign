@@ -1,4 +1,4 @@
- а# Thai Tone Trainer - React Native Mobile App Roadmap
+# Thai Tone Trainer - React Native Mobile App Roadmap
 
 ## 🚀 Overall Timeline: 4 Months Total
 - **Weeks 1-2:** Design & React Native Architecture Planning

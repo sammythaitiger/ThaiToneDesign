@@ -1,36 +1,36 @@
-# Курируемый контент для Shadowing
-*Без YouTube: видео и разметка поставляются продуктом (ты или команда), клиент только воспроизводит и трекает прогресс.*
+# Curated content for Shadowing
+*No YouTube: video and markup are supplied by the product (you or your team); the client only plays and tracks progress.*
 
-## Зачем отдельный документ
+## Why this document exists
 
-Пользователь **не** ищет ролики на YouTube и **не** генерирует субтитры в рантайме. В каталоге показываются **уроки (lessons)** из вашей библиотеки: каждый урок = видеофайл + машиночитаемые **cues** (время + текст + опционально слоги/тоны).
+The user **does not** browse YouTube or **generate** subtitles at runtime. The catalog shows **lessons** from your library: each lesson = a video file + machine-readable **cues** (time + text + optional syllables/tones).
 
-## Сущности
+## Entities
 
-### `ShadowingLesson` (каталог)
+### `ShadowingLesson` (catalog)
 
-| Поле | Описание |
-|------|-----------|
-| `id` | Стабильный UUID/slug |
-| `title`, `description` | Для списка и экрана плеера |
+| Field | Description |
+|------|-------------|
+| `id` | Stable UUID/slug |
+| `title`, `description` | For list and player screen |
 | `categoryId` | Greetings, Food, … |
-| `durationSec` | Ожидаемая длительность |
-| `thumbnailUrl` | Превью для сетки |
-| `video` | См. ниже |
-| `cues` | Массив субтитров/фраз для караоке и seek |
-| `relatedWordIds` | Опционально — связь со словарём |
+| `durationSec` | Expected duration |
+| `thumbnailUrl` | Grid thumbnail |
+| `video` | See below |
+| `cues` | Array of subtitle/phrase entries for karaoke and seek |
+| `relatedWordIds` | Optional link to dictionary |
 
-### `video` (источник воспроизведения)
+### `video` (playback source)
 
-Один из вариантов (MVP → рост):
+One of these (MVP → scale):
 
-1. **URL на CDN** — прямой `.mp4` или **HLS** (`m3u8`); клиент: `expo-av`.
-2. **Несколько качеств** — массив `{ quality, url }` для меню как в wireframe.
-3. **Локальный бандл** — только для демо/офлайн-пакета (ограниченный размер).
+1. **CDN URL** — direct `.mp4` or **HLS** (`m3u8`); client: `expo-av`.
+2. **Multiple qualities** — array of `{ quality, url }` for the menu as in the wireframe.
+3. **Local bundle** — demo/offline pack only (size-limited).
 
-Никакого YouTube iframe / Data API в приложении.
+No YouTube iframe / Data API in the app.
 
-### `Cue` (элемент разметки)
+### `Cue` (markup item)
 
 ```json
 {
@@ -46,27 +46,27 @@
 }
 ```
 
-Минимум для MVP: `startMs`, `endMs`, `text`. Остальное — по мере готовности пайплайна.
+MVP minimum: `startMs`, `endMs`, `text`. The rest follows as the pipeline matures.
 
-### `ShadowingProgress` (на сервере или локально)
+### `ShadowingProgress` (server or local)
 
-Связка пользователь + `lessonId`: `lastPositionMs`, `percentComplete`, `completedAt`, счётчики «loops / shadow takes» — как в wireframe **Lesson complete**.
+Per user + `lessonId`: `lastPositionMs`, `percentComplete`, `completedAt`, counters for loops / shadow takes — as in the **Lesson complete** wireframe.
 
-## Пайплайн на твоей стороне (не в приложении)
+## Pipeline on your side (not in the app)
 
-1. Снимаешь или импортируешь видео → загрузка на CDN / object storage.
-2. Готовишь **cues**: вручную в тулзе, или полуавтомат через **offline** скрипты (MFA/Whisper/etc.) — это внутренняя кухня, не обещаем пользователю автогенерацию в приложении.
-3. Публикуешь **manifest** (JSON или endpoint API): список уроков + URL видео + cues.
-4. Приложение: pull manifest → кэш → плеер + караоке.
+1. Record or import video → upload to CDN / object storage.
+2. Produce **cues**: manually in a tool, or semi-automatically via **offline** scripts (MFA/Whisper/etc.) — internal only; do not promise users in-app auto-generation.
+3. Publish **manifest** (JSON or API endpoint): lesson list + video URLs + cues.
+4. App: pull manifest → cache → player + karaoke.
 
-## Отличия от старой схемы
+## Compared to the old approach
 
-| Было | Стало |
-|------|--------|
-| Поиск YouTube, API | Каталог своих уроков |
-| Whisper в рантайме для пользователя | Разметка заранее в `cues` |
-| Зависимость от внешней платформы | Контроль лицензий и качества |
+| Before | Now |
+|--------|-----|
+| YouTube search, API | Catalog of your lessons |
+| Whisper at runtime for users | Markup baked into `cues` |
+| Dependence on external platform | Control of licensing and quality |
 
 ---
 
-*Обновлено: 2026-03-28*
+*Updated: 2026-03-28*

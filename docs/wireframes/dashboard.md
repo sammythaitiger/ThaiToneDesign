@@ -1,9 +1,9 @@
-# Dashboard Screen - Вариант A (Минималистичный MVP)
-*Экран статистики и быстрого доступа к практике*
+# Dashboard Screen - Option A (Minimalist MVP)
+*Stats and quick access to practice*
 
-## 📱 Общая структура экрана
+## Overall screen structure
 
-### Состояние 1: NORMAL (данные загружены)
+### State 1: NORMAL (data loaded)
 ```
 ┌─────────────────────────────────────────────────────┐
 │  Dashboard                     ⚙️ 👤                │ ← AppBar
@@ -13,27 +13,27 @@
 │                                                    │
 │  Quick Stats:                                      │
 │  ┌─────────────┬─────────────┬─────────────┐      │
-│  │  Words      │  Time Today │  Accuracy   │      │ ← 3 главные метрики
+│  │  Words      │  Time Today │  Accuracy   │      │ ← 3 primary metrics
 │  │  42         │  15 min     │  78%        │      │
 │  └─────────────┴─────────────┴─────────────┘      │
 │                                                    │
 │  Tone Progress:                                   │
-│  Mid:     ████████░░ 80%                          │ ← Прогресс-бары
+│  Mid:     ████████░░ 80%                          │ ← Progress bars
 │  Low:     ██████░░░░ 60%                          │
 │  Falling: ████░░░░░░ 40%                          │
 │  High:    █████░░░░░ 50%                          │
 │  Rising:  ██░░░░░░░░ 20%                          │
 │                                                    │
 │  Today's Recommendation:                          │
-│  • Practice Rising tone (20% accuracy)            │ ← Главная рекомендация
+│  • Practice Rising tone (20% accuracy)            │ ← Main recommendation
 │  • Review 5 flashcards due                        │
 │                                                    │
 │  ┌─────────────────────────────────────────────┐  │
-│  │              [ PRACTICE NOW ]               │  │ ← Главная кнопка
+│  │              [ PRACTICE NOW ]               │  │ ← Primary CTA
 │  │           Start your practice session       │  │
 │  └─────────────────────────────────────────────┘  │
 │                                                    │
-│  Recent Activity:                                 │ ← Недавняя активность
+│  Recent Activity:                                 │ ← Recent activity
 │  • 10 min ago: Practiced Falling tone            │
 │  • 1 hour ago: Learned 3 new words               │
 │  • Yesterday: Shadowing practice                 │
@@ -42,7 +42,7 @@
 └─────────────────────────────────────────────────────┘
 ```
 
-### Состояние 2: LOADING (загрузка данных)
+### State 2: LOADING
 ```
 ┌─────────────────────────────────────────────────────┐
 │  Dashboard                     ⚙️ 👤                │
@@ -69,7 +69,7 @@
 └─────────────────────────────────────────────────────┘
 ```
 
-### Состояние 3: EMPTY (нет данных)
+### State 3: EMPTY (no data)
 ```
 ┌─────────────────────────────────────────────────────┐
 │  Dashboard                     ⚙️ 👤                │
@@ -96,7 +96,7 @@
 └─────────────────────────────────────────────────────┘
 ```
 
-### Состояние 4: ERROR (ошибка загрузки)
+### State 4: ERROR (load failure)
 ```
 ┌─────────────────────────────────────────────────────┐
 │  Dashboard                     ⚙️ 👤                │
@@ -117,9 +117,9 @@
 └─────────────────────────────────────────────────────┘
 ```
 
-## 🎨 Компоненты React Native Paper
+## React Native Paper components
 
-### 1. AppBar (верхняя панель)
+### 1. AppBar (top bar)
 ```javascript
 <Appbar.Header>
   <Appbar.Content title="Dashboard" />
@@ -128,7 +128,7 @@
 </Appbar.Header>
 ```
 
-### 2. Quick Stats Cards (3 метрики)
+### 2. Quick stats cards (3 metrics)
 ```javascript
 <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginVertical: 16 }}>
   {/* Words Card */}
@@ -157,7 +157,7 @@
 </View>
 ```
 
-### 3. Tone Progress Bars
+### 3. Tone progress bars
 ```javascript
 <Card>
   <Card.Content>
@@ -180,7 +180,7 @@
 </Card>
 ```
 
-### 4. Main Action Button
+### 4. Main action button
 ```javascript
 <Button
   mode="contained"
@@ -194,7 +194,7 @@
 </Button>
 ```
 
-### 5. Recent Activity List
+### 5. Recent activity list
 ```javascript
 <Card>
   <Card.Content>
@@ -218,18 +218,17 @@
 </Card>
 ```
 
-## 📊 Данные и структура
+## Data and structure
 
-### Типы данных:
+### Types:
 ```typescript
 interface DashboardStats {
-  // Главные метрики
-  wordsLearned: number;          // Слов изучено
-  timeToday: number;            // Время сегодня (минуты)
-  overallAccuracy: number;      // Точность в среднем (%)
-  streakDays: number;           // Серия дней
+  // Primary metrics
+  wordsLearned: number;
+  timeToday: number;            // minutes today
+  overallAccuracy: number;     // average accuracy (%)
+  streakDays: number;
   
-  // Прогресс по тонам
   toneProgress: {
     mid: { accuracy: number; practiceCount: number };
     low: { accuracy: number; practiceCount: number };
@@ -238,14 +237,12 @@ interface DashboardStats {
     rising: { accuracy: number; practiceCount: number };
   };
   
-  // Рекомендации
   recommendations: {
-    weakestTone: string;        // Самый слабый тон
-    weakestToneAccuracy: number; // Точность слабого тона
-    dueFlashcards: number;      // Карточек для повторения
+    weakestTone: string;
+    weakestToneAccuracy: number;
+    dueFlashcards: number;
   };
   
-  // Недавняя активность
   recentActivity: Activity[];
 }
 
@@ -257,9 +254,8 @@ interface Activity {
 }
 ```
 
-### Расчет метрик:
+### Metric calculation:
 ```javascript
-// Точность в среднем
 const overallAccuracy = Math.round(
   (stats.toneProgress.mid.accuracy +
    stats.toneProgress.low.accuracy +
@@ -268,7 +264,6 @@ const overallAccuracy = Math.round(
    stats.toneProgress.rising.accuracy) / 5
 );
 
-// Самый слабый тон
 const weakestTone = Object.entries(stats.toneProgress)
   .reduce((weakest, [tone, data]) => 
     data.accuracy < weakest.accuracy ? { tone, accuracy: data.accuracy } : weakest,
@@ -276,34 +271,34 @@ const weakestTone = Object.entries(stats.toneProgress)
   );
 ```
 
-## 🎮 Интерактивность и состояния
+## Interactivity and states
 
-### Кликабельные элементы:
-1. **Прогресс-бары тонов** → Практика конкретного тона
+### Tappable elements:
+1. **Tone progress bars** → Practice with tone filter
    ```javascript
    onPress={() => navigation.navigate('WordSelection', { 
      toneFilter: [tone] 
    })}
    ```
 
-2. **Карточки статистики** → Подробная статистика
+2. **Stat cards** → Detail stats
    ```javascript
    onPress={() => navigation.navigate('StatisticsDetail', { 
      metric: 'words' 
    })}
    ```
 
-3. **Активность в списке** → Детали сессии
+3. **Activity rows** → Session detail
    ```javascript
    onPress={() => showActivityDetails(activity)}
    ```
 
-4. **Кнопка PRACTICE NOW** → Word Selection Screen
+4. **PRACTICE NOW** → Word Selection
    ```javascript
    onPress={() => navigation.navigate('WordSelection')}
    ```
 
-### Pull to Refresh:
+### Pull to refresh:
 ```javascript
 <ScrollView
   refreshControl={
@@ -313,130 +308,123 @@ const weakestTone = Object.entries(stats.toneProgress)
     />
   }
 >
-  {/* Контент Dashboard */}
+  {/* Dashboard content */}
 </ScrollView>
 ```
 
-## 🔗 Навигация
+## Navigation
 
-### Из Dashboard можно перейти:
-1. **Word Selection Screen** (PRACTICE NOW кнопка)
-2. **Word Selection с фильтром тона** (тап на прогресс-баре)
-3. **Statistics Detail Screen** (тап на карточке статистики)
-4. **Settings Screen** (⚙️ иконка)
-5. **Profile Screen** (👤 иконка)
+### From Dashboard:
+1. **Word Selection** (PRACTICE NOW)
+2. **Word Selection with tone filter** (tap progress bar)
+3. **Statistics detail** (tap stat card)
+4. **Settings** (⚙️)
+5. **Profile** (👤)
 
-### Навигация на Dashboard:
-- **Bottom Tab:** 📊 (Dashboard tab)
-- **Из любого экрана:** Hardware back button если Dashboard в stack
-- **После завершения практики:** Автоматический возврат
+### To Dashboard:
+- **Bottom tab:** 📊
+- **From other screens:** hardware back if Dashboard is in stack
+- **After practice:** optional auto-return
 
-## 📱 Адаптация под разные экраны
+## Responsive layout
 
-### Mobile (вертикальный):
+### Mobile (portrait):
 ```
 [AppBar]
 [Welcome + Streak]
-[Quick Stats - 3 в ряд]
-[Tone Progress - вертикально]
+[Quick Stats - row of 3]
+[Tone Progress - vertical]
 [Recommendation]
-[PRACTICE NOW Button]
+[PRACTICE NOW]
 [Recent Activity]
 [Bottom Navigation]
 ```
 
-### Tablet (горизонтальный):
+### Tablet (landscape):
 ```
 [AppBar]
-[Left Panel: Quick Stats вертикально]
-[Right Panel: Tone Progress + Recommendation]
-[PRACTICE NOW Button по центру]
-[Recent Activity полная ширина]
+[Left: Quick Stats vertical]
+[Right: Tone Progress + Recommendation]
+[PRACTICE NOW centered]
+[Recent Activity full width]
 [Bottom Navigation]
 ```
 
-## 🚀 Производительность
+## Performance
 
-### Оптимизации:
-1. **Кэширование данных:** Сохранять статистику локально
-2. **Lazy loading:** Загружать данные постепенно
-3. **Skeleton screens:** Показывать во время загрузки
-4. **Debounced refresh:** Обновлять не чаще чем раз в 30 секунд
+### Optimizations:
+1. **Cache** stats locally
+2. **Lazy load** sections if needed
+3. **Skeleton** while loading
+4. **Debounce refresh** (e.g. max once per 30s)
 
-### Лимиты:
-- Показывать последние 5 активностей
-- Обновлять статистику каждые 5 минут
-- Кэшировать на 1 час
+### Limits:
+- Show last 5 activities
+- Refresh stats every 5 minutes when focused
+- Cache 1 hour
 
-## 🧪 Тестовые сценарии
+## Test cases
 
-### Тест 1: Первое использование
+### Test 1: First use
 ```
-1. Открыть Dashboard (Empty State)
-2. Проверить сообщение "No practice data yet"
-3. Нажать START PRACTICING
-4. Проверить переход на Word Selection
-```
-
-### Тест 2: Нормальное использование
-```
-1. Открыть Dashboard (Normal State)
-2. Проверить загрузку всех метрик
-3. Нажать на прогресс-бар Rising tone
-4. Проверить переход с фильтром тона
-5. Нажать PRACTICE NOW
-6. Проверить переход без фильтров
+1. Open Dashboard (Empty)
+2. Verify "No practice data yet"
+3. Tap START PRACTICING
+4. Verify navigation to Word Selection
 ```
 
-### Тест 3: Оффлайн режим
+### Test 2: Normal use
 ```
-1. Отключить интернет
-2. Открыть Dashboard
-3. Проверить показ кэшированных данных
-4. Проверить сообщение об ошибке если нет кэша
-5. Проверить кнопку Practice Offline
-```
-
-### Тест 4: Pull to Refresh
-```
-1. Потянуть список вниз
-2. Проверить индикатор обновления
-3. Проверить обновление данных
-4. Проверить Snackbar "Data updated"
+1. Open Dashboard (Normal)
+2. Verify all metrics load
+3. Tap Rising tone progress bar
+4. Verify Word Selection opens with tone filter
+5. Tap PRACTICE NOW
+6. Verify navigation without filters
 ```
 
-## 🔧 Логика обновления данных
+### Test 3: Offline
+```
+1. Disable network
+2. Open Dashboard
+3. Verify cached stats if any
+4. Error state if no cache
+5. Practice Offline button
+```
 
-### Источники данных:
+### Test 4: Pull to refresh
+```
+1. Pull down
+2. Verify refresh indicator
+3. Data updates
+4. Snackbar "Data updated"
+```
+
+## Data refresh logic
+
+### Sources:
 ```javascript
-// 1. Локальное хранилище (AsyncStorage)
 const cachedStats = await AsyncStorage.getItem('dashboard_stats');
-
-// 2. Загрузка с сервера
 const response = await fetch('https://api.thaitone.com/dashboard');
 const serverStats = await response.json();
-
-// 3. Объединение данных
 const stats = mergeStats(cachedStats, serverStats);
-
-// 4. Кэширование
 await AsyncStorage.setItem('dashboard_stats', JSON.stringify(stats));
 ```
 
-### Частота обновления:
-- **При открытии экрана:** Всегда
-- **После практики:** Автоматически
-- **В фоне:** Каждые 5 минут если экран открыт
-- **Pull to refresh:** По запросу пользователя
+### Frequency:
+- **On screen open:** always try
+- **After practice:** refresh
+- **Background:** every 5 min while open
+- **Pull to refresh:** on demand
 
 ---
 
-## 🔗 Связанные экраны
+## Related screens
 
-**← Назад:** Любой экран через Bottom Navigation  
-**→ Вперед:** [Word Selection Screen](../word-selection.md) (через PRACTICE NOW)
+**← Back:** any tab via Bottom Navigation  
+**→ Next:** [Word Selection Screen](./word-selection.md) (via PRACTICE NOW)
 
 ---
 
-*Последнее обновление: 2024-03-28*
-*Статус: ASCII wireframe - Minimalist MVP Version*
+*Last updated: 2026-03-28*  
+*Status: ASCII wireframe — minimalist MVP*

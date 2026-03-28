@@ -1,9 +1,9 @@
 # Flashcards Screen
-*Интервальное повторение: лицевая сторона (распознавание) → оборот (значение, тоны, аудио)*
+*Spaced repetition: front (recognition) → back (meaning, tones, audio)*
 
-## 📱 Общая структура экрана
+## Overall screen structure
 
-### Состояние 1: DECK HUB (старт таба)
+### State 1: DECK HUB (tab root)
 ```
 ┌─────────────────────────────────────────────────────┐
 │  Flashcards                    ⚙️ 🔍 👤           │ ← AppBar
@@ -27,7 +27,7 @@
 │                                                    │
 │  Quick filters:                                   │
 │  ┌───┬───┬───┬───┬───┐                            │
-│  │ M │ L │ F │ H │ R │  ← открыть сессию с фильтром│
+│  │ M │ L │ F │ H │ R │  ← start session with filter│
 │  └───┴───┴───┴───┴───┘                            │
 │                                                    │
 │  [ + Create deck from Dictionary ]                │
@@ -36,15 +36,15 @@
 └─────────────────────────────────────────────────────┘
 ```
 
-### Состояние 2: CARD — FRONT (вопрос)
+### State 2: CARD — FRONT (question)
 ```
 ┌─────────────────────────────────────────────────────┐
-│  ← Session          3 / 12            ⋮            │ ← меню: настройки сессии
+│  ← Session          3 / 12            ⋮            │ ← menu: session settings
 ├─────────────────────────────────────────────────────┤
 │                                                    │
 │  ┌─────────────────────────────────────────────┐  │
 │  │                                             │  │
-│  │              สวัสดี                         │  │ ← крупный тайский
+│  │              สวัสดี                         │  │ ← large Thai
 │  │                                             │  │
 │  │        (tap card to reveal)                 │  │
 │  │                                             │  │
@@ -52,14 +52,14 @@
 │                                                    │
 │  Progress: ████░░░░░░ 25%                         │
 │                                                    │
-│  [← Hard]              [ Easy →]                  │ ← или свайп влево/вправо
+│  [← Hard]              [ Easy →]                  │ ← or swipe L/R
 │  Hint: show romanization (long press)             │
 ├─────────────────────────────────────────────────────┤
-│  (Bottom tabs скрыты во время сессии — опционально) │
+│  (Bottom tabs hidden during session — optional)   │
 └─────────────────────────────────────────────────────┘
 ```
 
-### Состояние 3: CARD — BACK (ответ)
+### State 3: CARD — BACK (answer)
 ```
 ┌─────────────────────────────────────────────────────┐
 │  ← Session          3 / 12            🔊           │
@@ -74,14 +74,14 @@
 │                                                    │
 │  ┌─────────────────────────────────────────────┐  │
 │  │  How well did you know it?                  │  │
-│  │  [ Again ] [ Hard ] [ Good ] [ Easy ]      │  │ ← интервалы SRS
+│  │  [ Again ] [ Hard ] [ Good ] [ Easy ]      │  │ ← SRS intervals
 │  └─────────────────────────────────────────────┘  │
 │                                                    │
-│  [ Flip back ] (или свайп вниз)                   │
+│  [ Flip back ] (or swipe down)                   │
 └─────────────────────────────────────────────────────┘
 ```
 
-### Состояние 4: SESSION SUMMARY (итог)
+### State 4: SESSION SUMMARY
 ```
 ┌─────────────────────────────────────────────────────┐
 │  Session complete              ✓                   │
@@ -99,7 +99,7 @@
 └─────────────────────────────────────────────────────┘
 ```
 
-### Состояние 5: LOADING
+### State 5: LOADING
 ```
 ┌─────────────────────────────────────────────────────┐
 │  Flashcards                    ⚙️ 🔍 👤           │
@@ -116,7 +116,7 @@
 └─────────────────────────────────────────────────────┘
 ```
 
-### Состояние 6: EMPTY (нет карточек)
+### State 6: EMPTY (no cards)
 ```
 ┌─────────────────────────────────────────────────────┐
 │  Flashcards                    ⚙️ 🔍 👤           │
@@ -132,7 +132,7 @@
 └─────────────────────────────────────────────────────┘
 ```
 
-### Состояние 7: ERROR
+### State 7: ERROR
 ```
 ┌─────────────────────────────────────────────────────┐
 │  Flashcards                    ⚙️ 🔍 👤           │
@@ -145,9 +145,9 @@
 └─────────────────────────────────────────────────────┘
 ```
 
-## 🎨 Компоненты React Native Paper
+## React Native Paper components
 
-### Карточка сессии (лицевая / оборот)
+### Session card (front / back)
 ```javascript
 <GestureDetector gesture={tapFlip}>
   <Card style={{ margin: 16, minHeight: 280, justifyContent: 'center' }}>
@@ -181,7 +181,7 @@
 />
 ```
 
-### Прогресс сессии
+### Session progress
 ```javascript
 <ProgressBar progress={currentIndex / queue.length} style={{ marginHorizontal: 16 }} />
 <Text variant="labelMedium" style={{ textAlign: 'center' }}>
@@ -189,63 +189,63 @@
 </Text>
 ```
 
-## 🔗 Навигация
+## Navigation
 
-### Stack (внутри таба Flashcards)
+### Stack (inside Flashcards tab)
 ```
 FlashcardsStack:
-  - DeckHub (корень)
-  - StudySession (полноэкранная сессия)
-  - DeckDetail (опционально: список карточек коллекции)
+  - DeckHub (root)
+  - StudySession (fullscreen)
+  - DeckDetail (optional: card list for collection)
 ```
 
-### Переходы
-1. **Dictionary / Saved Words** → добавление слова в колоду (создание карточки локально).
-2. **Word Practice** — из summary «Practice weakest» или из длинного тапа по карточке в DeckDetail.
-3. **Home (Word Selection)** — кнопка EMPTY state.
+### Transitions
+1. **Dictionary / Saved Words** → add word to deck (create card locally).
+2. **Word Practice** — from summary “Practice weakest” or long-press on card in DeckDetail.
+3. **Home (Word Selection)** — EMPTY state button.
 
-## 📱 Адаптация
+## Responsive behavior
 
-- **Mobile:** одна карточка на экран, свайпы для рейтинга.
-- **Tablet:** карточка + боковая колонка «очередь» или превью следующей.
-- **Web:** те же жесты + клик по кнопкам рейтинга; клавиши 1–4 для Again/Easy.
+- **Mobile:** one card per screen, swipes for rating.
+- **Tablet:** card + side column for queue or next preview.
+- **Web:** same gestures + click rating buttons; keys 1–4 for Again/Easy.
 
-## 🚀 Производительность
+## Performance
 
-1. Очередь сессии строится **локально** (SQLite/AsyncStorage + опциональный sync).
-2. Предзагрузка **следующей** карточки (текст + URL аудио).
-3. **Не** держать тысячи карточек в RAM — подгружать батчами по deck id.
-4. Анимация flip: `react-native-reanimated` или простой `scale/opacity` MVP.
+1. Session queue built **locally** (SQLite/AsyncStorage + optional sync).
+2. Prefetch **next** card (text + audio URL).
+3. Do **not** keep thousands of cards in RAM — batch by deck id.
+4. Flip animation: `react-native-reanimated` or simple `scale/opacity` MVP.
 
-## 🧪 Тестовые сценарии
+## Test cases
 
-### Тест 1: Первая сессия
+### Test 1: First session
 ```
-1. EMPTY → перейти в Dictionary, добавить слово в колоду
-2. Вернуться → Due > 0 → START REVIEW
+1. EMPTY → Dictionary, add word to deck
+2. Return → Due > 0 → START REVIEW
 3. Front → tap → Back → Good
-4. Дойти до summary
+4. Reach summary
 ```
 
-### Тест 2: Фильтр по тону
+### Test 2: Tone filter
 ```
-1. На Hub выбрать чип R
-2. Проверить что в сессию попали только подходящие карточки
-```
-
-### Тест 3: Ошибка синка
-```
-1. Симулировать сбой API
-2. Пройти несколько карточек офлайн
-3. Retry → прогресс уходит на сервер без дублей
+1. On Hub select chip R
+2. Verify only matching cards enter session
 ```
 
-## 🔗 Связанные экраны
+### Test 3: Sync error
+```
+1. Simulate API failure
+2. Review several cards offline
+3. Retry → progress syncs without duplicates
+```
 
-**← Назад:** Bottom tabs  
-**→ Вперёд:** [Dictionary Screen](./dictionary.md), [Word Practice Screen](./word-practice.md)
+## Related screens
+
+**← Back:** Bottom tabs  
+**→ Next:** [Dictionary Screen](./dictionary.md), [Word Practice Screen](./word-practice.md)
 
 ---
 
-*Последнее обновление: 2026-03-28*  
-*Статус: ASCII wireframe — Complete*
+*Last updated: 2026-03-28*  
+*Status: ASCII wireframe — Complete*

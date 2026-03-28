@@ -158,79 +158,78 @@ List.Accordion
 ## 🎬 Module 2: Shadowing Practice
 
 ### Goal
-Practice pronunciation by imitating native speakers from YouTube videos.
+Practice pronunciation by imitating native speakers in **curated video lessons** (product-owned content). Users browse your library; each lesson ships with **pre-authored cue data** (timestamps + text + optional syllables). **No YouTube** in the client.
 
 ### Core Features
-1. **Video Discovery:** Browse/search Thai YouTube content
-2. **Subtitle Generation:** Auto-generated Thai subtitles via Whisper
-3. **Phrase Selection:** Choose specific phrases to practice
-4. **Syllable Comparison:** Per-syllable pitch analysis
-5. **Progress Tracking:** Track improvement across sessions
+1. **Lesson Library:** Browse/search **your** lessons by category, duration, tone focus
+2. **Structured cues:** Subtitles/karaoke from lesson manifest (not user-generated transcription)
+3. **Phrase / line practice:** Tap cue or syllable chip → seek; optional A-B loop
+4. **Syllable Comparison:** Per-syllable pitch analysis (same pipeline as tone practice when recording is enabled)
+5. **Progress Tracking:** Resume position, lesson complete, loops / shadow takes
 
 ### Screens & User Flow
 
-#### Screen 1: Video Browser
-**Purpose:** Discover and select Thai content for practice
+#### Screen 1: Lesson Library
+**Purpose:** Discover and select a **ShadowingLesson** from the catalog
 
 **UI Components:**
-- **Search Bar:** TextInput with search IconButton
+- **Search Bar:** TextInput with search IconButton (lesson titles/tags)
 - **Category Tabs:** SegmentedButtons or Chip
-- **Video Grid:** Card components in FlatList
-- **Filter Chips:** Chip for difficulty, duration
+- **Lesson Grid:** Card components in FlatList
+- **Filter Chips:** Chip for difficulty, duration, tone focus
+- **Continue watching:** Card with resume CTA
 
-**Video Card:**
+**Lesson Card:**
 ```
 Card
-├── Card.Cover (video thumbnail)
+├── Card.Cover (thumbnail from lesson asset)
 ├── Card.Content
-│   ├── Title (video title)
-│   ├── Paragraph (metadata: duration, difficulty)
-│   └── ProgressBar (phrases practiced)
+│   ├── Title (lesson title)
+│   ├── Paragraph (metadata: duration, tone tags)
+│   └── ProgressBar (watch progress)
 └── Card.Actions
-    └── Button (Select)
+    └── Button (Open / Resume)
 ```
 
-#### Screen 2: Video Player with Subtitles
-**Purpose:** Watch video and select phrases to practice
+#### Screen 2: Lesson Player
+**Purpose:** Watch curated video with interactive cues
 
-**Layout:** Video player above, interactive subtitles below
+**Layout:** Video player above, cue/syllable strip below
 
 **Video Player:**
+- **expo-av** (or equivalent) with **your** video URL (MP4/HLS from CDN)
 - Custom controls overlay (IconButton)
 - Speed adjustment (Menu with Menu.Item)
-- Auto-pause at phrase boundaries
-- Subtitle toggle (Switch)
+- Optional quality menu if multiple renditions exist
 
-**Interactive Subtitles:**
-- Color-coded by tone (Chip components)
-- Tap to select phrase for practice
-- Current phrase highlighted
-- Translation on long press
+**Interactive Cues:**
+- Color-coded by tone where `syllables[]` is present (Chip components)
+- Tap cue → seek; current cue highlighted
+- Translation on long press (if present in cue)
 
 #### Screen 3: Phrase Practice
 **Purpose:** Practice selected phrase with recording and feedback
 
 **UI Components:**
 - **Phrase Display:** Large Text with syllable breaks
-- **Native Audio:** IconButton + Slider for playback
+- **Native Audio:** Slice of lesson audio via video seek + loop
 - **Recording Interface:** Same as tone practice module
 - **Comparison Results:** Syllable-by-syllable analysis
 
-#### Screen 4: Session Summary
-**Purpose:** Review performance and track progress
+#### Screen 4: Session / Lesson Summary
+**Purpose:** Lesson complete + optional session stats
 
 **UI Components:**
-- **Session Stats:** Card with DataTable
-- **Progress Graph:** VictoryLine chart
-- **Weak Areas:** List with Icon
-- **Next Recommendations:** Card with Button
+- **Completion:** Percent watched, loops, shadow takes
+- **Session Stats:** Card with DataTable (when user recorded)
+- **Next lesson:** Button to continue curriculum
 
 ### Technical Notes
-- **YouTube Integration:** YouTube Data API v3 + IFrame
-- **Transcription:** Whisper API for Thai subtitles
-- **Audio Sync:** Server-side phrase alignment
-- **Caching:** Video/audio caching for offline practice
-- **Performance:** Target < 10 seconds for subtitle generation
+- **Content model:** Manifest/API listing `ShadowingLesson` + `video` URLs + `cues[]` — see `docs/curated-shadowing-content.md`
+- **Authoring:** Cues produced offline (manual or internal tooling); **not** generated in-app at runtime
+- **Playback sync:** Client uses cue timestamps only
+- **Caching:** Video + manifest caching for offline practice (premium optional)
+- **Performance:** No user-visible “subtitle generation” step; target fast manifest fetch and smooth playback
 
 ---
 

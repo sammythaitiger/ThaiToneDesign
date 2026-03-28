@@ -1,302 +1,155 @@
 # Shadowing Practice - Simplified
-*Version 2.0 | Syllable-by-Syllable Comparison*
+*Version 3.0 | Curated lessons | Syllable-by-syllable comparison*
 
 ## 🎯 Goal
-Practice Thai pronunciation by imitating YouTube videos, with syllable-level pitch comparison.
+Practice Thai pronunciation by imitating **curated native-speaker video** (your lesson library), with syllable-level pitch comparison. **No YouTube** in the app: video URLs and subtitle/cue data ship with each lesson.
 
 ## 🔄 Basic Flow
 ```
-1. Find Thai Video
-   - Search or browse YouTube
-   - Select Thai language content
-   
-2. Generate Subtitles
-   - Auto-generate Thai subtitles with Whisper
-   - Get timestamps for each phrase
-   
-3. Select Phrase to Practice
-   - Click on subtitle segment
-   - View phrase text with syllable breakdown
-   
-4. Record & Compare
-   - Listen to native phrase
+1. Browse Lesson Library
+   - Categories (Greetings, Food, …)
+   - Search lesson titles / tags
+   - Continue watching / Resume
+
+2. Open a Lesson
+   - Stream or play cached video (MP4 / HLS from your CDN)
+   - Subtitles driven by pre-authored cues (time + text + optional syllables)
+
+3. Practice Along
+   - Tap a cue or syllable chip → seek video
+   - A-B loop, speed control, replay sentence
+   - Optional: record own line → same analysis as Tone Practice
+
+4. Record & Compare (when enabled)
+   - Listen to native phrase (from cue timing)
    - Record your version
    - Compare syllable-by-syllable
-   - See pitch contours for each syllable
-   
+
 5. Review Results
    - Overall accuracy
    - Per-syllable feedback
-   - Option to repeat or continue
+   - Lesson complete → next lesson / back to library
 ```
 
 ## 🎨 Screens
 
-### Screen 1: Video Browser
-**Simple search interface:**
+### Screen 1: Lesson Library
 ```
-SHADOWING PRACTICE
+SHADOWING
 
-Search Thai videos:
-[ Search bar: "Thai news", "conversation", etc. ]
+Continue watching:
+[ thumb ] Greetings · 2 min · Mid/Low focus · [ Resume ]
 
-Or browse categories:
-[ News ] [ Conversation ] [ Drama ] [ Education ]
+Categories:
+[ Daily ] [ Food ] [ Travel ]
 
-Recent searches:
-- Thai language lesson
-- Thai news today
-- Thai drama clip
+All lessons:
+[ thumb ] สวัสดี — hello chain · 90s · Tones: M L M
+[ thumb ] Ordering food · 3 min
 
-[ My Saved Videos ] [ Continue Last Session ]
+[ Pull to refresh manifest ]
 ```
 
-### Screen 2: Video Player with Subtitles
-**After selecting video:**
+### Screen 2: Lesson Player
 ```
-Video: Thai News Report - Episode 5
+Lesson: Greetings
 
-[ YouTube Player ]
-[ Play ] [ Pause ] [ 0.5x ] [ 1x ] [ 1.5x ]
+[ Video player — expo-av, your video URL ]
+[ Play ] [ Pause ] [ 0.75x ] [ 1x ] [ 1.25x ] [ A-B loop ]
 
-Subtitles (auto-generated):
-00:05 สวัสดีครับ (Hello)
-00:08 วันนี้เราจะมาพูดถึง... (Today we will talk about...)
-00:12 เรื่องสภาพอากาศ... (about the weather...)
+Subtitles (from cues, karaoke by syllable):
+สวัสดี ครับ  ผม ชื่อ …
+[Mid][Low][High] …
 
-Click a subtitle line to practice it
+Tap syllable/cue to seek · Long-press word → Dictionary (optional)
 
-[ Back to Search ] [ Practice Selected ]
+[ Shadow: record ] (optional)
+[ Back to library ]
 ```
 
-### Screen 3: Phrase Practice
-**After clicking subtitle:**
+### Screen 3: Phrase / Line Practice
 ```
-Practice Phrase: สวัสดีครับ (Hello)
+Target: สวัสดีครับ (Hello)
 
-Phrase Breakdown:
-สวัสดีครับ = ส-วัส-ดี-ครับ
-4 syllables
+Breakdown: ส-วัส-ดี-ครับ (4 syllables)
 
-Syllable Details:
-1. ส (sà) - Mid tone
-2. วัส (wàt) - Low tone  
-3. ดี (dii) - Mid tone
-4. ครับ (khráp) - High tone
+Native:
+[ Play reference ] [ Slow ] [ Loop ]
 
-Native Audio:
-[ Play Phrase ] [ Play Slow: 0.75x ] [ Loop ]
-
-Recording:
-[ RECORD ] - Record your version
-Waveform display during recording
-
-[ Back to Video ] [ Analyze ]
+[ RECORD ] … [ Analyze ]
 ```
 
 ### Screen 4: Syllable Comparison Results
-**After recording:**
-```
-Analysis Complete
-
-Overall Accuracy: 75%
-
-Syllable-by-Syllable Comparison:
-
-1. ส (Mid Tone)
-   Accuracy: 90% ✓
-   [ Pitch graph: Your vs Native ]
-   Feedback: "Good mid tone"
-
-2. วัส (Low Tone)
-   Accuracy: 60% ⚠
-   [ Pitch graph: Your pitch too high ]
-   Feedback: "Low tone should be lower"
-
-3. ดี (Mid Tone)
-   Accuracy: 85% ✓
-   [ Pitch graph: Good match ]
-   Feedback: "Slightly too short"
-
-4. ครับ (High Tone)
-   Accuracy: 65% ⚠
-   [ Pitch graph: Rising too slowly ]
-   Feedback: "High tone needs sharper rise"
-
-Timing: Good pace between syllables
-Overall: Good, focus on low and high tones
-
-[ Practice Problem Syllables ] [ Try Again ] [ Next Phrase ]
-```
+*(Same structure as previous spec: per-syllable scores, pitch feedback, repeat / next.)*
 
 ## 🛠️ Technical Process
 
-### 1. Subtitle Generation
+### 1. Content (authoring — не в клиенте)
 ```
-YouTube Video → Extract Audio → Whisper Transcription → Thai Text + Timestamps
-```
-
-### 2. Syllable Segmentation
-```
-Thai Text → Syllable Boundary Detection → Syllable List with Tones
+Video file → CDN / storage
+Authoring → cue JSON (timestamps + Thai + optional syllables/tones)
+Manifest → API or static JSON listing lessons
 ```
 
-### 3. Audio Alignment
+### 2. Client playback
 ```
-Native Audio + Syllable Timestamps → Extract Audio per Syllable
-User Recording + Same Syllable Boundaries → Extract Audio per Syllable
-```
-
-### 4. Per-Syllable Analysis
-```
-For each syllable:
-  1. Extract pitch contour (normalized)
-  2. Compare with native pitch contour
-  3. Calculate similarity score (0-100%)
-  4. Generate feedback
+Load lesson manifest → pick video URL + cues → expo-av + synced chips
 ```
 
-### 5. Combined Results
+### 3. Syllable segmentation & analysis
+*(Unchanged from tone module: same backend alignment and pitch comparison when user records.)*
+
 ```
-Average syllable scores = Overall accuracy
-Identify weakest syllables
-Generate improvement suggestions
+Thai text → syllable boundaries (PyThaiNLP / known from cue)
+User recording → MFA/DTW → per-syllable pitch compare
 ```
 
 ## 📝 Data Flow
 
-### From YouTube to Practice:
+### From lesson asset to practice readiness
 ```
-1. User selects YouTube video
-2. System extracts audio (or uses available)
-3. Whisper transcribes to Thai with timestamps
-4. Thai text segmented into syllables
-5. Syllables analyzed for tone patterns
-6. Ready for practice
+1. App fetches lesson list (manifest)
+2. User opens lesson → video URI + cues available (cached offline if downloaded)
+3. No user-facing transcription step — cues are pre-shipped
 ```
 
-### During Practice:
-```
-1. User records phrase
-2. Audio uploaded to backend
-3. Align with native audio (DTW)
-4. Apply same syllable boundaries
-5. Extract pitch per syllable
-6. Compare per syllable
-7. Return results
-```
-
-## ⚙️ Settings & Options
-
-### Basic Controls:
-- **Playback speed:** 0.5x, 0.75x, 1x, 1.25x, 1.5x
-- **Auto-play:** Play native audio before recording
-- **Loop:** Repeat phrase automatically
-- **Recording length:** Auto-stop after phrase ends
-
-### Display Options:
-- **Show syllable boundaries:** On/Off
-- **Tone colors:** Color-code syllables by tone
-- **Waveform:** Show during recording
-- **Graph detail:** Simple/Detailed pitch graphs
-
-## 📱 Mobile Experience
-
-### Vertical Layout:
-```
-[ Video thumbnail ]
-[ Phrase text with syllable breaks ]
-[ Native audio controls ]
-[ Record button ]
-[ Results: Scroll through syllables ]
-```
-
-### Touch Interactions:
-- Tap syllable to focus on it
-- Swipe between syllable analyses
-- Pinch to zoom pitch graphs
-- Tap+hold to hear syllable in isolation
-
-## 🎯 Learning Features
-
-### Focused Practice:
-- **Repeat problem syllables:** Practice just the syllables you struggle with
-- **Slow motion:** Practice at reduced speed
-- **Tone isolation:** Practice specific tones across different syllables
-- **Pattern practice:** Work on common tone sequences
-
-### Progress Tracking:
-- Track accuracy per tone (across all shadowing)
-- Track improvement on problem syllables
-- Note which syllable positions are difficult
-- Monitor pacing between syllables
+### During practice
+*(Same as before: upload or local process recording, align, per-syllable scores.)*
 
 ## 🔗 Integration with Other Modules
 
-### With Tone Practice:
-- Same pitch comparison algorithm
-- Shared syllable segmentation
-- Consistent feedback format
-- Linked practice recommendations
-
-### With Dictionary:
-- Click on word in subtitles → Dictionary lookup
-- Save phrases to vocabulary
-- Practice words in context
-
-### With Dashboard:
-- Track shadowing time and accuracy
-- Show progress on tone mastery from shadowing
-- Recommend videos based on weak tones
+- **Tone Practice:** same comparison pipeline.
+- **Dictionary:** optional deep link from cue word to word id.
+- **Dashboard:** shadowing time, completion, weak tones from shadowing.
 
 ## ✅ Success Criteria
 
-### For Users:
-- Can see clear syllable-by-syllable comparison
-- Understand which specific syllables need work
-- Improve accuracy on problem tones
-- Feel confident imitating natural speech
+### Users
+- Smooth playback of **your** lessons; subtitles stay in sync with cues.
+- Clear syllable-level feedback when recording is enabled.
 
-### Technical:
-- Whisper transcription accuracy for Thai > 90%
-- Syllable boundary detection accurate
-- Pitch comparison meaningful per syllable
-- Processing time < 10 seconds total
+### Technical
+- Lesson manifest and video URLs versioned; app handles stale cache.
+- Processing time for analysis unchanged (target &lt; 5–10 s as in tone module).
+
+### Content
+- Cue timing QA on a sample of lessons before release.
 
 ## 🚀 Implementation Phases
 
-### Phase 1: Basic Shadowing
-1. YouTube video embedding
-2. Manual phrase selection (user clicks subtitles)
-3. Simple recording and playback
-4. Whole-phrase accuracy score
+### Phase 1
+1. Manifest + lesson list UI
+2. `expo-av` player + cue-driven subtitle strip
+3. Progress: resume / complete
 
-### Phase 2: Syllable Analysis
-1. Automatic syllable segmentation
-2. Per-syllable pitch extraction
-3. Syllable-by-syllable comparison
-4. Detailed per-syllable feedback
+### Phase 2
+1. Recording + per-syllable analysis (reuse Word Practice backend)
+2. Offline download of selected lessons (premium)
 
-### Phase 3: Enhanced Features
-1. Automated difficulty assessment
-2. Personalized video recommendations
-3. Progress tracking across sessions
-4. Offline practice capability
-
-## 📋 Next Steps
-
-### Design Tasks:
-1. Create syllable visualization for subtitles
-2. Design per-syllable comparison interface
-3. Plan recording feedback with syllable detection
-4. Create practice flow for problem syllables
-
-### Development Tasks:
-1. Integrate Whisper for Thai transcription
-2. Implement syllable segmentation for Thai
-3. Build syllable-aligned pitch comparison
-4. Create shadowing session tracking
+### Phase 3
+1. Richer cues (syllable-level karaoke), related vocabulary → flashcards
 
 ---
 
-*This simplified shadowing flow focuses on syllable-level comparison, providing targeted feedback for improving Thai pronunciation through imitation of native speakers.*
+*Curated-content model detail: [../curated-shadowing-content.md](../curated-shadowing-content.md)*  
+*Wireframe: [../wireframes/shadowing.md](../wireframes/shadowing.md)*

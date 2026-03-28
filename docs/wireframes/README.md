@@ -32,6 +32,8 @@ Select  onary cards owing board
 5. **[Shadowing Screen](./shadowing.md)** - Повторение за видео
 6. **[Dashboard Screen](./dashboard.md)** - Статистика и прогресс
 
+**Дополнительно:** **[Гайд по компонентам](./components-guide.md)** — тона, паттерны, связь с экранами.
+
 ## 🎯 React Native Paper Компоненты
 
 ### Основные компоненты для всех экранов:
@@ -162,5 +164,5 @@ docs/wireframes/
 
 ---
 
-*Последнее обновление: 2024-03-28*
-*Статус: ASCII wireframes in progress*
+*Последнее обновление: 2026-03-28*
+*Статус: основные ASCII wireframes готовы; уточнения по мере MVP*

@@ -7,7 +7,7 @@ Professional Thai language learning platform focused on tone mastery through AI-
 
 ### Core Mobile Modules:
 1. **Tone Practice** - Syllable-aware tone analysis with normalized pitch comparison
-2. **Shadowing** - YouTube video practice with syllable-level feedback
+2. **Shadowing** - Curated video lessons (your content) with syllable-level feedback
 3. **Dictionary** - Word lookup with syllable-level tone information
 4. **Flashcards** - Anki-like spaced repetition with swipe gestures
 5. **Dashboard** - Progress tracking and recommendations
@@ -16,13 +16,14 @@ Professional Thai language learning platform focused on tone mastery through AI-
 ### Tech Stack:
 - **Frontend:** React Native + Expo + TypeScript + React Native Paper
 - **UI Library:** React Native Paper (Material Design components)
-- **Backend:** Python FastAPI + Librosa + Whisper
+- **Backend:** Python FastAPI + Librosa (+ MFA alignment); shadowing = your videos + cue manifests (see `docs/curated-shadowing-content.md`)
 - **Platforms:** iOS, Android, Web (single codebase)
 - **Monetization:** RevenueCat for subscription management
 - **Visualization:** react-native-svg + victory-native for pitch graphs
 
 ### Key Design Documents:
 - **[DESIGN_SPECIFICATION_SIMPLE.md](./DESIGN_SPECIFICATION_SIMPLE.md)** - Mobile-first technical specification with React Native Paper
+- **[docs/curated-shadowing-content.md](./docs/curated-shadowing-content.md)** - Shadowing: lesson manifest, video URLs, cues (no YouTube)
 - **[docs/MODULES_SPEC.md](./docs/MODULES_SPEC.md)** - Detailed module specifications for wireframing
 - **[project/ROADMAP.md](./project/ROADMAP.md)** - 4-month React Native development plan
 - **[PROJECT_STATUS.md](./PROJECT_STATUS.md)** - Current project status & progress

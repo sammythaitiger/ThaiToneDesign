@@ -13,7 +13,7 @@ Thai is a tonal language where the same syllable spoken with different tones has
 ## 💡 Solution
 A comprehensive platform that combines:
 1. **Tone Analysis Lab** - Record, visualize, and compare pitch with native speakers
-2. **AI Shadowing Studio** - Practice with real YouTube content using Whisper transcription
+2. **Shadowing Studio** - Practice with **curated** native video dialogues (timed cues you ship with each lesson; no YouTube in the product)
 3. **Smart Dictionary** - Learn vocabulary with tone pattern visualization
 4. **Adaptive Flashcards** - Spaced repetition system focused on tonal memory
 
@@ -42,7 +42,7 @@ A comprehensive platform that combines:
 
 ### For Learners
 - **Scientific Accuracy**: FFT-based pitch analysis vs subjective feedback
-- **Real Content**: Practice with actual Thai media (news, dramas, conversations)
+- **Real Content**: Practice with authentic Thai dialogue you license or produce for lessons
 - **Personalized Paths**: AI adapts difficulty based on progress
 - **Community**: Learn with others, share progress, get motivated
 
@@ -60,7 +60,7 @@ A comprehensive platform that combines:
 - Single user experience
 
 ### Phase 2: Expansion (Months 4-6)
-- YouTube integration for shadowing
+- Expanded shadowing lesson library and offline packs
 - Community features
 - Mobile apps
 - Teacher dashboard

@@ -37,9 +37,9 @@ All flows now focused on core functionality:
 
 #### **Shadowing Practice:**
 - ✅ `docs/user-flows/shadowing-simple.md`  
-- **Focus:** YouTube + Whisper subtitles
+- **Focus:** Curated lesson video + pre-authored cues (no YouTube in app); see `docs/curated-shadowing-content.md`
 - **Analysis:** Syllable-by-syllable comparison (like tone practice)
-- **Process:** Select phrase → record → syllable-by-syllable comparison
+- **Process:** Choose lesson → play with cues → optional record → comparison
 
 #### **Dictionary:**
 - ✅ `docs/user-flows/dictionary-simple.md`
@@ -112,8 +112,8 @@ All flows now focused on core functionality:
    - Multi-syllable words for tone patterns
 
 4. **For Shadowing:**
-   - YouTube video → Whisper subtitles
-   - Select phrase → syllable segmentation
+   - Lesson video + cue JSON (your content pipeline)
+   - Cue/syllable timing → segmentation reference
    - User recording → same segmentation
    - Compare syllable-by-syllable
 
@@ -161,8 +161,8 @@ All flows now focused on core functionality:
 - Mobile-optimized UI components
 
 ### **Month 3: Premium Features & Store Prep**
-- YouTube shadowing integration
-- Whisper transcription service
+- Shadowing: lesson library + video playback + cue manifests
+- Content tooling optional (offline authoring; not user-facing transcription)
 - RevenueCat integration (monetization)
 - Premium feature gating
 - App store assets preparation
@@ -190,7 +190,7 @@ All flows now focused on core functionality:
 ### **Backend Services:**
 - Python FastAPI
 - Librosa for pitch extraction & normalization
-- Whisper for Thai transcription
+- Optional: internal transcription/alignment tools for content authoring only
 - PostgreSQL with SQLAlchemy
 - Redis for caching (optional)
 
@@ -212,7 +212,7 @@ All flows now focused on core functionality:
 ### **After Month 4 (App Store Launch):**
 1. App in App Store and Google Play
 2. Working monetization via subscriptions
-3. YouTube shadowing with Whisper transcription
+3. Shadowing with curated lessons and offline-capable playback
 4. Syllable-by-syllable pitch comparison
 5. Full offline support for premium users
 

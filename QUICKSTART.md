@@ -38,7 +38,7 @@ Thai Tone Designer/
 ### Step 1: Define Mobile User Flows
 Create files in `docs/user-flows/`:
 - `tone-practice-syllable-aware.md` - Syllable-by-syllable tone practice flow
-- `shadowing-simple.md` - YouTube shadowing with syllable comparison
+- `shadowing-simple.md` - Curated video shadowing with syllable comparison
 - `dictionary-simple.md` - Word lookup with tone information
 - `flashcards-simple.md` - Anki-like spaced repetition system
 - `dashboard-simple.md` - Progress tracking and recommendations
@@ -47,7 +47,7 @@ Create files in `docs/user-flows/`:
 Add to `docs/wireframes/`:
 - `homepage-mobile.md` - Mobile landing screen
 - `tone-practice-mobile.md` - Tone practice interface for touch
-- `shadowing-mobile.md` - YouTube practice with mobile controls
+- `shadowing-mobile.md` - Lesson player + cues (if you add this file)
 - `dictionary-mobile.md` - Mobile search and word details
 
 ### Step 3: React Native Paper Design System
@@ -63,7 +63,7 @@ Create `design/style-guide.md`:
 Create in `specs/`:
 - `data-models/user-progress.md` - How to track learning
 - `api-endpoints/audio-analysis.md` - Audio processing API
-- `integrations/youtube-whisper.md` - YouTube + Whisper integration
+- `docs/curated-shadowing-content.md` - Lesson manifest, video URLs, cue JSON (no YouTube)
 
 ## 🔄 Daily Workflow Commands
 

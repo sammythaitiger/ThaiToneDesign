@@ -108,13 +108,13 @@
 ## 📅 Phase 4: Premium Features & Store Prep (Month 3)
 **Goal:** Add premium features and prepare for store submission
 
-### Week 13-14: YouTube Shadowing & Premium Features
-- [ ] Implement YouTube video search with mobile UI
-- [ ] Create mobile video player with gesture controls
-- [ ] Set up Whisper transcription service
-- [ ] Generate Thai subtitles with syllable segmentation
-- [ ] Build shadowing interface with recording
-- [ ] Implement syllable-by-syllable comparison
+### Week 13-14: Curated Shadowing & Premium Features
+- [ ] Lesson manifest API (or static JSON) + catalog UI
+- [ ] Mobile video player (`expo-av`) for CDN/HLS lesson files
+- [ ] Cue-driven subtitle/karaoke strip (pre-authored JSON per lesson)
+- [ ] Lesson progress: resume, complete, optional download for offline
+- [ ] Build shadowing recording flow (optional)
+- [ ] Implement syllable-by-syllable comparison (reuse tone pipeline)
 - [ ] Add premium feature gating
 - [ ] Create subscription check system
 
@@ -167,7 +167,7 @@
 1. **Tone Practice:** 5 tones, syllable-by-syllable analysis, normalized pitch comparison
 2. **Dictionary:** 500+ free words (2000+ premium), mobile search, audio playback
 3. **Flashcards:** Swipe-based review, spaced repetition, offline capability
-4. **Shadowing:** YouTube integration, Whisper subtitles, syllable comparison
+4. **Shadowing:** Curated lessons, cue manifests, video playback, syllable comparison
 5. **Dashboard:** Progress tracking, personalized recommendations
 6. **Monetization:** Freemium model, in-app subscriptions via RevenueCat
 

@@ -8,7 +8,7 @@
 
 **Core Focus Areas:**
 1. **Tone Practice** - Record and compare pitch contours for 5 Thai tones
-2. **Shadowing** - Practice with YouTube videos using Whisper subtitles  
+2. **Shadowing** - Practice with **curated** native video lessons (your content + pre-authored cues; no YouTube in app)
 3. **Dictionary** - Simple word lookup with tone information
 4. **Flashcards** - Anki-like system for tones and vocabulary
 5. **Dashboard** - Progress tracking and recommendations
@@ -27,7 +27,7 @@
 
 ## 🎯 Simplified User Goals
 1. Practice Thai tones with visual feedback (F0 pitch graphs)
-2. Improve pronunciation through YouTube video shadowing
+2. Improve pronunciation through curated video shadowing (library you maintain)
 3. Look up words and learn tone patterns
 4. Review vocabulary with simple flashcards
 5. Track learning progress
@@ -63,29 +63,28 @@
 - **Offline recording cache** for poor connections
 
 ### Module 2: Shadowing Practice  
-**Purpose:** Imitate native speakers with syllable-level feedback
+**Purpose:** Imitate native speakers in **your** lesson videos with syllable-level feedback
 
 **Key Features:**
-- Browse/search Thai YouTube videos
-- Auto-generate Thai subtitles with Whisper
-- Select phrases from subtitles
-- Record your version
+- Browse/search **lesson catalog** (categories, duration, tone tags)
+- **Pre-authored cues** (timestamps + Thai text + optional syllables) — no in-app transcription for users
+- Tap cue/syllable to seek; loop and speed controls
+- Record your version (optional flow)
 - Compare syllable-by-syllable (normalized pitch)
-- See which specific syllables need improvement
+- Lesson progress: resume, complete, loops / takes
 
 **Screens:**
-1. **Video Browser** - Find Thai content
-2. **Phrase Selection** - Click subtitle segments
-3. **Practice Interface** - Video + subtitles + recording
-4. **Results** - Per-syllable pitch comparison
+1. **Lesson Library** - Curated list + continue watching
+2. **Lesson Player** - Video (`expo-av`) + interactive cue strip
+3. **Practice Interface** - Recording + reference audio from cue timing
+4. **Results** - Per-syllable pitch comparison; **Lesson complete** summary
 
 **Technical:**
-- **YouTube Data API v3** for video search
-- **Whisper** for Thai transcription (server-side)
-- **Same syllable segmentation** as tone module
-- **Per-syllable normalized pitch comparison**
-- **Video caching** for offline practice
-- **Adaptive bitrate** for different connection speeds
+- **Lesson manifest + CDN URLs** (MP4/HLS) — see `docs/curated-shadowing-content.md`
+- **Authoring pipeline offline** (you add video + cue JSON; optional internal tools)
+- **Same syllable segmentation / comparison** as tone module for recordings
+- **Video + manifest caching** for offline practice
+- **Adaptive bitrate** if multiple renditions per lesson
 
 ### Module 3: Simple Dictionary
 **Purpose:** Look up Thai words with syllable-level tone information
@@ -168,14 +167,14 @@
 
 ### Backend Services
 - **API Framework:** Python FastAPI
-- **Audio Processing:** Librosa for pitch extraction & normalization
-- **Transcription:** Whisper for Thai subtitle generation
+- **Audio Processing:** Librosa for pitch extraction & normalization; MFA alignment (see `docs/backend/`)
+- **Shadowing content:** Lesson manifests & cue JSON served from your API/storage (not YouTube)
 - **Database:** PostgreSQL with SQLAlchemy ORM
 - **Hosting:** Cloud platform (AWS/Railway/Render)
 - **Caching:** Redis (optional for scaling)
 
 ### Key Integrations
-- **YouTube Data API v3:** Video search and metadata
+- **CDN / object storage:** Curated lesson video + thumbnails
 - **RevenueCat API:** Subscription management & validation
 - **App Store Connect API:** iOS app management
 - **Google Play Console API:** Android app management
@@ -286,7 +285,7 @@ const theme = {
 - **Daily Limits:** 5 tone practices, 3 dictionary lookups, 10 flashcards per day
 - **Content Access:** Basic word database (300 most common words)
 - **Features:** Basic pitch comparison, no syllable-by-syllable analysis
-- **YouTube Shadowing:** Limited to 2 minutes per day
+- **Shadowing lessons:** Limited watch/practice time per day (e.g. 2 minutes) or N lessons
 - **Ads:** Optional rewarded video ads for extra practice
 
 #### Premium Tier (Revenue Generation)
@@ -299,7 +298,7 @@ const theme = {
 - **Unlimited Practice:** No daily limits on any module
 - **Advanced Analysis:** Syllable-by-syllable pitch comparison
 - **Full Dictionary:** Access to 2000+ words with detailed examples
-- **YouTube Shadowing:** Unlimited video practice
+- **Shadowing:** Unlimited access to lesson library (streaming/download per product rules)
 - **Personalized Learning:** AI-powered recommendations
 - **Offline Mode:** Download content for offline use
 - **Export Data:** Export progress and vocabulary lists
@@ -371,7 +370,7 @@ const canUseFeature = (feature: string, user: User): boolean => {
 #### Screenshots & Preview Video:
 - Before/After pitch comparison
 - Real-time recording visualization
-- YouTube shadowing demo
+- Shadowing lesson playback demo
 - Progress dashboard
 - Premium features highlight
 
@@ -410,16 +409,16 @@ const canUseFeature = (feature: string, user: User): boolean => {
 7. See accuracy per syllable and overall
 ```
 
-### Flow 2: Shadow a YouTube Video (Syllable-Level)
+### Flow 2: Shadow a Curated Lesson (Syllable-Level)
 ```
-1. Dashboard → "Shadowing Practice"
-2. Find Thai video (search or browse)
-3. Click subtitle phrase to practice
-4. Listen to native audio
-5. Record your version
+1. Dashboard → "Shadowing" tab
+2. Pick a lesson from your library (category/search/continue)
+3. Play video; tap cue or syllable chip to seek / loop
+4. Listen to native line (from cue timing)
+5. Optional: record your version
 6. View syllable-by-syllable pitch comparison
-7. See which specific syllables need work
-8. Repeat problem syllables or continue
+7. See which syllables need work
+8. Lesson complete → next lesson or library
 ```
 
 ### Flow 3: Look Up a Word (1 minute)
@@ -611,10 +610,10 @@ interface Badge {
 4. User word lists
 
 ### Phase 3 (Month 3): Shadowing
-1. YouTube video integration
-2. Whisper subtitle generation
-3. Shadowing recording interface
-4. Syllable-level comparison
+1. Lesson manifest + curated video playback (`expo-av`)
+2. Cue-driven subtitles / karaoke UI
+3. Shadowing recording interface (optional)
+4. Syllable-level comparison (reuse tone pipeline)
 
 ### Phase 4 (Month 4): Polish & Launch
 1. Dashboard with progress tracking
@@ -634,7 +633,7 @@ interface Badge {
 5. Responsive web interface
 
 ### Complete Version (Month 4)
-1. YouTube shadowing functionality
+1. Shadowing with full lesson library + offline cache (as scoped)
 2. Syllable-by-syllable comparison
 3. Improved dashboard and recommendations
 4. Polished UI/UX
@@ -679,14 +678,14 @@ interface Badge {
 ### Technical:
 - Web Audio API documentation
 - Librosa for pitch extraction
-- Whisper AI for Thai transcription
-- YouTube Data API
-- D3.js for data visualization
+- `docs/curated-shadowing-content.md` — lesson manifest & cues
+- expo-av video playback
+- D3 / victory-native for pitch visualization
 
 ### Learning Resources:
 - Thai tone pronunciation guides
 - Common Thai vocabulary lists
-- YouTube channels with clear Thai content
+- Authentic dialogue for lesson authoring (licensed or original recordings)
 
 ---
 

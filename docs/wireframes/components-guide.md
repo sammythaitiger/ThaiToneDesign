@@ -5,7 +5,8 @@ See also [README](./README.md) for overall navigation and layout principles.
 
 ## Tone colors
 
-Use a **single source of truth** in code (e.g. `theme/toneColors.ts`), same HEX as in the README:
+Use a **single source of truth** in code: `mobile/src/theme/colors.ts`.
+Wireframes, implementation, and higher-level product docs must match this file.
 
 | Tone     | HEX     |
 |----------|---------|
@@ -15,7 +16,12 @@ Use a **single source of truth** in code (e.g. `theme/toneColors.ts`), same HEX 
 | High     | #FF9800 |
 | Rising   | #F44336 |
 
-**Chip / Badge:** `backgroundColor: getToneColor(tone)`, `textStyle={{ color: '#fff' }}` for contrast.
+**Chip / Badge:** use `toneColors[tone]` for `backgroundColor`, with `#fff` text for contrast.
+
+## App palette
+
+Base app colors also live in `mobile/src/theme/colors.ts`.
+Prefer `appColors.*` tokens over scattering raw HEX values across screens.
 
 ## Patterns by screen type
 
@@ -54,4 +60,4 @@ Use a **single source of truth** in code (e.g. `theme/toneColors.ts`), same HEX 
 
 ---
 
-*Last updated: 2026-03-28*
+*Last updated: 2026-03-29*

@@ -200,17 +200,17 @@
 
 ### React Native Paper Theme Configuration
 ```typescript
+import { appColors } from './mobile/src/theme/colors';
+
 const theme = {
   ...DefaultTheme,
   colors: {
-    primary: '#3B82F6',    // Thai Blue (Mid tone)
-    accent: '#10B981',     // Thai Green (Low tone)
-    falling: '#F59E0B',    // Falling tone orange
-    high: '#EF4444',       // High tone red
-    rising: '#8B5CF6',     // Rising tone purple
-    background: '#FFFFFF',
-    surface: '#F8FAFC',
-    text: '#1F2937',
+    primary: appColors.primary,
+    secondary: appColors.secondary,
+    background: appColors.background,
+    surface: appColors.surface,
+    surfaceVariant: appColors.surfaceVariant,
+    text: appColors.textPrimary,
     error: '#DC2626',
   },
   fonts: {
@@ -243,14 +243,15 @@ const theme = {
 - **Battery Efficiency:** Optimized audio processing and background tasks
 
 ### Color Scheme (Mobile Optimized)
-- **Primary:** Thai Blue (#3B82F6)
-- **Secondary:** Thai Green (#10B981)
+- **Source of truth:** `mobile/src/theme/colors.ts`
+- **Primary:** Thai Blue (#2196F3)
+- **Secondary:** Thai Green (#4CAF50)
 - **Tone Colors:**
-  - Mid: Blue (#3B82F6)
-  - Low: Green (#10B981)
-  - Falling: Orange (#F59E0B)
-  - High: Red (#EF4444)
-  - Rising: Purple (#8B5CF6)
+  - Mid: Blue (#2196F3)
+  - Low: Green (#4CAF50)
+  - Falling: Purple (#9C27B0)
+  - High: Orange (#FF9800)
+  - Rising: Red (#F44336)
 - **Background:** System-aware light/dark themes
 - **Safe Areas:** Respects notches and home indicators
 

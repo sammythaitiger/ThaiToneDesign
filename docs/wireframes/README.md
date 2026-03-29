@@ -33,6 +33,7 @@ Select  onary cards owing board
 6. **[Dashboard Screen](./dashboard.md)** - Stats and progress
 
 **Also:** **[Components guide](./components-guide.md)** — tones, patterns, mapping to screens.
+Implementation source of truth for app and tone colors: `mobile/src/theme/colors.ts`.
 
 ## React Native Paper components
 
@@ -164,5 +165,5 @@ docs/wireframes/
 
 ---
 
-*Last updated: 2026-03-28*  
+*Last updated: 2026-03-29*  
 *Status: main ASCII wireframes done; refine as MVP evolves*

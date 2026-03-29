@@ -1,0 +1,41 @@
+import { ThaiTone } from "../types/practice";
+
+export const toneColors: Record<ThaiTone, string> = {
+  mid: "#2196F3",
+  low: "#4CAF50",
+  falling: "#9C27B0",
+  high: "#FF9800",
+  rising: "#F44336",
+};
+
+export const appColors = {
+  primary: "#2196F3",
+  onPrimary: "#FFFFFF",
+  secondary: "#4CAF50",
+  onSecondary: "#FFFFFF",
+  background: "#F4F8FC",
+  surface: "#FFFFFF",
+  surfaceAlt: "#F8FBFF",
+  surfaceVariant: "#EAF2FB",
+  outline: "#C4D7EA",
+  outlineVariant: "#D9E6F3",
+  textPrimary: "#1F2937",
+  textSecondary: "#5B6778",
+  textMuted: "#6B7280",
+  heroPrimary: "#1E3A5F",
+  heroSecondary: "#28507F",
+  heroTertiary: "#295485",
+  heroText: "#FFFFFF",
+  heroTextMuted: "#D7E8FA",
+  heroTextSoft: "#E3EEF9",
+  heroAccent: "#B9D7F5",
+  heroAccentSoft: "#C7DCF2",
+  successSurface: "#E8F5E9",
+  successText: "#2E7D32",
+  warningSurface: "#FFF3E0",
+  warningText: "#B45309",
+  dangerSurface: "#FEECEC",
+  dangerText: "#B42318",
+  infoSurface: "#EAF2FB",
+  infoText: "#1565C0",
+} as const;

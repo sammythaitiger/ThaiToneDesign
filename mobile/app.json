@@ -1,0 +1,15 @@
+{
+  "expo": {
+    "name": "Thai Tones",
+    "slug": "thai-tones",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "web": {
+      "bundler": "metro"
+    }
+  }
+}

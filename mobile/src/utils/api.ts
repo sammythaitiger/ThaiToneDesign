@@ -7,8 +7,23 @@ import {
 } from "../types/practice";
 
 function getApiBaseUrl() {
+  const envBaseUrl = process.env.EXPO_PUBLIC_API_BASE_URL?.trim();
+
+  if (envBaseUrl) {
+    return envBaseUrl;
+  }
+
+  if (Platform.OS === "web") {
+    return "http://127.0.0.1:8000";
+  }
+
+  // Expo Go on a physical device needs the Mac's LAN IP, not localhost.
   if (Platform.OS === "android") {
-    return "http://10.0.2.2:8000";
+    return "http://192.168.1.4:8000";
+  }
+
+  if (Platform.OS === "ios") {
+    return "http://192.168.1.4:8000";
   }
 
   return "http://127.0.0.1:8000";

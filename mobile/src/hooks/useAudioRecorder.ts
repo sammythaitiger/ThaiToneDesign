@@ -1,10 +1,18 @@
-import { useEffect, useRef, useState } from "react";
-import { Audio } from "expo-av";
+import { useEffect, useMemo, useState } from "react";
+import {
+  getRecordingPermissionsAsync,
+  requestRecordingPermissionsAsync,
+  setAudioModeAsync,
+  RecordingPresets,
+  useAudioRecorder as useExpoAudioRecorder,
+  useAudioRecorderState,
+} from "expo-audio";
 
 type MicrophonePermission = "required" | "granted";
 
 export function useAudioRecorder() {
-  const recordingRef = useRef<Audio.Recording | null>(null);
+  const recorder = useExpoAudioRecorder(RecordingPresets.HIGH_QUALITY);
+  const recorderState = useAudioRecorderState(recorder, 250);
   const [microphonePermission, setMicrophonePermission] =
     useState<MicrophonePermission>("required");
 
@@ -12,7 +20,7 @@ export function useAudioRecorder() {
     let isMounted = true;
 
     async function syncPermission() {
-      const permission = await Audio.getPermissionsAsync();
+      const permission = await getRecordingPermissionsAsync();
 
       if (!isMounted) {
         return;
@@ -25,75 +33,62 @@ export function useAudioRecorder() {
 
     return () => {
       isMounted = false;
-      const activeRecording = recordingRef.current;
-      if (activeRecording) {
-        void activeRecording.stopAndUnloadAsync().catch(() => undefined);
+      if (recorderState.isRecording) {
+        void recorder.stop().catch(() => undefined);
       }
     };
-  }, []);
+  }, [recorder, recorderState.isRecording]);
 
   async function requestPermission() {
-    const permission = await Audio.requestPermissionsAsync();
+    const permission = await requestRecordingPermissionsAsync();
     const nextPermission = permission.granted ? "granted" : "required";
     setMicrophonePermission(nextPermission);
     return nextPermission;
   }
 
   async function startRecording() {
-    await Audio.setAudioModeAsync({
-      allowsRecordingIOS: true,
-      playsInSilentModeIOS: true,
+    await setAudioModeAsync({
+      allowsRecording: true,
+      playsInSilentMode: true,
     });
-
-    const recording = new Audio.Recording();
-
-    await recording.prepareToRecordAsync(
-      Audio.RecordingOptionsPresets.HIGH_QUALITY
-    );
-    await recording.startAsync();
-
-    recordingRef.current = recording;
+    await recorder.prepareToRecordAsync();
+    recorder.record();
   }
 
   async function stopRecording() {
-    if (!recordingRef.current) {
+    if (!recorderState.canRecord && !recorderState.isRecording) {
       return null;
     }
 
-    const activeRecording = recordingRef.current;
-    recordingRef.current = null;
+    await recorder.stop();
+    const status = recorder.getStatus();
 
-    await activeRecording.stopAndUnloadAsync();
-    const status = await activeRecording.getStatusAsync();
-
-    await Audio.setAudioModeAsync({
-      allowsRecordingIOS: false,
+    await setAudioModeAsync({
+      allowsRecording: false,
     });
 
     return {
       durationMs: status.durationMillis ?? 0,
-      uri: activeRecording.getURI(),
+      uri: status.url,
     };
   }
 
   async function cancelRecording() {
-    if (!recordingRef.current) {
+    if (!recorderState.canRecord && !recorderState.isRecording) {
       return;
     }
 
-    const activeRecording = recordingRef.current;
-    recordingRef.current = null;
-    await activeRecording.stopAndUnloadAsync();
-    await Audio.setAudioModeAsync({
-      allowsRecordingIOS: false,
+    await recorder.stop();
+    await setAudioModeAsync({
+      allowsRecording: false,
     });
   }
 
-  return {
+  return useMemo(() => ({
     microphonePermission,
     requestPermission,
     startRecording,
     stopRecording,
     cancelRecording,
-  };
+  }), [microphonePermission, recorder, recorderState.canRecord, recorderState.isRecording]);
 }

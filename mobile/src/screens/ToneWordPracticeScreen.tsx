@@ -1,21 +1,32 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
 import { Appbar, Button, Card, Text } from "react-native-paper";
 
+import { AnimatedEntrance } from "../components/practice/AnimatedEntrance";
 import { BottomTabBar } from "../components/practice/BottomTabBar";
 import { PracticeAnalyzingState } from "../components/practice/PracticeAnalyzingState";
+import { PracticePermissionState } from "../components/practice/PracticePermissionState";
+import { PracticeRecordingState } from "../components/practice/PracticeRecordingState";
 import { PracticeReferencePanel } from "../components/practice/PracticeReferencePanel";
 import { PracticeResultsPanel } from "../components/practice/PracticeResultsPanel";
 import { appColors } from "../theme/colors";
 import { AnalyzeResponse, PracticeWord } from "../types/practice";
+import { MicrophonePermissionState, PracticeStage } from "../store/practiceStore";
 
 type ToneWordPracticeScreenProps = {
   word: PracticeWord;
   analysis: AnalyzeResponse | null;
   isAnalyzing: boolean;
+  practiceStage: PracticeStage;
+  microphonePermission: MicrophonePermissionState;
+  recordingSeconds: number;
   errorMessage: string;
   onBack: () => void;
-  onAnalyze: () => void;
+  onGrantPermission: () => void;
+  onStartRecording: () => void;
+  onTickRecording: () => void;
+  onStopRecording: () => void;
+  onCancelRecording: () => void;
   onReset: () => void;
   onRetry: () => void;
 };
@@ -24,14 +35,46 @@ export function ToneWordPracticeScreen({
   word,
   analysis,
   isAnalyzing,
+  practiceStage,
+  microphonePermission,
+  recordingSeconds,
   errorMessage,
   onBack,
-  onAnalyze,
+  onGrantPermission,
+  onStartRecording,
+  onTickRecording,
+  onStopRecording,
+  onCancelRecording,
   onReset,
   onRetry,
 }: ToneWordPracticeScreenProps) {
-  const headerTitle = isAnalyzing ? "Analyzing..." : analysis ? "Results" : word.thai;
-  const hasPracticeError = Boolean(errorMessage) && !isAnalyzing && !analysis;
+  const headerTitle =
+    practiceStage === "recording"
+      ? "Recording..."
+      : isAnalyzing
+        ? "Analyzing..."
+        : analysis
+          ? "Results"
+          : word.thai;
+  const hasPracticeError = Boolean(errorMessage) && practiceStage === "before_recording";
+  const activeSyllableIndex =
+    word.syllables.length > 0
+      ? Math.min(recordingSeconds % word.syllables.length, word.syllables.length - 1)
+      : 0;
+
+  useEffect(() => {
+    if (practiceStage !== "recording") {
+      return;
+    }
+
+    const timer = setInterval(() => {
+      onTickRecording();
+    }, 1000);
+
+    return () => {
+      clearInterval(timer);
+    };
+  }, [onTickRecording, practiceStage]);
 
   return (
     <View style={styles.screen}>
@@ -55,29 +98,59 @@ export function ToneWordPracticeScreen({
 
       <ScrollView contentContainerStyle={styles.content}>
         {!isAnalyzing ? (
+          <AnimatedEntrance delay={40}>
           <View style={styles.modeBanner}>
             <Text variant="labelMedium" style={styles.modeBannerLabel}>
-              Word practice
+              {practiceStage === "recording" ? "Recording mode" : "Word practice"}
             </Text>
             <Text variant="bodyMedium" style={styles.modeBannerCopy}>
-              Listen to the reference, inspect each syllable, then run analysis
-              when you are ready.
+              {practiceStage === "recording"
+                ? "Keep speaking until the full word feels natural, then stop to run analysis."
+                : "Listen to the reference, inspect each syllable, then begin recording when you are ready."}
             </Text>
           </View>
+          </AnimatedEntrance>
         ) : null}
 
-        {!isAnalyzing && !analysis ? (
+        {practiceStage === "before_recording" &&
+        microphonePermission === "required" ? (
+          <AnimatedEntrance delay={110}>
+          <PracticePermissionState onGrant={onGrantPermission} onBack={onBack} />
+          </AnimatedEntrance>
+        ) : null}
+
+        {practiceStage === "before_recording" &&
+        microphonePermission === "granted" ? (
+          <AnimatedEntrance delay={110}>
           <>
-            <PracticeReferencePanel word={word} onAnalyze={onAnalyze} />
+            <PracticeReferencePanel word={word} onAnalyze={onStartRecording} />
             <Text variant="bodyMedium" style={styles.backLink} onPress={onBack}>
               Back to word list
             </Text>
           </>
+          </AnimatedEntrance>
         ) : null}
 
-        {isAnalyzing ? <PracticeAnalyzingState /> : null}
+        {practiceStage === "recording" ? (
+          <AnimatedEntrance delay={90}>
+          <PracticeRecordingState
+            word={word}
+            recordingSeconds={recordingSeconds}
+            activeSyllableIndex={activeSyllableIndex}
+            onStop={onStopRecording}
+            onCancel={onCancelRecording}
+          />
+          </AnimatedEntrance>
+        ) : null}
+
+        {isAnalyzing ? (
+          <AnimatedEntrance delay={90}>
+            <PracticeAnalyzingState />
+          </AnimatedEntrance>
+        ) : null}
 
         {hasPracticeError ? (
+          <AnimatedEntrance delay={100}>
           <Card style={styles.errorCard}>
             <Card.Content style={styles.errorContent}>
               <Text variant="headlineSmall" style={styles.errorTitle}>
@@ -96,18 +169,21 @@ export function ToneWordPracticeScreen({
               </View>
             </Card.Content>
           </Card>
+          </AnimatedEntrance>
         ) : null}
 
         {analysis ? (
+          <AnimatedEntrance delay={90}>
           <PracticeResultsPanel
             analysis={analysis}
             onTryAgain={onReset}
             onBackToWords={onBack}
           />
+          </AnimatedEntrance>
         ) : null}
       </ScrollView>
 
-      {!isAnalyzing ? <BottomTabBar /> : null}
+      {practiceStage !== "recording" && !isAnalyzing ? <BottomTabBar /> : null}
     </View>
   );
 }

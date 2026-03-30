@@ -10,6 +10,7 @@ import {
 } from "react-native-paper";
 
 import { BottomTabBar } from "../components/practice/BottomTabBar";
+import { AnimatedEntrance } from "../components/practice/AnimatedEntrance";
 import { WordSelectionCard } from "../components/practice/WordSelectionCard";
 import { SyllableFilter } from "../store/practiceStore";
 import { appColors, toneColors } from "../theme/colors";
@@ -81,6 +82,7 @@ export function ToneWordSelectionScreen({
       </Appbar.Header>
 
       <ScrollView contentContainerStyle={styles.content}>
+        <AnimatedEntrance delay={40}>
         <View style={styles.heroCard}>
           <View style={styles.heroTopRow}>
             <View style={styles.heroBadge}>
@@ -120,7 +122,9 @@ export function ToneWordSelectionScreen({
             </View>
           </View>
         </View>
+        </AnimatedEntrance>
 
+        <AnimatedEntrance delay={110}>
         <View style={styles.filtersCard}>
           <Text variant="titleMedium" style={styles.sectionTitle}>
             Tone filters
@@ -181,6 +185,7 @@ export function ToneWordSelectionScreen({
             inputStyle={styles.searchInput}
           />
         </View>
+        </AnimatedEntrance>
 
         {isLoading ? (
           <View style={styles.loadingState}>
@@ -227,6 +232,7 @@ export function ToneWordSelectionScreen({
         ) : null}
 
         {!isLoading ? (
+          <AnimatedEntrance delay={170}>
           <View style={styles.listSection}>
             {filteredWords.map((word) => (
               <WordSelectionCard
@@ -236,6 +242,7 @@ export function ToneWordSelectionScreen({
               />
             ))}
           </View>
+          </AnimatedEntrance>
         ) : null}
 
         <Text variant="bodySmall" style={styles.footerText}>

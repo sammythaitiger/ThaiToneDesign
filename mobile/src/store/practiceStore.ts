@@ -14,6 +14,8 @@ import {
 
 export type PracticeRoute = "selection" | "practice";
 export type SyllableFilter = "1" | "2" | "3" | "4+" | null;
+export type PracticeStage = "before_recording" | "recording" | "analyzing" | "results";
+export type MicrophonePermissionState = "required" | "granted";
 
 type PracticeStore = {
   wordOptions: PracticeWordSummary[];
@@ -22,6 +24,10 @@ type PracticeStore = {
   selectedWord: PracticeWord | null;
   analysis: AnalyzeResponse | null;
   currentRoute: PracticeRoute;
+  practiceStage: PracticeStage;
+  microphonePermission: MicrophonePermissionState;
+  recordingSeconds: number;
+  lastRecordingDurationMs: number;
   selectedTones: ThaiTone[];
   syllableFilter: SyllableFilter;
   searchQuery: string;
@@ -30,6 +36,8 @@ type PracticeStore = {
   isAnalyzing: boolean;
   errorMessage: string;
   initialize: () => Promise<void>;
+  setMicrophonePermission: (permission: MicrophonePermissionState) => void;
+  setErrorMessage: (message: string) => void;
   selectWord: (wordId: string) => Promise<void>;
   openPractice: (wordId: string) => Promise<void>;
   goToSelection: () => void;
@@ -38,6 +46,10 @@ type PracticeStore = {
   setSyllableFilter: (filter: SyllableFilter) => void;
   setSearchQuery: (query: string) => void;
   runAnalysis: () => Promise<void>;
+  startRecording: () => void;
+  tickRecording: () => void;
+  stopRecording: (recordingDurationMs?: number) => Promise<void>;
+  cancelRecording: () => void;
   resetPractice: () => void;
   clearError: () => void;
 };
@@ -49,6 +61,10 @@ export const usePracticeStore = create<PracticeStore>((set, get) => ({
   selectedWord: null,
   analysis: null,
   currentRoute: "selection",
+  practiceStage: "before_recording",
+  microphonePermission: "required",
+  recordingSeconds: 0,
+  lastRecordingDurationMs: 0,
   selectedTones: [],
   syllableFilter: null,
   searchQuery: "",
@@ -75,6 +91,8 @@ export const usePracticeStore = create<PracticeStore>((set, get) => ({
         selectedWordId: firstWordId,
         selectedWord: firstWord,
         analysis: null,
+        practiceStage: "before_recording",
+        recordingSeconds: 0,
       });
     } catch (error) {
       set({
@@ -88,6 +106,14 @@ export const usePracticeStore = create<PracticeStore>((set, get) => ({
     }
   },
 
+  setMicrophonePermission: (permission) => {
+    set({ microphonePermission: permission });
+  },
+
+  setErrorMessage: (message) => {
+    set({ errorMessage: message });
+  },
+
   selectWord: async (wordId: string) => {
     const cachedWord = get().practiceWords.find((word) => word.id === wordId);
 
@@ -96,6 +122,9 @@ export const usePracticeStore = create<PracticeStore>((set, get) => ({
         selectedWordId: wordId,
         selectedWord: cachedWord,
         analysis: null,
+        practiceStage: "before_recording",
+        recordingSeconds: 0,
+        lastRecordingDurationMs: 0,
         errorMessage: "",
       });
       return;
@@ -114,6 +143,9 @@ export const usePracticeStore = create<PracticeStore>((set, get) => ({
         practiceWords: [...get().practiceWords, response],
         selectedWord: response,
         analysis: null,
+        practiceStage: "before_recording",
+        recordingSeconds: 0,
+        lastRecordingDurationMs: 0,
       });
     } catch (error) {
       set({
@@ -129,7 +161,12 @@ export const usePracticeStore = create<PracticeStore>((set, get) => ({
 
   openPractice: async (wordId: string) => {
     await get().selectWord(wordId);
-    set({ currentRoute: "practice" });
+    set({
+      currentRoute: "practice",
+      practiceStage: "before_recording",
+      recordingSeconds: 0,
+      lastRecordingDurationMs: 0,
+    });
   },
 
   goToSelection: () => {
@@ -137,6 +174,9 @@ export const usePracticeStore = create<PracticeStore>((set, get) => ({
       currentRoute: "selection",
       analysis: null,
       isAnalyzing: false,
+      practiceStage: "before_recording",
+      recordingSeconds: 0,
+      lastRecordingDurationMs: 0,
     });
   },
 
@@ -170,17 +210,19 @@ export const usePracticeStore = create<PracticeStore>((set, get) => ({
     try {
       set({
         isAnalyzing: true,
+        practiceStage: "analyzing",
         errorMessage: "",
       });
 
       const response = await analyzeWord(
         selectedWord.id,
-        selectedWord.syllables.length * 700
+        get().lastRecordingDurationMs || selectedWord.syllables.length * 700
       );
 
-      set({ analysis: response });
+      set({ analysis: response, practiceStage: "results" });
     } catch (error) {
       set({
+        practiceStage: "before_recording",
         errorMessage:
           error instanceof Error
             ? error.message
@@ -191,10 +233,56 @@ export const usePracticeStore = create<PracticeStore>((set, get) => ({
     }
   },
 
+  grantMicrophonePermission: () => {
+    set({ microphonePermission: "granted", errorMessage: "" });
+  },
+
+  startRecording: () => {
+    if (get().microphonePermission !== "granted") {
+      set({
+        errorMessage: "Microphone permission is required before recording.",
+      });
+      return;
+    }
+
+    set({
+      practiceStage: "recording",
+      recordingSeconds: 0,
+      lastRecordingDurationMs: 0,
+      analysis: null,
+      errorMessage: "",
+    });
+  },
+
+  tickRecording: () => {
+    set((state) => ({
+      recordingSeconds: state.recordingSeconds + 1,
+    }));
+  },
+
+  stopRecording: async (recordingDurationMs?: number) => {
+    if (recordingDurationMs) {
+      set({ lastRecordingDurationMs: recordingDurationMs });
+    }
+    await get().runAnalysis();
+  },
+
+  cancelRecording: () => {
+    set({
+      practiceStage: "before_recording",
+      recordingSeconds: 0,
+      lastRecordingDurationMs: 0,
+      errorMessage: "",
+    });
+  },
+
   resetPractice: () => {
     set({
       analysis: null,
       isAnalyzing: false,
+      practiceStage: "before_recording",
+      recordingSeconds: 0,
+      lastRecordingDurationMs: 0,
       errorMessage: "",
     });
   },

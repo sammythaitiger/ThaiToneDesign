@@ -4,6 +4,8 @@ import { Button, Card, ProgressBar, Surface, Text } from "react-native-paper";
 
 import { AnalyzeResponse } from "../../types/practice";
 import { appColors } from "../../theme/colors";
+import { getNativeContourPoints, getUserContourPoints } from "../../utils/contours";
+import { PitchContourGraph } from "./PitchContourGraph";
 import { ToneChip } from "./ToneChip";
 
 type PracticeResultsPanelProps = {
@@ -58,11 +60,22 @@ export function PracticeResultsPanel({
 
       <View style={styles.resultsList}>
         {analysis.syllables.map((result) => (
-          <Surface key={result.syllable} style={styles.resultCard}>
+          <Surface
+            key={result.syllable}
+            style={[
+              styles.resultCard,
+              result.accuracy < 70 ? styles.resultCardWarning : null,
+            ]}
+          >
             <View style={styles.resultHeader}>
-              <Text variant="titleMedium" style={styles.resultTitle}>
-                {result.syllable}
-              </Text>
+              <View style={styles.resultTitleGroup}>
+                <Text variant="titleMedium" style={styles.resultTitle}>
+                  {result.syllable}
+                </Text>
+                <Text variant="bodySmall" style={styles.resultSubtitle}>
+                  Tone contour comparison
+                </Text>
+              </View>
               <View style={styles.badge}>
                 <Text variant="labelMedium" style={styles.badgeText}>
                   {result.accuracy}%
@@ -85,18 +98,38 @@ export function PracticeResultsPanel({
               </View>
             </View>
 
-            <View style={styles.pitchGraph}>
-              <View style={styles.pitchTrack}>
-                <View style={[styles.pitchBar, styles.pitchBarPrimary]} />
-              </View>
-              <View style={styles.pitchTrack}>
-                <View style={[styles.pitchBar, styles.pitchBarSecondary]} />
-              </View>
-            </View>
+            <PitchContourGraph
+              userPoints={
+                result.user_pitch_points ??
+                getUserContourPoints(
+                  result.expected_tone,
+                  result.detected_tone,
+                  result.accuracy
+                )
+              }
+              nativePoints={
+                result.native_pitch_points ??
+                getNativeContourPoints(result.expected_tone)
+              }
+            />
 
             <Text variant="bodySmall" style={styles.feedbackText}>
               {result.feedback}
             </Text>
+
+            <View style={styles.resultActions}>
+              <Button mode="text" compact icon="play">
+                Play yours
+              </Button>
+              <Button mode="text" compact icon="play-circle-outline">
+                Play native
+              </Button>
+              {result.accuracy < 70 ? (
+                <Button mode="contained-tonal" compact icon="refresh">
+                  Practice syllable
+                </Button>
+              ) : null}
+            </View>
           </Surface>
         ))}
       </View>
@@ -201,8 +234,15 @@ const styles = StyleSheet.create({
     gap: 12,
     alignItems: "center",
   },
+  resultTitleGroup: {
+    flex: 1,
+    gap: 2,
+  },
   resultTitle: {
     color: appColors.textPrimary,
+  },
+  resultSubtitle: {
+    color: appColors.textMuted,
   },
   badge: {
     borderRadius: 999,
@@ -227,30 +267,18 @@ const styles = StyleSheet.create({
     textTransform: "uppercase",
     letterSpacing: 0.7,
   },
-  pitchGraph: {
-    gap: 10,
-  },
-  pitchTrack: {
-    height: 18,
-    borderRadius: 999,
-    backgroundColor: appColors.outlineVariant,
-    overflow: "hidden",
-  },
-  pitchBar: {
-    height: "100%",
-    borderRadius: 999,
-  },
-  pitchBarPrimary: {
-    width: "78%",
-    backgroundColor: appColors.primary,
-  },
-  pitchBarSecondary: {
-    width: "70%",
-    backgroundColor: appColors.secondary,
-  },
   feedbackText: {
     color: appColors.textSecondary,
     lineHeight: 20,
+  },
+  resultActions: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 8,
+    marginTop: 2,
+  },
+  resultCardWarning: {
+    backgroundColor: "#FFF9F1",
   },
   nextStepCard: {
     borderRadius: 24,

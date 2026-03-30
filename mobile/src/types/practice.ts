@@ -41,5 +41,7 @@ export interface AnalyzeResponse {
     detected_tone: ThaiTone;
     accuracy: number;
     feedback: string;
+    user_pitch_points?: number[];
+    native_pitch_points?: number[];
   }>;
 }

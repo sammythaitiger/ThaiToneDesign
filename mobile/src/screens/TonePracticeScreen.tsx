@@ -2,6 +2,7 @@ import React from "react";
 import { SafeAreaView, StyleSheet } from "react-native";
 import { Snackbar } from "react-native-paper";
 
+import { useAudioRecorder } from "../hooks/useAudioRecorder";
 import { usePracticeScreen } from "../hooks/usePracticeScreen";
 import { appColors } from "../theme/colors";
 import { ToneWordPracticeScreen } from "./ToneWordPracticeScreen";
@@ -14,6 +15,9 @@ export function TonePracticeScreen() {
     selectedWord,
     analysis,
     currentRoute,
+    practiceStage,
+    microphonePermission,
+    recordingSeconds,
     selectedTones,
     syllableFilter,
     searchQuery,
@@ -21,16 +25,72 @@ export function TonePracticeScreen() {
     isAnalyzing,
     errorMessage,
     initialize,
+    setMicrophonePermission,
+    setErrorMessage,
     openPractice,
     goToSelection,
     toggleToneFilter,
     clearToneFilters,
     setSyllableFilter,
     setSearchQuery,
-    runAnalysis,
+    startRecording,
+    tickRecording,
+    stopRecording,
+    cancelRecording,
     resetPractice,
     clearError,
   } = usePracticeScreen();
+  const recorder = useAudioRecorder();
+
+  React.useEffect(() => {
+    setMicrophonePermission(recorder.microphonePermission);
+  }, [recorder.microphonePermission, setMicrophonePermission]);
+
+  async function handleGrantPermission() {
+    const permission = await recorder.requestPermission();
+    setMicrophonePermission(permission);
+  }
+
+  async function handleStartRecording() {
+    try {
+      if (microphonePermission !== "granted") {
+        const permission = await recorder.requestPermission();
+        setMicrophonePermission(permission);
+        if (permission !== "granted") {
+          return;
+        }
+      }
+
+      await recorder.startRecording();
+      startRecording();
+    } catch (error) {
+      setErrorMessage(
+        error instanceof Error ? error.message : "Failed to start recording."
+      );
+    }
+  }
+
+  async function handleStopRecording() {
+    try {
+      const recording = await recorder.stopRecording();
+      await stopRecording(recording?.durationMs);
+    } catch (error) {
+      setErrorMessage(
+        error instanceof Error ? error.message : "Failed to stop recording."
+      );
+    }
+  }
+
+  async function handleCancelRecording() {
+    try {
+      await recorder.cancelRecording();
+      cancelRecording();
+    } catch (error) {
+      setErrorMessage(
+        error instanceof Error ? error.message : "Failed to cancel recording."
+      );
+    }
+  }
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -59,11 +119,18 @@ export function TonePracticeScreen() {
           word={selectedWord}
           analysis={analysis}
           isAnalyzing={isAnalyzing}
+          practiceStage={practiceStage}
+          microphonePermission={microphonePermission}
+          recordingSeconds={recordingSeconds}
           errorMessage={errorMessage}
           onBack={goToSelection}
-          onAnalyze={() => void runAnalysis()}
+          onGrantPermission={() => void handleGrantPermission()}
+          onStartRecording={() => void handleStartRecording()}
+          onTickRecording={tickRecording}
+          onStopRecording={() => void handleStopRecording()}
+          onCancelRecording={() => void handleCancelRecording()}
           onReset={resetPractice}
-          onRetry={() => void runAnalysis()}
+          onRetry={() => void handleStopRecording()}
         />
       ) : null}
 

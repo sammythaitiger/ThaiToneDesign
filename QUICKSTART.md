@@ -198,3 +198,25 @@ git push origin main
 ```
 
 Happy designing with React Native Paper! 🎨
+
+## 🧪 MVP Development Setup
+
+The repository now includes a starter app shell in [`mobile`](/Users/samir/Thai%20Tones/mobile) and a FastAPI MVP in [`backend`](/Users/samir/Thai%20Tones/backend).
+
+### Mobile
+```bash
+cd mobile
+npm install
+npm run start
+```
+
+### Backend
+```bash
+pip install -r backend/requirements.txt
+uvicorn app.main:app --reload --app-dir backend
+```
+
+### First development loop
+1. Open the mobile MVP and choose a sample word.
+2. Call `POST /api/analyze` from the app once recording is wired in.
+3. Replace mocked analysis with MFA + pitch extraction.

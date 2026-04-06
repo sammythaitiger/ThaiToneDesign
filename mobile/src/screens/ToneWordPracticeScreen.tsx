@@ -5,6 +5,7 @@ import { Appbar, Text } from "react-native-paper";
 import { AnimatedEntrance } from "../components/practice/AnimatedEntrance";
 import { BottomTabBar } from "../components/practice/BottomTabBar";
 import { PracticeAnalyzingState } from "../components/practice/PracticeAnalyzingState";
+import { PracticeCountdownState } from "../components/practice/PracticeCountdownState";
 import { PracticePermissionState } from "../components/practice/PracticePermissionState";
 import { PracticeRecordingState } from "../components/practice/PracticeRecordingState";
 import { PracticeReferencePanel } from "../components/practice/PracticeReferencePanel";
@@ -22,6 +23,8 @@ type ToneWordPracticeScreenProps = {
   practiceStage: PracticeStage;
   microphonePermission: MicrophonePermissionState;
   recordingSeconds: number;
+  recordingCountdown: number | null;
+  isStoppingRecording: boolean;
   errorMessage: string;
   onBack: () => void;
   onGrantPermission: () => void;
@@ -40,6 +43,8 @@ export function ToneWordPracticeScreen({
   practiceStage,
   microphonePermission,
   recordingSeconds,
+  recordingCountdown,
+  isStoppingRecording,
   errorMessage,
   onBack,
   onGrantPermission,
@@ -51,7 +56,11 @@ export function ToneWordPracticeScreen({
   onRetry,
 }: ToneWordPracticeScreenProps) {
   const headerTitle =
-    practiceStage === "recording"
+    recordingCountdown !== null
+      ? "Get ready..."
+      : isStoppingRecording
+        ? "Preparing analysis..."
+        : practiceStage === "recording"
       ? "Recording..."
       : isAnalyzing
         ? "Analyzing..."
@@ -66,6 +75,8 @@ export function ToneWordPracticeScreen({
   const motionSignature = [
     practiceStage,
     String(isAnalyzing),
+    String(isStoppingRecording),
+    String(recordingCountdown),
     String(Boolean(analysis)),
     microphonePermission,
     String(hasPracticeError),
@@ -108,7 +119,7 @@ export function ToneWordPracticeScreen({
       </Appbar.Header>
 
       <ScrollView contentContainerStyle={styles.content}>
-        {!isAnalyzing ? (
+        {!isAnalyzing && !isStoppingRecording && recordingCountdown === null ? (
           <AnimatedEntrance delay={40} variant="hero">
           <View style={styles.modeBanner}>
             <Text variant="labelMedium" style={styles.modeBannerLabel}>
@@ -123,7 +134,18 @@ export function ToneWordPracticeScreen({
           </AnimatedEntrance>
         ) : null}
 
+        {recordingCountdown !== null ? (
+          <AnimatedEntrance delay={90} variant="hero">
+            <PracticeCountdownState
+              word={word}
+              countdownValue={recordingCountdown}
+              onCancel={onCancelRecording}
+            />
+          </AnimatedEntrance>
+        ) : null}
+
         {practiceStage === "before_recording" &&
+        recordingCountdown === null &&
         microphonePermission === "required" ? (
           <AnimatedEntrance delay={110} variant="section">
           <PracticePermissionState onGrant={onGrantPermission} onBack={onBack} />
@@ -131,6 +153,7 @@ export function ToneWordPracticeScreen({
         ) : null}
 
         {practiceStage === "before_recording" &&
+        recordingCountdown === null &&
         microphonePermission === "granted" ? (
           <AnimatedEntrance delay={110} variant="section">
           <>
@@ -151,6 +174,12 @@ export function ToneWordPracticeScreen({
             onStop={onStopRecording}
             onCancel={onCancelRecording}
           />
+          </AnimatedEntrance>
+        ) : null}
+
+        {isStoppingRecording ? (
+          <AnimatedEntrance delay={90} variant="hero">
+            <PracticeAnalyzingState phase="uploading" />
           </AnimatedEntrance>
         ) : null}
 
@@ -186,7 +215,12 @@ export function ToneWordPracticeScreen({
         ) : null}
       </ScrollView>
 
-      {practiceStage !== "recording" && !isAnalyzing ? <BottomTabBar /> : null}
+      {practiceStage !== "recording" &&
+      !isAnalyzing &&
+      !isStoppingRecording &&
+      recordingCountdown === null ? (
+        <BottomTabBar />
+      ) : null}
     </View>
   );
 }

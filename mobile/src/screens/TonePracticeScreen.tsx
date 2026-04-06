@@ -41,10 +41,59 @@ export function TonePracticeScreen() {
     clearError,
   } = usePracticeScreen();
   const recorder = useAudioRecorder();
+  const [recordingCountdown, setRecordingCountdown] = React.useState<number | null>(
+    null
+  );
+  const [isStoppingRecording, setIsStoppingRecording] = React.useState(false);
+  const countdownTimeoutRef = React.useRef<ReturnType<typeof setTimeout> | null>(
+    null
+  );
 
   React.useEffect(() => {
     setMicrophonePermission(recorder.microphonePermission);
   }, [recorder.microphonePermission, setMicrophonePermission]);
+
+  React.useEffect(() => {
+    return () => {
+      if (countdownTimeoutRef.current) {
+        clearTimeout(countdownTimeoutRef.current);
+      }
+    };
+  }, []);
+
+  function clearCountdown() {
+    if (countdownTimeoutRef.current) {
+      clearTimeout(countdownTimeoutRef.current);
+      countdownTimeoutRef.current = null;
+    }
+    setRecordingCountdown(null);
+  }
+
+  async function beginRecording() {
+    try {
+      await recorder.startRecording();
+      startRecording();
+      clearCountdown();
+    } catch (error) {
+      clearCountdown();
+      setErrorMessage(
+        error instanceof Error ? error.message : "Failed to start recording."
+      );
+    }
+  }
+
+  function startCountdown(nextValue: number) {
+    setRecordingCountdown(nextValue);
+
+    countdownTimeoutRef.current = setTimeout(() => {
+      if (nextValue <= 1) {
+        void beginRecording();
+        return;
+      }
+
+      startCountdown(nextValue - 1);
+    }, 850);
+  }
 
   async function handleGrantPermission() {
     const permission = await recorder.requestPermission();
@@ -61,8 +110,12 @@ export function TonePracticeScreen() {
         }
       }
 
-      await recorder.startRecording();
-      startRecording();
+      if (recordingCountdown !== null) {
+        return;
+      }
+
+      clearError();
+      startCountdown(3);
     } catch (error) {
       setErrorMessage(
         error instanceof Error ? error.message : "Failed to start recording."
@@ -72,16 +125,25 @@ export function TonePracticeScreen() {
 
   async function handleStopRecording() {
     try {
+      setIsStoppingRecording(true);
       const recording = await recorder.stopRecording();
       await stopRecording(recording?.durationMs);
     } catch (error) {
       setErrorMessage(
         error instanceof Error ? error.message : "Failed to stop recording."
       );
+    } finally {
+      setIsStoppingRecording(false);
     }
   }
 
   async function handleCancelRecording() {
+    if (recordingCountdown !== null) {
+      clearCountdown();
+      clearError();
+      return;
+    }
+
     try {
       await recorder.cancelRecording();
       cancelRecording();
@@ -122,6 +184,8 @@ export function TonePracticeScreen() {
           practiceStage={practiceStage}
           microphonePermission={microphonePermission}
           recordingSeconds={recordingSeconds}
+          recordingCountdown={recordingCountdown}
+          isStoppingRecording={isStoppingRecording}
           errorMessage={errorMessage}
           onBack={goToSelection}
           onGrantPermission={() => void handleGrantPermission()}
@@ -130,7 +194,7 @@ export function TonePracticeScreen() {
           onStopRecording={() => void handleStopRecording()}
           onCancelRecording={() => void handleCancelRecording()}
           onReset={resetPractice}
-          onRetry={() => void handleStopRecording()}
+          onRetry={() => void handleStartRecording()}
         />
       ) : null}
 

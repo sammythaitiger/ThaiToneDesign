@@ -11,21 +11,40 @@ const STEPS = [
   "4. Generating feedback",
 ];
 
-export function PracticeAnalyzingState() {
+type PracticeAnalyzingStateProps = {
+  phase?: "uploading" | "analyzing";
+};
+
+export function PracticeAnalyzingState({
+  phase = "analyzing",
+}: PracticeAnalyzingStateProps) {
+  const isUploading = phase === "uploading";
+  const badgeLabel = isUploading ? "Uploading" : "Analyzing";
+  const title = isUploading
+    ? "Wrapping up your take..."
+    : "Processing your recording...";
+  const copy = isUploading
+    ? "Saving the recording and preparing the tone analysis."
+    : "This usually takes 2-3 seconds.";
+  const buttonLabel = isUploading ? "Preparing analysis" : "Processing";
+  const infoText = isUploading
+    ? "Finalizing audio capture so the tone engine can start comparison"
+    : "Comparing pitch contours and generating personalized feedback";
+
   return (
     <View style={styles.container}>
       <Card style={styles.heroCard}>
         <Card.Content style={styles.heroContent}>
           <View style={styles.heroBadge}>
             <Text variant="labelMedium" style={styles.heroBadgeText}>
-              Analyzing
+              {badgeLabel}
             </Text>
           </View>
           <Text variant="headlineSmall" style={styles.title}>
-            Processing your recording...
+            {title}
           </Text>
           <Text variant="bodyLarge" style={styles.copy}>
-            This usually takes 2-3 seconds.
+            {copy}
           </Text>
         </Card.Content>
       </Card>
@@ -49,13 +68,13 @@ export function PracticeAnalyzingState() {
         <Card.Content style={styles.infoContent}>
           <ActivityIndicator animating size="small" />
           <Text variant="bodyMedium" style={styles.infoText}>
-            Comparing pitch contours and generating personalized feedback
+            {infoText}
           </Text>
         </Card.Content>
       </Card>
 
       <Button mode="contained" disabled icon="reload">
-        Processing
+        {buttonLabel}
       </Button>
     </View>
   );

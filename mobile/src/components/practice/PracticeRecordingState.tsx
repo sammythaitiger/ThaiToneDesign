@@ -27,7 +27,7 @@ export function PracticeRecordingState({
   const pulse = useRef(new Animated.Value(0)).current;
   const glow = useRef(new Animated.Value(0)).current;
   const waveValues = useMemo(
-    () => Array.from({ length: 12 }, () => new Animated.Value(0.35)),
+    () => Array.from({ length: 12 }, () => new Animated.Value(0.42)),
     []
   );
 
@@ -36,7 +36,7 @@ export function PracticeRecordingState({
       Animated.sequence([
         Animated.timing(pulse, {
           toValue: 1,
-          duration: 1400,
+          duration: 1180,
           easing: Easing.out(Easing.quad),
           useNativeDriver: true,
         }),
@@ -52,13 +52,13 @@ export function PracticeRecordingState({
       Animated.sequence([
         Animated.timing(glow, {
           toValue: 1,
-          duration: 850,
+          duration: 760,
           easing: Easing.inOut(Easing.quad),
           useNativeDriver: true,
         }),
         Animated.timing(glow, {
           toValue: 0,
-          duration: 850,
+          duration: 760,
           easing: Easing.inOut(Easing.quad),
           useNativeDriver: true,
         }),
@@ -70,13 +70,13 @@ export function PracticeRecordingState({
         Animated.sequence([
           Animated.timing(value, {
             toValue: 1,
-            duration: 420 + index * 35,
+            duration: 340 + index * 24,
             easing: Easing.inOut(Easing.sin),
             useNativeDriver: true,
           }),
           Animated.timing(value, {
-            toValue: 0.28,
-            duration: 420 + index * 30,
+            toValue: 0.34,
+            duration: 340 + index * 20,
             easing: Easing.inOut(Easing.sin),
             useNativeDriver: true,
           }),
@@ -89,7 +89,7 @@ export function PracticeRecordingState({
     waveLoops.forEach((animation, index) => {
       setTimeout(() => {
         animation.start();
-      }, index * 45);
+      }, index * 32);
     });
 
     return () => {
@@ -119,6 +119,7 @@ export function PracticeRecordingState({
     inputRange: [0, 1],
     outputRange: [1, 1.08],
   });
+  const activeSyllable = word.syllables[activeSyllableIndex];
 
   return (
     <View style={styles.container}>
@@ -144,6 +145,25 @@ export function PracticeRecordingState({
               />
               <Text variant="labelMedium" style={styles.livePillText}>
                 Live
+              </Text>
+            </View>
+          </View>
+
+          <View style={styles.metricRow}>
+            <View style={styles.metricPill}>
+              <Text variant="labelMedium" style={styles.metricLabel}>
+                Mic
+              </Text>
+              <Text variant="labelMedium" style={styles.metricValue}>
+                Active
+              </Text>
+            </View>
+            <View style={styles.metricPill}>
+              <Text variant="labelMedium" style={styles.metricLabel}>
+                Elapsed
+              </Text>
+              <Text variant="labelMedium" style={styles.metricValue}>
+                {formatSeconds(recordingSeconds)}
               </Text>
             </View>
           </View>
@@ -188,9 +208,14 @@ export function PracticeRecordingState({
             <Text variant="bodyLarge" style={styles.heroCopy}>
               Speak clearly and keep the tone contour smooth across syllables.
             </Text>
-            <Text variant="headlineMedium" style={styles.timerText}>
-              {formatSeconds(recordingSeconds)}
-            </Text>
+            <View style={styles.activeSyllablePill}>
+              <Text variant="labelMedium" style={styles.activeSyllableLabel}>
+                Active syllable
+              </Text>
+              <Text variant="labelMedium" style={styles.activeSyllableValue}>
+                {activeSyllable?.thai ?? "--"}
+              </Text>
+            </View>
           </View>
         </Card.Content>
       </Card>
@@ -236,7 +261,7 @@ export function PracticeRecordingState({
             ))}
           </View>
           <Text variant="bodyMedium" style={styles.helperText}>
-            Active syllable: {word.syllables[activeSyllableIndex]?.thai ?? "--"}
+            Energy bars pulse continuously while the tone timeline highlights your current syllable.
           </Text>
         </Card.Content>
       </Card>
@@ -281,11 +306,21 @@ export function PracticeRecordingState({
       </Card>
 
       <View style={styles.actions}>
-        <Button mode="contained" onPress={onStop} contentStyle={styles.primaryButton}>
-          Stop
+        <Button
+          mode="contained"
+          icon="stop-circle-outline"
+          onPress={onStop}
+          contentStyle={styles.primaryButton}
+        >
+          Stop and analyze
         </Button>
-        <Button mode="outlined" onPress={onCancel} contentStyle={styles.primaryButton}>
-          Cancel recording
+        <Button
+          mode="outlined"
+          icon="close-circle-outline"
+          onPress={onCancel}
+          contentStyle={styles.primaryButton}
+        >
+          Discard take
         </Button>
       </View>
     </View>
@@ -341,6 +376,30 @@ const styles = StyleSheet.create({
     color: appColors.heroText,
     fontWeight: "700",
   },
+  metricRow: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 10,
+  },
+  metricPill: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+    borderRadius: 999,
+    backgroundColor: "rgba(255,255,255,0.08)",
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+  },
+  metricLabel: {
+    color: appColors.heroTextMuted,
+    textTransform: "uppercase",
+    letterSpacing: 0.5,
+    fontWeight: "700",
+  },
+  metricValue: {
+    color: appColors.heroText,
+    fontWeight: "700",
+  },
   orbStage: {
     height: 176,
     alignItems: "center",
@@ -393,6 +452,26 @@ const styles = StyleSheet.create({
     color: appColors.heroAccent,
     marginTop: 4,
   },
+  activeSyllablePill: {
+    marginTop: 6,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+    borderRadius: 999,
+    backgroundColor: "rgba(255,255,255,0.1)",
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+  },
+  activeSyllableLabel: {
+    color: appColors.heroTextMuted,
+    textTransform: "uppercase",
+    letterSpacing: 0.5,
+    fontWeight: "700",
+  },
+  activeSyllableValue: {
+    color: appColors.heroText,
+    fontWeight: "700",
+  },
   waveCard: {
     borderRadius: 24,
     backgroundColor: appColors.surface,
@@ -432,6 +511,7 @@ const styles = StyleSheet.create({
   },
   helperText: {
     color: appColors.textSecondary,
+    lineHeight: 21,
   },
   feedbackCard: {
     borderRadius: 24,

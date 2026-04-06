@@ -16,6 +16,8 @@ import { WordSelectionCard } from "../components/practice/WordSelectionCard";
 import { SyllableFilter } from "../store/practiceStore";
 import { appColors, toneColors } from "../theme/colors";
 import { PracticeWord, ThaiTone } from "../types/practice";
+import { getMotionDelay } from "../utils/motion";
+import { useMotionTransition } from "../hooks/useMotionTransition";
 
 type ToneWordSelectionScreenProps = {
   wordsCount: number;
@@ -78,6 +80,16 @@ export function ToneWordSelectionScreen({
     activeFilterLabels.push(`Search: ${searchQuery.trim()}`);
   }
 
+  useMotionTransition(
+    [
+      String(isLoading),
+      String(hasBlockingError),
+      String(filteredWords.length),
+      String(hasFilters),
+      String(activeFilterCount),
+    ].join(":")
+  );
+
   return (
     <View style={styles.screen}>
       <Appbar.Header style={styles.appbar}>
@@ -100,7 +112,7 @@ export function ToneWordSelectionScreen({
       </Appbar.Header>
 
       <ScrollView contentContainerStyle={styles.content}>
-        <AnimatedEntrance delay={40}>
+        <AnimatedEntrance delay={getMotionDelay(0, 30)} variant="hero">
         <View style={styles.heroCard}>
           <View style={styles.heroTopRow}>
             <View style={styles.heroBadge}>
@@ -187,7 +199,7 @@ export function ToneWordSelectionScreen({
         </View>
         </AnimatedEntrance>
 
-        <AnimatedEntrance delay={110}>
+        <AnimatedEntrance delay={getMotionDelay(1, 30)} variant="section">
         <View style={styles.filtersCard}>
           <Text variant="titleMedium" style={styles.sectionTitle}>
             Tone filters
@@ -347,14 +359,20 @@ export function ToneWordSelectionScreen({
         ) : null}
 
         {!isLoading ? (
-          <AnimatedEntrance delay={170}>
+          <AnimatedEntrance delay={getMotionDelay(2, 30)} variant="section">
           <View style={styles.listSection}>
-            {filteredWords.map((word) => (
-              <WordSelectionCard
+            {filteredWords.map((word, index) => (
+              <AnimatedEntrance
                 key={word.id}
-                word={word}
-                onPractice={() => void onOpenPractice(word.id)}
-              />
+                delay={getMotionDelay(0, 20)}
+                staggerIndex={index}
+                variant="list"
+              >
+                <WordSelectionCard
+                  word={word}
+                  onPractice={() => void onOpenPractice(word.id)}
+                />
+              </AnimatedEntrance>
             ))}
           </View>
           </AnimatedEntrance>

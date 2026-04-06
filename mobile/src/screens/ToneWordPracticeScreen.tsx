@@ -10,6 +10,7 @@ import { PracticeRecordingState } from "../components/practice/PracticeRecording
 import { PracticeReferencePanel } from "../components/practice/PracticeReferencePanel";
 import { PracticeResultsPanel } from "../components/practice/PracticeResultsPanel";
 import { PracticeStateCard } from "../components/practice/PracticeStateCard";
+import { useMotionTransition } from "../hooks/useMotionTransition";
 import { appColors } from "../theme/colors";
 import { AnalyzeResponse, PracticeWord } from "../types/practice";
 import { MicrophonePermissionState, PracticeStage } from "../store/practiceStore";
@@ -62,6 +63,15 @@ export function ToneWordPracticeScreen({
     word.syllables.length > 0
       ? Math.min(recordingSeconds % word.syllables.length, word.syllables.length - 1)
       : 0;
+  const motionSignature = [
+    practiceStage,
+    String(isAnalyzing),
+    String(Boolean(analysis)),
+    microphonePermission,
+    String(hasPracticeError),
+  ].join(":");
+
+  useMotionTransition(motionSignature, "emphasis");
 
   useEffect(() => {
     if (practiceStage !== "recording") {
@@ -99,7 +109,7 @@ export function ToneWordPracticeScreen({
 
       <ScrollView contentContainerStyle={styles.content}>
         {!isAnalyzing ? (
-          <AnimatedEntrance delay={40}>
+          <AnimatedEntrance delay={40} variant="hero">
           <View style={styles.modeBanner}>
             <Text variant="labelMedium" style={styles.modeBannerLabel}>
               {practiceStage === "recording" ? "Recording mode" : "Word practice"}
@@ -115,14 +125,14 @@ export function ToneWordPracticeScreen({
 
         {practiceStage === "before_recording" &&
         microphonePermission === "required" ? (
-          <AnimatedEntrance delay={110}>
+          <AnimatedEntrance delay={110} variant="section">
           <PracticePermissionState onGrant={onGrantPermission} onBack={onBack} />
           </AnimatedEntrance>
         ) : null}
 
         {practiceStage === "before_recording" &&
         microphonePermission === "granted" ? (
-          <AnimatedEntrance delay={110}>
+          <AnimatedEntrance delay={110} variant="section">
           <>
             <PracticeReferencePanel word={word} onAnalyze={onStartRecording} />
             <Text variant="bodyMedium" style={styles.backLink} onPress={onBack}>
@@ -133,7 +143,7 @@ export function ToneWordPracticeScreen({
         ) : null}
 
         {practiceStage === "recording" ? (
-          <AnimatedEntrance delay={90}>
+          <AnimatedEntrance delay={90} variant="hero">
           <PracticeRecordingState
             word={word}
             recordingSeconds={recordingSeconds}
@@ -145,13 +155,13 @@ export function ToneWordPracticeScreen({
         ) : null}
 
         {isAnalyzing ? (
-          <AnimatedEntrance delay={90}>
+          <AnimatedEntrance delay={90} variant="hero">
             <PracticeAnalyzingState />
           </AnimatedEntrance>
         ) : null}
 
         {hasPracticeError ? (
-          <AnimatedEntrance delay={100}>
+          <AnimatedEntrance delay={100} variant="section">
             <PracticeStateCard
               eyebrow="Analysis error"
               title="Analysis failed"
@@ -166,7 +176,7 @@ export function ToneWordPracticeScreen({
         ) : null}
 
         {analysis ? (
-          <AnimatedEntrance delay={90}>
+          <AnimatedEntrance delay={90} variant="hero">
           <PracticeResultsPanel
             analysis={analysis}
             onTryAgain={onReset}

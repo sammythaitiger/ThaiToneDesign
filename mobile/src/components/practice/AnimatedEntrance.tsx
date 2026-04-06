@@ -1,40 +1,77 @@
 import React, { useEffect, useRef } from "react";
-import { Animated, Easing, StyleProp, ViewStyle } from "react-native";
+import { Animated, StyleProp, ViewStyle } from "react-native";
+
+import {
+  MotionVariant,
+  getMotionDelay,
+  getMotionVariantConfig,
+  motionTokens,
+} from "../../utils/motion";
 
 type AnimatedEntranceProps = {
   children: React.ReactNode;
   delay?: number;
   distance?: number;
+  staggerIndex?: number;
   style?: StyleProp<ViewStyle>;
+  variant?: MotionVariant;
 };
 
 export function AnimatedEntrance({
   children,
   delay = 0,
-  distance = 18,
+  distance,
+  staggerIndex,
   style,
+  variant = "section",
 }: AnimatedEntranceProps) {
+  const config = getMotionVariantConfig(variant);
+  const resolvedDelay =
+    typeof staggerIndex === "number" ? getMotionDelay(staggerIndex, delay) : delay;
+  const resolvedDistance = distance ?? config.distance;
+
   const opacity = useRef(new Animated.Value(0)).current;
-  const translateY = useRef(new Animated.Value(distance)).current;
+  const translateY = useRef(new Animated.Value(resolvedDistance)).current;
+  const scale = useRef(new Animated.Value(config.scaleStart)).current;
 
   useEffect(() => {
+    opacity.setValue(0);
+    translateY.setValue(resolvedDistance);
+    scale.setValue(config.scaleStart);
+
     Animated.parallel([
       Animated.timing(opacity, {
         toValue: 1,
-        duration: 420,
-        delay,
-        easing: Easing.out(Easing.cubic),
+        duration: config.opacityDuration,
+        delay: resolvedDelay,
+        easing: motionTokens.easing.entrance,
         useNativeDriver: true,
       }),
       Animated.timing(translateY, {
         toValue: 0,
-        duration: 460,
-        delay,
-        easing: Easing.out(Easing.cubic),
+        duration: config.transformDuration,
+        delay: resolvedDelay,
+        easing: motionTokens.easing.entrance,
+        useNativeDriver: true,
+      }),
+      Animated.timing(scale, {
+        toValue: 1,
+        duration: config.transformDuration,
+        delay: resolvedDelay,
+        easing: motionTokens.easing.emphasis,
         useNativeDriver: true,
       }),
     ]).start();
-  }, [delay, opacity, translateY]);
+  }, [
+    config.opacityDuration,
+    config.scaleStart,
+    config.transformDuration,
+    opacity,
+    resolvedDelay,
+    resolvedDistance,
+    scale,
+    translateY,
+  ]);
 
   return (
     <Animated.View
@@ -42,7 +79,7 @@ export function AnimatedEntrance({
         style,
         {
           opacity,
-          transform: [{ translateY }],
+          transform: [{ translateY }, { scale }],
         },
       ]}
     >

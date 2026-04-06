@@ -60,6 +60,7 @@ export function ToneWordSelectionScreen({
   onClearFilters,
   onRetry,
 }: ToneWordSelectionScreenProps) {
+  const isInitialLoading = isLoading && wordsCount === 0;
   const hasFilters =
     selectedTones.length > 0 || Boolean(syllableFilter) || Boolean(searchQuery);
   const hasBlockingError = Boolean(errorMessage) && wordsCount === 0;
@@ -112,181 +113,185 @@ export function ToneWordSelectionScreen({
       </Appbar.Header>
 
       <ScrollView contentContainerStyle={styles.content}>
-        <AnimatedEntrance delay={getMotionDelay(0, 30)} variant="hero">
-        <View style={styles.heroCard}>
-          <View style={styles.heroTopRow}>
-            <View style={styles.heroBadge}>
-              <Text variant="labelMedium" style={styles.heroBadgeText}>
-                Tone Lab
-              </Text>
-            </View>
-            <Text variant="labelMedium" style={styles.heroMeta}>
-              {wordsCount} total words
-            </Text>
-          </View>
-
-          <Text variant="headlineMedium" style={styles.heroTitle}>
-            Choose a word to practice its Thai tone pattern.
-          </Text>
-          <Text variant="bodyLarge" style={styles.heroCopy}>
-            Use tone filters, syllable count, or search to find the right
-            practice word.
-          </Text>
-
-          <View style={styles.heroStatsRow}>
-            <View style={styles.heroStatCard}>
-              <Text variant="labelSmall" style={styles.heroStatLabel}>
-                Visible
-              </Text>
-              <Text variant="headlineSmall" style={styles.heroStatValue}>
-                {filteredWords.length}
-              </Text>
-              <Text variant="bodySmall" style={styles.heroStatHint}>
-                Ready to practice now
-              </Text>
-            </View>
-            <View style={styles.heroStatCard}>
-              <Text variant="labelSmall" style={styles.heroStatLabel}>
-                Filters
-              </Text>
-              <Text variant="headlineSmall" style={styles.heroStatValue}>
-                {activeFilterCount}
-              </Text>
-              <Text variant="bodySmall" style={styles.heroStatHint}>
-                Narrow the word list
-              </Text>
-            </View>
-          </View>
-
-          {featuredWord ? (
-            <View style={styles.featuredCard}>
-              <View style={styles.featuredHeader}>
-                <View>
-                  <Text variant="labelMedium" style={styles.featuredEyebrow}>
-                    Recommended start
-                  </Text>
-                  <Text variant="headlineSmall" style={styles.featuredTitle}>
-                    {featuredWord.thai}
-                  </Text>
-                </View>
-                <Button
-                  mode="contained"
-                  compact
-                  onPress={() => void onOpenPractice(featuredWord.id)}
-                >
-                  Practice
-                </Button>
-              </View>
-
-              <Text variant="bodyMedium" style={styles.featuredCopy}>
-                {featuredWord.transcription} · {featuredWord.english}
-              </Text>
-
-              <View style={styles.featuredToneRow}>
-                {featuredWord.syllables.map((syllable, index) => (
-                  <Chip
-                    key={`${featuredWord.id}-featured-${index}`}
-                    compact
-                    style={styles.featuredToneChip}
-                    textStyle={styles.featuredToneChipText}
-                  >
-                    {syllable.thai} · {TONE_FILTERS.find((tone) => tone.key === syllable.tone)?.label ?? syllable.tone}
-                  </Chip>
-                ))}
-              </View>
-            </View>
-          ) : null}
-        </View>
-        </AnimatedEntrance>
-
-        <AnimatedEntrance delay={getMotionDelay(1, 30)} variant="section">
-        <View style={styles.filtersCard}>
-          <Text variant="titleMedium" style={styles.sectionTitle}>
-            Tone filters
-          </Text>
-          <Text variant="bodySmall" style={styles.sectionCopy}>
-            Use one or more filters to focus the list before you start.
-          </Text>
-
-          <View style={styles.filterRow}>
-            {TONE_FILTERS.map((tone) => (
-              <Chip
-                key={tone.key}
-                selected={selectedTones.includes(tone.key)}
-                showSelectedOverlay={false}
-                onPress={() => onToggleTone(tone.key)}
-                style={[
-                  styles.toneFilterChip,
-                  { backgroundColor: toneColors[tone.key] },
-                ]}
-                textStyle={styles.toneFilterText}
-              >
-                {tone.label}
-              </Chip>
-            ))}
-          </View>
-
-          <Text variant="titleMedium" style={styles.sectionTitle}>
-            Syllable count
-          </Text>
-          <View style={styles.filterRow}>
-            {SYLLABLE_FILTERS.map((filter) => (
-              <Chip
-                key={filter}
-                selected={syllableFilter === filter}
-                showSelectedOverlay={false}
-                onPress={() =>
-                  onSetSyllableFilter(syllableFilter === filter ? null : filter)
-                }
-                style={[
-                  styles.countChip,
-                  syllableFilter === filter ? styles.countChipSelected : null,
-                ]}
-                textStyle={[
-                  styles.countChipText,
-                  syllableFilter === filter ? styles.countChipTextSelected : null,
-                ]}
-              >
-                {filter}
-              </Chip>
-            ))}
-          </View>
-
-          <Text variant="titleMedium" style={styles.sectionTitle}>
-            Search
-          </Text>
-          <Searchbar
-            placeholder="Search words..."
-            value={searchQuery}
-            onChangeText={onSearchChange}
-            style={styles.searchbar}
-            inputStyle={styles.searchInput}
-          />
-
-          {hasFilters ? (
-            <View style={styles.activeFiltersPanel}>
-              <View style={styles.activeFiltersHeader}>
-                <Text variant="labelMedium" style={styles.activeFiltersTitle}>
-                  Active filters
-                </Text>
-                <Button compact mode="text" onPress={onClearFilters}>
-                  Clear all
-                </Button>
-              </View>
-
-              <View style={styles.activeFiltersRow}>
-                {activeFilterLabels.map((label) => (
-                  <View key={label} style={styles.activeFilterPill}>
-                    <Text variant="bodySmall" style={styles.activeFilterText}>
-                      {label}
+        {!isInitialLoading ? (
+          <AnimatedEntrance delay={0} variant="hero">
+            <View style={styles.topSection}>
+              <View style={styles.heroCard}>
+                <View style={styles.heroTopRow}>
+                  <View style={styles.heroBadge}>
+                    <Text variant="labelMedium" style={styles.heroBadgeText}>
+                      Tone Lab
                     </Text>
                   </View>
-                ))}
+                  <Text variant="labelMedium" style={styles.heroMeta}>
+                    {wordsCount} total words
+                  </Text>
+                </View>
+
+                <Text variant="headlineMedium" style={styles.heroTitle}>
+                  Choose a word to practice its Thai tone pattern.
+                </Text>
+                <Text variant="bodyLarge" style={styles.heroCopy}>
+                  Use tone filters, syllable count, or search to find the right
+                  practice word.
+                </Text>
+
+                <View style={styles.heroStatsRow}>
+                  <View style={styles.heroStatCard}>
+                    <Text variant="labelSmall" style={styles.heroStatLabel}>
+                      Visible
+                    </Text>
+                    <Text variant="headlineSmall" style={styles.heroStatValue}>
+                      {filteredWords.length}
+                    </Text>
+                    <Text variant="bodySmall" style={styles.heroStatHint}>
+                      Ready to practice now
+                    </Text>
+                  </View>
+                  <View style={styles.heroStatCard}>
+                    <Text variant="labelSmall" style={styles.heroStatLabel}>
+                      Filters
+                    </Text>
+                    <Text variant="headlineSmall" style={styles.heroStatValue}>
+                      {activeFilterCount}
+                    </Text>
+                    <Text variant="bodySmall" style={styles.heroStatHint}>
+                      Narrow the word list
+                    </Text>
+                  </View>
+                </View>
+
+                {featuredWord ? (
+                  <AnimatedEntrance delay={90} variant="section">
+                    <View style={styles.featuredCard}>
+                      <View style={styles.featuredHeader}>
+                        <View>
+                          <Text variant="labelMedium" style={styles.featuredEyebrow}>
+                            Recommended start
+                          </Text>
+                          <Text variant="headlineSmall" style={styles.featuredTitle}>
+                            {featuredWord.thai}
+                          </Text>
+                        </View>
+                        <Button
+                          mode="contained"
+                          compact
+                          onPress={() => void onOpenPractice(featuredWord.id)}
+                        >
+                          Practice
+                        </Button>
+                      </View>
+
+                      <Text variant="bodyMedium" style={styles.featuredCopy}>
+                        {featuredWord.transcription} · {featuredWord.english}
+                      </Text>
+
+                      <View style={styles.featuredToneRow}>
+                        {featuredWord.syllables.map((syllable, index) => (
+                          <Chip
+                            key={`${featuredWord.id}-featured-${index}`}
+                            compact
+                            style={styles.featuredToneChip}
+                            textStyle={styles.featuredToneChipText}
+                          >
+                            {syllable.thai} · {TONE_FILTERS.find((tone) => tone.key === syllable.tone)?.label ?? syllable.tone}
+                          </Chip>
+                        ))}
+                      </View>
+                    </View>
+                  </AnimatedEntrance>
+                ) : null}
+              </View>
+
+              <View style={styles.filtersCard}>
+                <Text variant="titleMedium" style={styles.sectionTitle}>
+                  Tone filters
+                </Text>
+                <Text variant="bodySmall" style={styles.sectionCopy}>
+                  Use one or more filters to focus the list before you start.
+                </Text>
+
+                <View style={styles.filterRow}>
+                  {TONE_FILTERS.map((tone) => (
+                    <Chip
+                      key={tone.key}
+                      selected={selectedTones.includes(tone.key)}
+                      showSelectedOverlay={false}
+                      onPress={() => onToggleTone(tone.key)}
+                      style={[
+                        styles.toneFilterChip,
+                        { backgroundColor: toneColors[tone.key] },
+                      ]}
+                      textStyle={styles.toneFilterText}
+                    >
+                      {tone.label}
+                    </Chip>
+                  ))}
+                </View>
+
+                <Text variant="titleMedium" style={styles.sectionTitle}>
+                  Syllable count
+                </Text>
+                <View style={styles.filterRow}>
+                  {SYLLABLE_FILTERS.map((filter) => (
+                    <Chip
+                      key={filter}
+                      selected={syllableFilter === filter}
+                      showSelectedOverlay={false}
+                      onPress={() =>
+                        onSetSyllableFilter(syllableFilter === filter ? null : filter)
+                      }
+                      style={[
+                        styles.countChip,
+                        syllableFilter === filter ? styles.countChipSelected : null,
+                      ]}
+                      textStyle={[
+                        styles.countChipText,
+                        syllableFilter === filter ? styles.countChipTextSelected : null,
+                      ]}
+                    >
+                      {filter}
+                    </Chip>
+                  ))}
+                </View>
+
+                <Text variant="titleMedium" style={styles.sectionTitle}>
+                  Search
+                </Text>
+                <Searchbar
+                  placeholder="Search words..."
+                  value={searchQuery}
+                  onChangeText={onSearchChange}
+                  style={styles.searchbar}
+                  inputStyle={styles.searchInput}
+                />
+
+                {hasFilters ? (
+                  <View style={styles.activeFiltersPanel}>
+                    <View style={styles.activeFiltersHeader}>
+                      <Text variant="labelMedium" style={styles.activeFiltersTitle}>
+                        Active filters
+                      </Text>
+                      <Button compact mode="text" onPress={onClearFilters}>
+                        Clear all
+                      </Button>
+                    </View>
+
+                    <View style={styles.activeFiltersRow}>
+                      {activeFilterLabels.map((label) => (
+                        <View key={label} style={styles.activeFilterPill}>
+                          <Text variant="bodySmall" style={styles.activeFilterText}>
+                            {label}
+                          </Text>
+                        </View>
+                      ))}
+                    </View>
+                  </View>
+                ) : null}
               </View>
             </View>
-          ) : null}
-        </View>
-        </AnimatedEntrance>
+          </AnimatedEntrance>
+        ) : null}
 
         {isLoading ? (
           <PracticeStateCard
@@ -378,9 +383,11 @@ export function ToneWordSelectionScreen({
           </AnimatedEntrance>
         ) : null}
 
-        <Text variant="bodySmall" style={styles.footerText}>
-          Showing {filteredWords.length} of {wordsCount} words
-        </Text>
+        {!isInitialLoading ? (
+          <Text variant="bodySmall" style={styles.footerText}>
+            Showing {filteredWords.length} of {wordsCount} words
+          </Text>
+        ) : null}
       </ScrollView>
 
       <BottomTabBar />
@@ -402,6 +409,9 @@ const styles = StyleSheet.create({
     padding: 16,
     gap: 20,
     paddingBottom: 32,
+  },
+  topSection: {
+    gap: 20,
   },
   heroCard: {
     borderRadius: 30,

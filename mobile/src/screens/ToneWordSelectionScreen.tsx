@@ -11,6 +11,7 @@ import {
 
 import { BottomTabBar } from "../components/practice/BottomTabBar";
 import { AnimatedEntrance } from "../components/practice/AnimatedEntrance";
+import { PracticeStateCard } from "../components/practice/PracticeStateCard";
 import { WordSelectionCard } from "../components/practice/WordSelectionCard";
 import { SyllableFilter } from "../store/practiceStore";
 import { appColors, toneColors } from "../theme/colors";
@@ -57,8 +58,25 @@ export function ToneWordSelectionScreen({
   onClearFilters,
   onRetry,
 }: ToneWordSelectionScreenProps) {
-  const hasFilters = selectedTones.length > 0 || Boolean(syllableFilter) || Boolean(searchQuery);
+  const hasFilters =
+    selectedTones.length > 0 || Boolean(syllableFilter) || Boolean(searchQuery);
   const hasBlockingError = Boolean(errorMessage) && wordsCount === 0;
+  const activeFilterCount =
+    selectedTones.length + (syllableFilter ? 1 : 0) + (searchQuery ? 1 : 0);
+  const featuredWord = filteredWords.length > 0 ? filteredWords[0] : null;
+  const activeFilterLabels: string[] = [];
+
+  selectedTones.forEach((tone) => {
+    activeFilterLabels.push(`Tone: ${tone}`);
+  });
+
+  if (syllableFilter) {
+    activeFilterLabels.push(`Syllables: ${syllableFilter}`);
+  }
+
+  if (searchQuery.trim()) {
+    activeFilterLabels.push(`Search: ${searchQuery.trim()}`);
+  }
 
   return (
     <View style={styles.screen}>
@@ -96,11 +114,11 @@ export function ToneWordSelectionScreen({
           </View>
 
           <Text variant="headlineMedium" style={styles.heroTitle}>
-            Choose a word that matches the tone pattern you want to train.
+            Choose a word to practice its Thai tone pattern.
           </Text>
           <Text variant="bodyLarge" style={styles.heroCopy}>
-            Filter by tone, syllable count, or search directly in Thai,
-            transliteration, or English.
+            Use tone filters, syllable count, or search to find the right
+            practice word.
           </Text>
 
           <View style={styles.heroStatsRow}>
@@ -111,16 +129,61 @@ export function ToneWordSelectionScreen({
               <Text variant="headlineSmall" style={styles.heroStatValue}>
                 {filteredWords.length}
               </Text>
+              <Text variant="bodySmall" style={styles.heroStatHint}>
+                Ready to practice now
+              </Text>
             </View>
             <View style={styles.heroStatCard}>
               <Text variant="labelSmall" style={styles.heroStatLabel}>
                 Filters
               </Text>
               <Text variant="headlineSmall" style={styles.heroStatValue}>
-                {selectedTones.length + (syllableFilter ? 1 : 0) + (searchQuery ? 1 : 0)}
+                {activeFilterCount}
+              </Text>
+              <Text variant="bodySmall" style={styles.heroStatHint}>
+                Narrow the word list
               </Text>
             </View>
           </View>
+
+          {featuredWord ? (
+            <View style={styles.featuredCard}>
+              <View style={styles.featuredHeader}>
+                <View>
+                  <Text variant="labelMedium" style={styles.featuredEyebrow}>
+                    Recommended start
+                  </Text>
+                  <Text variant="headlineSmall" style={styles.featuredTitle}>
+                    {featuredWord.thai}
+                  </Text>
+                </View>
+                <Button
+                  mode="contained"
+                  compact
+                  onPress={() => void onOpenPractice(featuredWord.id)}
+                >
+                  Practice
+                </Button>
+              </View>
+
+              <Text variant="bodyMedium" style={styles.featuredCopy}>
+                {featuredWord.transcription} · {featuredWord.english}
+              </Text>
+
+              <View style={styles.featuredToneRow}>
+                {featuredWord.syllables.map((syllable, index) => (
+                  <Chip
+                    key={`${featuredWord.id}-featured-${index}`}
+                    compact
+                    style={styles.featuredToneChip}
+                    textStyle={styles.featuredToneChipText}
+                  >
+                    {syllable.thai} · {TONE_FILTERS.find((tone) => tone.key === syllable.tone)?.label ?? syllable.tone}
+                  </Chip>
+                ))}
+              </View>
+            </View>
+          ) : null}
         </View>
         </AnimatedEntrance>
 
@@ -128,6 +191,9 @@ export function ToneWordSelectionScreen({
         <View style={styles.filtersCard}>
           <Text variant="titleMedium" style={styles.sectionTitle}>
             Tone filters
+          </Text>
+          <Text variant="bodySmall" style={styles.sectionCopy}>
+            Use one or more filters to focus the list before you start.
           </Text>
 
           <View style={styles.filterRow}>
@@ -184,51 +250,100 @@ export function ToneWordSelectionScreen({
             style={styles.searchbar}
             inputStyle={styles.searchInput}
           />
+
+          {hasFilters ? (
+            <View style={styles.activeFiltersPanel}>
+              <View style={styles.activeFiltersHeader}>
+                <Text variant="labelMedium" style={styles.activeFiltersTitle}>
+                  Active filters
+                </Text>
+                <Button compact mode="text" onPress={onClearFilters}>
+                  Clear all
+                </Button>
+              </View>
+
+              <View style={styles.activeFiltersRow}>
+                {activeFilterLabels.map((label) => (
+                  <View key={label} style={styles.activeFilterPill}>
+                    <Text variant="bodySmall" style={styles.activeFilterText}>
+                      {label}
+                    </Text>
+                  </View>
+                ))}
+              </View>
+            </View>
+          ) : null}
         </View>
         </AnimatedEntrance>
 
         {isLoading ? (
-          <View style={styles.loadingState}>
-            <ActivityIndicator />
-            <Text variant="bodyMedium" style={styles.loadingText}>
-              Loading words...
-            </Text>
+          <PracticeStateCard
+            eyebrow="Loading"
+            title="Preparing your practice library"
+            description="Fetching Thai tone words and getting the screen ready for practice."
+          >
+            <View style={styles.loadingIndicatorRow}>
+              <ActivityIndicator />
+              <Text variant="bodyMedium" style={styles.loadingText}>
+                Loading words...
+              </Text>
+            </View>
             <View style={styles.skeletonList}>
               {[0, 1, 2].map((item) => (
-                <View key={item} style={styles.skeletonCard} />
+                <View key={item} style={styles.skeletonCard}>
+                  <View style={styles.skeletonHeaderRow}>
+                    <View style={styles.skeletonTitleBlock}>
+                      <View style={styles.skeletonTitle} />
+                      <View style={styles.skeletonSubtitle} />
+                    </View>
+                    <View style={styles.skeletonBadge} />
+                  </View>
+                  <View style={styles.skeletonMetaRow}>
+                    <View style={styles.skeletonMetaPill} />
+                    <View style={styles.skeletonMetaPill} />
+                  </View>
+                  <View style={styles.skeletonToneRow}>
+                    <View style={styles.skeletonTonePill} />
+                    <View style={styles.skeletonTonePill} />
+                    <View style={styles.skeletonTonePillShort} />
+                  </View>
+                </View>
               ))}
             </View>
-          </View>
+          </PracticeStateCard>
         ) : null}
 
         {!isLoading && hasBlockingError ? (
-          <View style={styles.errorState}>
-            <Text variant="headlineSmall" style={styles.emptyTitle}>
-              Error loading words
-            </Text>
-            <Text variant="bodyMedium" style={styles.emptyCopy}>
-              {errorMessage}
-            </Text>
-            <Button mode="contained" onPress={onRetry} contentStyle={styles.primaryButton}>
-              Retry
-            </Button>
-          </View>
+          <PracticeStateCard
+            eyebrow="Error"
+            title="Unable to load practice words"
+            description={errorMessage}
+            tone="danger"
+            primaryActionLabel="Retry"
+            onPrimaryAction={onRetry}
+          />
         ) : null}
 
         {!isLoading && !hasBlockingError && filteredWords.length === 0 ? (
-          <View style={styles.emptyState}>
-            <Text variant="headlineSmall" style={styles.emptyTitle}>
-              No words match your criteria
-            </Text>
-            <Text variant="bodyMedium" style={styles.emptyCopy}>
-              Try removing some filters, clearing search, or broadening the tone selection.
-            </Text>
+          <PracticeStateCard
+            eyebrow="No matches"
+            title="No words match your criteria"
+            description={
+              hasFilters
+                ? "Try removing some filters, clearing search, or broadening the tone selection."
+                : "The practice library is empty right now. Try reloading to fetch the latest data."
+            }
+            primaryActionLabel={hasFilters ? "Clear all filters" : "Retry"}
+            onPrimaryAction={hasFilters ? onClearFilters : onRetry}
+          >
             {hasFilters ? (
-              <Button mode="contained" onPress={onClearFilters} contentStyle={styles.primaryButton}>
-                Clear all filters
-              </Button>
+              <View style={styles.emptyHelperRow}>
+                <Text variant="bodySmall" style={styles.emptyHelperText}>
+                  Active filters: {activeFilterCount}
+                </Text>
+              </View>
             ) : null}
-          </View>
+          </PracticeStateCard>
         ) : null}
 
         {!isLoading ? (
@@ -324,6 +439,49 @@ const styles = StyleSheet.create({
     color: appColors.heroText,
     marginTop: 6,
   },
+  heroStatHint: {
+    color: appColors.heroTextMuted,
+    marginTop: 6,
+  },
+  featuredCard: {
+    borderRadius: 24,
+    backgroundColor: "rgba(255,255,255,0.08)",
+    padding: 16,
+    gap: 12,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.12)",
+  },
+  featuredHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    gap: 12,
+    alignItems: "flex-start",
+  },
+  featuredEyebrow: {
+    color: appColors.heroAccent,
+    textTransform: "uppercase",
+    letterSpacing: 0.7,
+  },
+  featuredTitle: {
+    color: appColors.heroText,
+    marginTop: 4,
+  },
+  featuredCopy: {
+    color: appColors.heroTextSoft,
+  },
+  featuredToneRow: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 8,
+  },
+  featuredToneChip: {
+    backgroundColor: "rgba(255,255,255,0.12)",
+    borderColor: "rgba(255,255,255,0.18)",
+  },
+  featuredToneChipText: {
+    color: appColors.heroText,
+    fontWeight: "600",
+  },
   filtersCard: {
     borderRadius: 26,
     backgroundColor: appColors.surface,
@@ -333,6 +491,10 @@ const styles = StyleSheet.create({
   sectionTitle: {
     color: appColors.textPrimary,
     marginTop: 2,
+  },
+  sectionCopy: {
+    color: appColors.textSecondary,
+    lineHeight: 20,
   },
   filterRow: {
     flexDirection: "row",
@@ -370,14 +532,46 @@ const styles = StyleSheet.create({
   searchInput: {
     color: appColors.textPrimary,
   },
-  loadingState: {
-    alignItems: "stretch",
+  activeFiltersPanel: {
+    borderRadius: 20,
+    backgroundColor: appColors.surfaceAlt,
+    padding: 14,
     gap: 10,
-    paddingVertical: 12,
+    borderWidth: 1,
+    borderColor: appColors.outlineVariant,
+  },
+  activeFiltersHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    gap: 12,
+    alignItems: "center",
+  },
+  activeFiltersTitle: {
+    color: appColors.textPrimary,
+    fontWeight: "700",
+  },
+  activeFiltersRow: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 8,
+  },
+  activeFilterPill: {
+    borderRadius: 999,
+    backgroundColor: appColors.surface,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+  },
+  activeFilterText: {
+    color: appColors.textSecondary,
+    fontWeight: "600",
+  },
+  loadingIndicatorRow: {
+    flexDirection: "row",
+    gap: 12,
+    alignItems: "center",
   },
   loadingText: {
     color: appColors.textSecondary,
-    textAlign: "center",
   },
   skeletonList: {
     width: "100%",
@@ -385,36 +579,81 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
   skeletonCard: {
-    height: 142,
     borderRadius: 24,
+    backgroundColor: appColors.surfaceAlt,
+    borderWidth: 1,
+    borderColor: appColors.outlineVariant,
+    padding: 18,
+    gap: 14,
+  },
+  skeletonHeaderRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    gap: 12,
+    alignItems: "center",
+  },
+  skeletonTitleBlock: {
+    flex: 1,
+    gap: 8,
+  },
+  skeletonTitle: {
+    height: 18,
+    width: "46%",
+    borderRadius: 24,
+    backgroundColor: appColors.outlineVariant,
+  },
+  skeletonSubtitle: {
+    height: 14,
+    width: "70%",
+    borderRadius: 999,
+    backgroundColor: appColors.surfaceVariant,
+  },
+  skeletonBadge: {
+    width: 64,
+    height: 32,
+    borderRadius: 999,
+    backgroundColor: appColors.surfaceVariant,
+  },
+  skeletonMetaRow: {
+    flexDirection: "row",
+    gap: 8,
+    flexWrap: "wrap",
+  },
+  skeletonMetaPill: {
+    width: 104,
+    height: 34,
+    borderRadius: 999,
     backgroundColor: appColors.surface,
     borderWidth: 1,
     borderColor: appColors.outlineVariant,
   },
-  emptyState: {
-    borderRadius: 24,
-    backgroundColor: appColors.surface,
-    padding: 20,
-    gap: 12,
-    borderWidth: 1,
-    borderColor: appColors.outlineVariant,
+  skeletonToneRow: {
+    flexDirection: "row",
+    gap: 8,
+    flexWrap: "wrap",
   },
-  errorState: {
-    borderRadius: 24,
-    backgroundColor: appColors.dangerSurface,
-    padding: 20,
-    gap: 12,
-    borderWidth: 1,
-    borderColor: appColors.outlineVariant,
+  skeletonTonePill: {
+    width: 78,
+    height: 30,
+    borderRadius: 999,
+    backgroundColor: appColors.surfaceVariant,
   },
-  emptyTitle: {
-    color: appColors.textPrimary,
+  skeletonTonePillShort: {
+    width: 56,
+    height: 30,
+    borderRadius: 999,
+    backgroundColor: appColors.surfaceVariant,
   },
-  emptyCopy: {
+  emptyHelperRow: {
+    alignSelf: "flex-start",
+    borderRadius: 999,
+    backgroundColor: appColors.surfaceAlt,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+  },
+  emptyHelperText: {
     color: appColors.textSecondary,
-  },
-  primaryButton: {
-    minHeight: 48,
+    fontWeight: "600",
   },
   listSection: {
     gap: 14,

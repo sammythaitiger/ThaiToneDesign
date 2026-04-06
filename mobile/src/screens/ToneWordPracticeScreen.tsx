@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
-import { Appbar, Button, Card, Text } from "react-native-paper";
+import { Appbar, Text } from "react-native-paper";
 
 import { AnimatedEntrance } from "../components/practice/AnimatedEntrance";
 import { BottomTabBar } from "../components/practice/BottomTabBar";
@@ -9,6 +9,7 @@ import { PracticePermissionState } from "../components/practice/PracticePermissi
 import { PracticeRecordingState } from "../components/practice/PracticeRecordingState";
 import { PracticeReferencePanel } from "../components/practice/PracticeReferencePanel";
 import { PracticeResultsPanel } from "../components/practice/PracticeResultsPanel";
+import { PracticeStateCard } from "../components/practice/PracticeStateCard";
 import { appColors } from "../theme/colors";
 import { AnalyzeResponse, PracticeWord } from "../types/practice";
 import { MicrophonePermissionState, PracticeStage } from "../store/practiceStore";
@@ -151,24 +152,16 @@ export function ToneWordPracticeScreen({
 
         {hasPracticeError ? (
           <AnimatedEntrance delay={100}>
-          <Card style={styles.errorCard}>
-            <Card.Content style={styles.errorContent}>
-              <Text variant="headlineSmall" style={styles.errorTitle}>
-                Analysis failed
-              </Text>
-              <Text variant="bodyMedium" style={styles.errorCopy}>
-                {errorMessage}
-              </Text>
-              <View style={styles.errorActions}>
-                <Button mode="contained" onPress={onRetry} contentStyle={styles.primaryButton}>
-                  Try recording again
-                </Button>
-                <Button mode="outlined" onPress={onBack} contentStyle={styles.primaryButton}>
-                  Back to word list
-                </Button>
-              </View>
-            </Card.Content>
-          </Card>
+            <PracticeStateCard
+              eyebrow="Analysis error"
+              title="Analysis failed"
+              description={errorMessage}
+              tone="warning"
+              primaryActionLabel="Try recording again"
+              onPrimaryAction={onRetry}
+              secondaryActionLabel="Back to word list"
+              onSecondaryAction={onBack}
+            />
           </AnimatedEntrance>
         ) : null}
 
@@ -236,29 +229,5 @@ const styles = StyleSheet.create({
     color: appColors.primary,
     textAlign: "center",
     marginTop: 4,
-  },
-  errorCard: {
-    borderRadius: 24,
-    backgroundColor: appColors.warningSurface,
-    borderWidth: 1,
-    borderColor: appColors.outlineVariant,
-  },
-  errorContent: {
-    gap: 12,
-  },
-  errorTitle: {
-    color: appColors.warningText,
-  },
-  errorCopy: {
-    color: appColors.textSecondary,
-    lineHeight: 21,
-  },
-  errorActions: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    gap: 10,
-  },
-  primaryButton: {
-    minHeight: 46,
   },
 });

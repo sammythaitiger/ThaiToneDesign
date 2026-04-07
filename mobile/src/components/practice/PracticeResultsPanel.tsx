@@ -271,6 +271,7 @@ export function PracticeResultsPanel({
                   }
                   tone={result.expected_tone}
                   accuracy={result.accuracy}
+                  detectedTone={result.detected_tone}
                 />
 
                 <View

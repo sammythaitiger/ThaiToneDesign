@@ -5,6 +5,7 @@ import { Snackbar } from "react-native-paper";
 import { useAudioRecorder } from "../hooks/useAudioRecorder";
 import { usePracticeScreen } from "../hooks/usePracticeScreen";
 import { appColors } from "../theme/colors";
+import { UIShowcaseScreen } from "./UIShowcaseScreen";
 import { ToneWordPracticeScreen } from "./ToneWordPracticeScreen";
 import { ToneWordSelectionScreen } from "./ToneWordSelectionScreen";
 
@@ -41,6 +42,7 @@ export function TonePracticeScreen() {
     clearError,
   } = usePracticeScreen();
   const recorder = useAudioRecorder();
+  const [isShowcaseOpen, setIsShowcaseOpen] = React.useState(false);
   const [recordingCountdown, setRecordingCountdown] = React.useState<number | null>(
     null
   );
@@ -156,7 +158,9 @@ export function TonePracticeScreen() {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      {currentRoute === "selection" ? (
+      {isShowcaseOpen ? (
+        <UIShowcaseScreen onBack={() => setIsShowcaseOpen(false)} />
+      ) : currentRoute === "selection" ? (
         <ToneWordSelectionScreen
           wordsCount={practiceWords.length}
           filteredWords={filteredWords}
@@ -175,6 +179,7 @@ export function TonePracticeScreen() {
             setSearchQuery("");
           }}
           onRetry={() => void initialize()}
+          onOpenShowcase={__DEV__ ? () => setIsShowcaseOpen(true) : undefined}
         />
       ) : selectedWord ? (
         <ToneWordPracticeScreen
@@ -195,6 +200,7 @@ export function TonePracticeScreen() {
           onCancelRecording={() => void handleCancelRecording()}
           onReset={resetPractice}
           onRetry={() => void handleStartRecording()}
+          onOpenShowcase={__DEV__ ? () => setIsShowcaseOpen(true) : undefined}
         />
       ) : null}
 

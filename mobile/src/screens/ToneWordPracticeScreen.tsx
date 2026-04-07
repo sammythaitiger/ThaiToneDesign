@@ -34,6 +34,7 @@ type ToneWordPracticeScreenProps = {
   onCancelRecording: () => void;
   onReset: () => void;
   onRetry: () => void;
+  onOpenShowcase?: () => void;
 };
 
 export function ToneWordPracticeScreen({
@@ -54,6 +55,7 @@ export function ToneWordPracticeScreen({
   onCancelRecording,
   onReset,
   onRetry,
+  onOpenShowcase,
 }: ToneWordPracticeScreenProps) {
   const headerTitle =
     recordingCountdown !== null
@@ -110,11 +112,20 @@ export function ToneWordPracticeScreen({
             </Text>
           </View>
         ) : (
-          <Appbar.Action
-            icon="volume-high"
-            onPress={() => undefined}
-            containerColor={appColors.surfaceVariant}
-          />
+          <View style={styles.headerActions}>
+            <Appbar.Action
+              icon="volume-high"
+              onPress={() => undefined}
+              containerColor={appColors.surfaceVariant}
+            />
+            {onOpenShowcase ? (
+              <Appbar.Action
+                icon="view-dashboard-outline"
+                onPress={onOpenShowcase}
+                containerColor={appColors.surfaceVariant}
+              />
+            ) : null}
+          </View>
         )}
       </Appbar.Header>
 
@@ -245,6 +256,11 @@ const styles = StyleSheet.create({
   scoreText: {
     color: appColors.onPrimary,
     fontWeight: "700",
+  },
+  headerActions: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginRight: 4,
   },
   content: {
     padding: 16,

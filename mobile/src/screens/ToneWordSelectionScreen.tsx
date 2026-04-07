@@ -33,6 +33,7 @@ type ToneWordSelectionScreenProps = {
   onOpenPractice: (wordId: string) => void;
   onClearFilters: () => void;
   onRetry: () => void;
+  onOpenShowcase?: () => void;
 };
 
 const TONE_FILTERS: Array<{ key: ThaiTone; label: string }> = [
@@ -59,6 +60,7 @@ export function ToneWordSelectionScreen({
   onOpenPractice,
   onClearFilters,
   onRetry,
+  onOpenShowcase,
 }: ToneWordSelectionScreenProps) {
   const isInitialLoading = isLoading && wordsCount === 0;
   const hasFilters =
@@ -110,6 +112,13 @@ export function ToneWordSelectionScreen({
           onPress={() => undefined}
           containerColor={appColors.surfaceVariant}
         />
+        {onOpenShowcase ? (
+          <Appbar.Action
+            icon="view-dashboard-outline"
+            onPress={onOpenShowcase}
+            containerColor={appColors.surfaceVariant}
+          />
+        ) : null}
       </Appbar.Header>
 
       <ScrollView contentContainerStyle={styles.content}>

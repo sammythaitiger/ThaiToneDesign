@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { Animated, LayoutChangeEvent, StyleSheet, View } from "react-native";
+import { Animated, LayoutChangeEvent, Platform, StyleSheet, View } from "react-native";
 import Svg, {
   Circle,
   Defs,
@@ -146,6 +146,16 @@ function getGraphPalette(tone: ThaiTone | undefined, accuracy: number | undefine
 }
 
 const AnimatedPath = Animated.createAnimatedComponent(Path);
+const svgLabelFontFamily = Platform.select({
+  ios: "System",
+  android: "sans-serif",
+  default: "system-ui",
+});
+const svgLabelBoldFontFamily = Platform.select({
+  ios: "System",
+  android: "sans-serif-medium",
+  default: "system-ui",
+});
 
 function getToneShapeLabel(tone: ThaiTone | undefined) {
   if (tone === "mid") {
@@ -483,6 +493,7 @@ export function PitchContourGraph({
                   fill={palette.highlightLine}
                   fontSize="10"
                   fontWeight="700"
+                  fontFamily={svgLabelBoldFontFamily}
                 >
                   max gap
                 </SvgText>
@@ -569,6 +580,7 @@ export function PitchContourGraph({
               y={14}
               fill={appColors.textMuted}
               fontSize="10"
+              fontFamily={svgLabelFontFamily}
             >
               higher pitch
             </SvgText>
@@ -577,6 +589,7 @@ export function PitchContourGraph({
               y={height - padding - 10}
               fill={appColors.textMuted}
               fontSize="10"
+              fontFamily={svgLabelFontFamily}
             >
               lower pitch
             </SvgText>
@@ -587,6 +600,7 @@ export function PitchContourGraph({
                 fill={palette.nativeColor}
                 fontSize="10"
                 fontWeight="700"
+                fontFamily={svgLabelBoldFontFamily}
               >
                 native
               </SvgText>
@@ -598,6 +612,7 @@ export function PitchContourGraph({
                 fill={palette.userColor}
                 fontSize="10"
                 fontWeight="700"
+                fontFamily={svgLabelBoldFontFamily}
               >
                 you
               </SvgText>
@@ -608,6 +623,7 @@ export function PitchContourGraph({
               y={height - 6}
               fill={appColors.textMuted}
               fontSize="11"
+              fontFamily={svgLabelFontFamily}
             >
               start
             </SvgText>
@@ -616,6 +632,7 @@ export function PitchContourGraph({
               y={height - 6}
               fill={appColors.textMuted}
               fontSize="11"
+              fontFamily={svgLabelFontFamily}
             >
               finish
             </SvgText>

@@ -1,5 +1,5 @@
-import React, { useMemo, useState } from "react";
-import { LayoutChangeEvent, StyleSheet, View } from "react-native";
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import { Animated, LayoutChangeEvent, StyleSheet, View } from "react-native";
 import Svg, {
   Circle,
   Defs,
@@ -12,11 +12,14 @@ import Svg, {
 } from "react-native-svg";
 import { Text } from "react-native-paper";
 
-import { appColors } from "../../theme/colors";
+import { appColors, toneColors } from "../../theme/colors";
+import { ThaiTone } from "../../types/practice";
 
 type PitchContourGraphProps = {
   userPoints: number[];
   nativePoints: number[];
+  tone?: ThaiTone;
+  accuracy?: number;
 };
 
 type ChartPoint = {
@@ -74,13 +77,54 @@ function buildAreaPath(points: ChartPoint[], height: number, padding: number) {
   return `${smoothTop} L ${end.x} ${bottomY} L ${start.x} ${bottomY} Z`;
 }
 
+function buildLineLength(points: ChartPoint[]) {
+  if (points.length < 2) {
+    return 0;
+  }
+
+  let length = 0;
+
+  for (let index = 1; index < points.length; index += 1) {
+    const previous = points[index - 1];
+    const current = points[index];
+    const dx = current.x - previous.x;
+    const dy = current.y - previous.y;
+
+    length += Math.sqrt(dx * dx + dy * dy);
+  }
+
+  return length;
+}
+
+function getGraphPalette(tone: ThaiTone | undefined, accuracy: number | undefined) {
+  const nativeColor = tone ? toneColors[tone] : appColors.secondary;
+  const weak = typeof accuracy === "number" && accuracy < 70;
+
+  return {
+    nativeColor,
+    nativeSoft: `${nativeColor}33`,
+    userColor: weak ? appColors.dangerText : appColors.primary,
+    userSoft: weak ? "#E5737355" : "#2196F344",
+    bandStart: weak ? "#F4433630" : "#2196F326",
+    bandEnd: `${nativeColor}26`,
+    frameBackground: weak ? "#FFF9F8" : appColors.surface,
+    frameBorder: weak ? "#F3D6D2" : appColors.outlineVariant,
+  };
+}
+
+const AnimatedPath = Animated.createAnimatedComponent(Path);
+
 export function PitchContourGraph({
   userPoints,
   nativePoints,
+  tone,
+  accuracy,
 }: PitchContourGraphProps) {
   const [width, setWidth] = useState(0);
-  const height = 140;
-  const padding = 18;
+  const height = 176;
+  const padding = 20;
+  const revealProgress = useRef(new Animated.Value(0)).current;
+  const palette = getGraphPalette(tone, accuracy);
 
   const userChartPoints = useMemo(() => {
     if (!width) {
@@ -133,7 +177,45 @@ export function PitchContourGraph({
 
   const nativeGlowPath = useMemo(() => {
     return buildSmoothLinePath(nativeChartPoints);
-  }, [height, nativePoints, width]);
+  }, [nativeChartPoints]);
+
+  const nativeLength = useMemo(() => {
+    return buildLineLength(nativeChartPoints);
+  }, [nativeChartPoints]);
+
+  const userLength = useMemo(() => {
+    return buildLineLength(userChartPoints);
+  }, [userChartPoints]);
+
+  useEffect(() => {
+    if (!width || !userPath || !nativePath) {
+      return;
+    }
+
+    revealProgress.setValue(0);
+
+    Animated.timing(revealProgress, {
+      toValue: 1,
+      duration: 700,
+      delay: 80,
+      useNativeDriver: false,
+    }).start();
+  }, [nativePath, revealProgress, userPath, width]);
+
+  const nativeStrokeDashoffset = revealProgress.interpolate({
+    inputRange: [0, 1],
+    outputRange: [nativeLength || 1, 0],
+  });
+
+  const userStrokeDashoffset = revealProgress.interpolate({
+    inputRange: [0, 1],
+    outputRange: [userLength || 1, 0],
+  });
+
+  const bandOpacity = revealProgress.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0, 1],
+  });
 
   function handleLayout(event: LayoutChangeEvent) {
     setWidth(event.nativeEvent.layout.width);
@@ -143,30 +225,53 @@ export function PitchContourGraph({
     <View style={styles.container}>
       <View style={styles.legendRow}>
         <View style={styles.legendItem}>
-          <View style={[styles.legendSwatch, styles.userSwatch]} />
+          <View
+            style={[
+              styles.legendSwatch,
+              { backgroundColor: palette.userColor },
+            ]}
+          />
           <Text variant="labelMedium" style={styles.legendText}>
             Your pitch
           </Text>
         </View>
         <View style={styles.legendItem}>
-          <View style={[styles.legendSwatch, styles.nativeSwatch]} />
+          <View
+            style={[
+              styles.legendSwatch,
+              { backgroundColor: palette.nativeColor },
+            ]}
+          />
           <Text variant="labelMedium" style={styles.legendText}>
             Native
           </Text>
         </View>
       </View>
 
-      <View style={styles.chartFrame} onLayout={handleLayout}>
+      <View
+        style={[
+          styles.chartFrame,
+          {
+            backgroundColor: palette.frameBackground,
+            borderColor: palette.frameBorder,
+          },
+        ]}
+        onLayout={handleLayout}
+      >
         {width > 0 ? (
           <Svg width={width} height={height}>
             <Defs>
               <LinearGradient id="userArea" x1="0%" y1="0%" x2="0%" y2="100%">
-                <Stop offset="0%" stopColor="#2196F3" stopOpacity="0.26" />
-                <Stop offset="100%" stopColor="#2196F3" stopOpacity="0.02" />
+                <Stop offset="0%" stopColor={palette.userColor} stopOpacity="0.32" />
+                <Stop offset="100%" stopColor={palette.userColor} stopOpacity="0.03" />
               </LinearGradient>
               <LinearGradient id="differenceBand" x1="0%" y1="0%" x2="100%" y2="0%">
-                <Stop offset="0%" stopColor="#2196F3" stopOpacity="0.12" />
-                <Stop offset="100%" stopColor="#4CAF50" stopOpacity="0.12" />
+                <Stop offset="0%" stopColor={palette.bandStart} />
+                <Stop offset="100%" stopColor={palette.bandEnd} />
+              </LinearGradient>
+              <LinearGradient id="nativeGlow" x1="0%" y1="0%" x2="100%" y2="0%">
+                <Stop offset="0%" stopColor={palette.nativeColor} stopOpacity="0.12" />
+                <Stop offset="100%" stopColor={palette.nativeColor} stopOpacity="0.3" />
               </LinearGradient>
             </Defs>
 
@@ -176,8 +281,26 @@ export function PitchContourGraph({
               width={width}
               height={height}
               rx={20}
-              fill={appColors.surface}
+              fill={palette.frameBackground}
             />
+
+            {[0.2, 0.4, 0.6, 0.8].map((fraction) => {
+              const x = padding + (width - padding * 2) * fraction;
+
+              return (
+                <Line
+                  key={`grid-x-${fraction}`}
+                  x1={x}
+                  y1={padding}
+                  x2={x}
+                  y2={height - padding}
+                  stroke={appColors.outlineVariant}
+                  strokeOpacity={0.55}
+                  strokeDasharray="4 6"
+                  strokeWidth={1}
+                />
+              );
+            })}
 
             {[0.2, 0.4, 0.6, 0.8].map((fraction) => {
               const y = padding + (height - padding * 2) * fraction;
@@ -189,39 +312,51 @@ export function PitchContourGraph({
                   x2={width - padding}
                   y2={y}
                   stroke={appColors.outlineVariant}
-                  strokeDasharray="4 4"
+                  strokeDasharray="4 6"
                   strokeWidth={1}
                 />
               );
             })}
 
-            <Path d={differenceBandPath} fill="url(#differenceBand)" />
+            <AnimatedPath d={differenceBandPath} fill="url(#differenceBand)" opacity={bandOpacity} />
             <Path d={areaPath} fill="url(#userArea)" />
             <Path
               d={nativeGlowPath}
-              stroke={appColors.secondary}
-              strokeOpacity={0.18}
+              stroke="url(#nativeGlow)"
               strokeWidth={8}
               fill="none"
               strokeLinecap="round"
               strokeLinejoin="round"
             />
+            <AnimatedPath
+              d={nativePath}
+              stroke={palette.nativeColor}
+              strokeWidth={3}
+              fill="none"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeDasharray={nativeLength > 0 ? `${nativeLength} ${nativeLength}` : undefined}
+              strokeDashoffset={nativeStrokeDashoffset}
+            />
             <Path
               d={nativePath}
-              stroke={appColors.secondary}
-              strokeWidth={3}
+              stroke={palette.nativeColor}
+              strokeOpacity={0.9}
+              strokeWidth={2.5}
               fill="none"
               strokeLinecap="round"
               strokeLinejoin="round"
               strokeDasharray="6 4"
             />
-            <Path
+            <AnimatedPath
               d={userPath}
-              stroke={appColors.primary}
+              stroke={palette.userColor}
               strokeWidth={4.5}
               fill="none"
               strokeLinecap="round"
               strokeLinejoin="round"
+              strokeDasharray={userLength > 0 ? `${userLength} ${userLength}` : undefined}
+              strokeDashoffset={userStrokeDashoffset}
             />
 
             {nativeStart ? (
@@ -229,7 +364,7 @@ export function PitchContourGraph({
                 cx={nativeStart.x}
                 cy={nativeStart.y}
                 r={4}
-                fill={appColors.secondary}
+                fill={palette.nativeColor}
               />
             ) : null}
             {nativeEnd ? (
@@ -237,7 +372,7 @@ export function PitchContourGraph({
                 cx={nativeEnd.x}
                 cy={nativeEnd.y}
                 r={4}
-                fill={appColors.secondary}
+                fill={palette.nativeColor}
               />
             ) : null}
             {userStart ? (
@@ -245,7 +380,7 @@ export function PitchContourGraph({
                 cx={userStart.x}
                 cy={userStart.y}
                 r={4.5}
-                fill={appColors.primary}
+                fill={palette.userColor}
               />
             ) : null}
             {userEnd ? (
@@ -253,9 +388,26 @@ export function PitchContourGraph({
                 cx={userEnd.x}
                 cy={userEnd.y}
                 r={4.5}
-                fill={appColors.primary}
+                fill={palette.userColor}
               />
             ) : null}
+
+            <SvgText
+              x={padding}
+              y={14}
+              fill={appColors.textMuted}
+              fontSize="10"
+            >
+              higher pitch
+            </SvgText>
+            <SvgText
+              x={padding}
+              y={height - padding - 10}
+              fill={appColors.textMuted}
+              fontSize="10"
+            >
+              lower pitch
+            </SvgText>
 
             <SvgText
               x={padding}
@@ -299,21 +451,13 @@ const styles = StyleSheet.create({
     height: 12,
     borderRadius: 999,
   },
-  userSwatch: {
-    backgroundColor: appColors.primary,
-  },
-  nativeSwatch: {
-    backgroundColor: appColors.secondary,
-  },
   legendText: {
     color: appColors.textSecondary,
   },
   chartFrame: {
-    minHeight: 140,
+    minHeight: 176,
     borderRadius: 20,
-    backgroundColor: appColors.surface,
     overflow: "hidden",
     borderWidth: 1,
-    borderColor: appColors.outlineVariant,
   },
 });

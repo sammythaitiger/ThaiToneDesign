@@ -269,6 +269,8 @@ export function PracticeResultsPanel({
                     result.native_pitch_points ??
                     getNativeContourPoints(result.expected_tone)
                   }
+                  tone={result.expected_tone}
+                  accuracy={result.accuracy}
                 />
 
                 <View

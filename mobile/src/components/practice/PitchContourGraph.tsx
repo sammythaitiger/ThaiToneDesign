@@ -232,33 +232,6 @@ export function PitchContourGraph({
   const userStart = userChartPoints[0];
   const userEnd = userChartPoints[userChartPoints.length - 1];
 
-  const maxGapInsight = useMemo(() => {
-    if (!userChartPoints.length || !nativeChartPoints.length) {
-      return null;
-    }
-
-    let maxGapIndex = 0;
-    let maxGapDistance = 0;
-
-    for (
-      let index = 0;
-      index < Math.min(userChartPoints.length, nativeChartPoints.length);
-      index += 1
-    ) {
-      const distance = Math.abs(userChartPoints[index].y - nativeChartPoints[index].y);
-
-      if (distance > maxGapDistance) {
-        maxGapDistance = distance;
-        maxGapIndex = index;
-      }
-    }
-
-    return {
-      index: maxGapIndex,
-      x: userChartPoints[maxGapIndex]?.x ?? nativeChartPoints[maxGapIndex]?.x ?? padding,
-    };
-  }, [nativeChartPoints, padding, userChartPoints]);
-
   const differenceBandPath = useMemo(() => {
     if (!userChartPoints.length || !nativeChartPoints.length) {
       return "";
@@ -469,36 +442,6 @@ export function PitchContourGraph({
               strokeLinejoin="round"
               strokeDasharray="6 4"
             />
-            {maxGapInsight ? (
-              <>
-                <Line
-                  x1={maxGapInsight.x}
-                  y1={padding}
-                  x2={maxGapInsight.x}
-                  y2={height - padding}
-                  stroke={palette.highlightLine}
-                  strokeOpacity={0.2}
-                  strokeDasharray="3 6"
-                  strokeWidth={1.5}
-                />
-                <Circle
-                  cx={maxGapInsight.x}
-                  cy={padding + 10}
-                  r={12}
-                  fill={palette.highlightGlow}
-                />
-                <SvgText
-                  x={Math.max(padding, maxGapInsight.x - 24)}
-                  y={padding + 14}
-                  fill={palette.highlightLine}
-                  fontSize="10"
-                  fontWeight="700"
-                  fontFamily={svgLabelBoldFontFamily}
-                >
-                  max gap
-                </SvgText>
-              </>
-            ) : null}
             <AnimatedPath
               d={userPath}
               stroke={palette.userColor}
@@ -617,25 +560,6 @@ export function PitchContourGraph({
                 you
               </SvgText>
             ) : null}
-
-            <SvgText
-              x={padding}
-              y={height - 6}
-              fill={appColors.textMuted}
-              fontSize="11"
-              fontFamily={svgLabelFontFamily}
-            >
-              start
-            </SvgText>
-            <SvgText
-              x={width - padding - 24}
-              y={height - 6}
-              fill={appColors.textMuted}
-              fontSize="11"
-              fontFamily={svgLabelFontFamily}
-            >
-              finish
-            </SvgText>
           </Svg>
         ) : null}
       </View>

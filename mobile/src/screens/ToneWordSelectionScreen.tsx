@@ -97,21 +97,6 @@ export function ToneWordSelectionScreen({
     <View style={styles.screen}>
       <Appbar.Header style={styles.appbar}>
         <Appbar.Content title="Practice Thai Tones" />
-        <Appbar.Action
-          icon="cog-outline"
-          onPress={() => undefined}
-          containerColor={appColors.surfaceVariant}
-        />
-        <Appbar.Action
-          icon="trophy-outline"
-          onPress={() => undefined}
-          containerColor={appColors.surfaceVariant}
-        />
-        <Appbar.Action
-          icon="account-outline"
-          onPress={() => undefined}
-          containerColor={appColors.surfaceVariant}
-        />
         {onOpenShowcase ? (
           <Appbar.Action
             icon="view-dashboard-outline"

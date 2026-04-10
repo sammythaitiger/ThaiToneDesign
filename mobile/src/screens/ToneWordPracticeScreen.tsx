@@ -113,11 +113,6 @@ export function ToneWordPracticeScreen({
           </View>
         ) : (
           <View style={styles.headerActions}>
-            <Appbar.Action
-              icon="volume-high"
-              onPress={() => undefined}
-              containerColor={appColors.surfaceVariant}
-            />
             {onOpenShowcase ? (
               <Appbar.Action
                 icon="view-dashboard-outline"

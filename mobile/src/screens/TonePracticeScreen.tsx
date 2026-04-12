@@ -50,6 +50,17 @@ export function TonePracticeScreen() {
   const countdownTimeoutRef = React.useRef<ReturnType<typeof setTimeout> | null>(
     null
   );
+  const hasInlineSelectionError =
+    currentRoute === "selection" &&
+    !isLoadingWords &&
+    Boolean(errorMessage) &&
+    practiceWords.length === 0;
+  const hasInlinePracticeError =
+    currentRoute === "practice" &&
+    practiceStage === "before_recording" &&
+    Boolean(errorMessage);
+  const shouldShowSnackbar =
+    Boolean(errorMessage) && !hasInlineSelectionError && !hasInlinePracticeError;
 
   React.useEffect(() => {
     setMicrophonePermission(recorder.microphonePermission);
@@ -156,6 +167,32 @@ export function TonePracticeScreen() {
     }
   }
 
+  async function handleBackFromPractice() {
+    if (isStoppingRecording || isAnalyzing) {
+      return;
+    }
+
+    if (recordingCountdown !== null) {
+      clearCountdown();
+      goToSelection();
+      return;
+    }
+
+    if (practiceStage === "recording") {
+      try {
+        await recorder.cancelRecording();
+      } catch {
+        // Best effort cleanup before leaving the screen.
+      } finally {
+        cancelRecording();
+        goToSelection();
+      }
+      return;
+    }
+
+    goToSelection();
+  }
+
   return (
     <SafeAreaView style={styles.safeArea}>
       {isShowcaseOpen ? (
@@ -192,7 +229,8 @@ export function TonePracticeScreen() {
           recordingCountdown={recordingCountdown}
           isStoppingRecording={isStoppingRecording}
           errorMessage={errorMessage}
-          onBack={goToSelection}
+          onBack={() => void handleBackFromPractice()}
+          disableBack={isStoppingRecording || isAnalyzing}
           onGrantPermission={() => void handleGrantPermission()}
           onStartRecording={() => void handleStartRecording()}
           onTickRecording={tickRecording}
@@ -205,7 +243,7 @@ export function TonePracticeScreen() {
       ) : null}
 
       <Snackbar
-        visible={Boolean(errorMessage)}
+        visible={shouldShowSnackbar}
         onDismiss={clearError}
         duration={4000}
       >

@@ -35,6 +35,7 @@ type ToneWordPracticeScreenProps = {
   onReset: () => void;
   onRetry: () => void;
   onOpenShowcase?: () => void;
+  disableBack?: boolean;
 };
 
 export function ToneWordPracticeScreen({
@@ -56,6 +57,7 @@ export function ToneWordPracticeScreen({
   onReset,
   onRetry,
   onOpenShowcase,
+  disableBack = false,
 }: ToneWordPracticeScreenProps) {
   const headerTitle =
     recordingCountdown !== null
@@ -74,6 +76,12 @@ export function ToneWordPracticeScreen({
     word.syllables.length > 0
       ? Math.min(recordingSeconds % word.syllables.length, word.syllables.length - 1)
       : 0;
+  const canOpenShowcase =
+    Boolean(onOpenShowcase) &&
+    practiceStage === "before_recording" &&
+    recordingCountdown === null &&
+    !isStoppingRecording &&
+    !isAnalyzing;
   const motionSignature = [
     practiceStage,
     String(isAnalyzing),
@@ -103,7 +111,7 @@ export function ToneWordPracticeScreen({
   return (
     <View style={styles.screen}>
       <Appbar.Header style={styles.appbar}>
-        <Appbar.BackAction onPress={onBack} />
+        <Appbar.BackAction onPress={onBack} disabled={disableBack} />
         <Appbar.Content title={headerTitle} subtitle="Practice" />
         {analysis ? (
           <View style={styles.scoreBadge}>
@@ -113,7 +121,7 @@ export function ToneWordPracticeScreen({
           </View>
         ) : (
           <View style={styles.headerActions}>
-            {onOpenShowcase ? (
+            {canOpenShowcase && onOpenShowcase ? (
               <Appbar.Action
                 icon="view-dashboard-outline"
                 onPress={onOpenShowcase}

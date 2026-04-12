@@ -76,3 +76,6 @@ coverage/
 
 # TypeScript
 *.tsbuildinfo
+
+# Expo
+mobile/.expo/

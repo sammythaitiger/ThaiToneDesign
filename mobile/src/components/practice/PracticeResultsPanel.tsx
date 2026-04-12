@@ -287,20 +287,6 @@ export function PracticeResultsPanel({
                     {result.feedback}
                   </Text>
                 </View>
-
-                <View style={styles.resultActions}>
-                  <Button mode="text" compact icon="play">
-                    Play yours
-                  </Button>
-                  <Button mode="text" compact icon="play-circle-outline">
-                    Play native
-                  </Button>
-                  {result.accuracy < 70 ? (
-                    <Button mode="contained-tonal" compact icon="refresh">
-                      Practice syllable
-                    </Button>
-                  ) : null}
-                </View>
               </Surface>
             );
           })()
@@ -498,12 +484,6 @@ const styles = StyleSheet.create({
   },
   feedbackText: {
     lineHeight: 20,
-  },
-  resultActions: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    gap: 8,
-    marginTop: 2,
   },
   nextStepCard: {
     borderRadius: 26,

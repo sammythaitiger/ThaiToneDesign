@@ -71,34 +71,6 @@ export function PracticeReferencePanel({
       <Card style={styles.sectionCard}>
         <Card.Content style={styles.sectionCardContent}>
           <Text variant="titleMedium" style={styles.sectionTitle}>
-            Listen to native pronunciation
-          </Text>
-          <View style={styles.audioControls}>
-            <Button
-              mode="contained-tonal"
-              icon="play-circle-outline"
-              contentStyle={styles.actionButton}
-            >
-              Play whole word
-            </Button>
-            {word.syllables.map((_, index) => (
-              <Button
-                key={`${word.id}-play-${index}`}
-                mode="outlined"
-                compact
-                icon="play"
-                contentStyle={styles.compactActionButton}
-              >
-                {index + 1}
-              </Button>
-            ))}
-          </View>
-        </Card.Content>
-      </Card>
-
-      <Card style={styles.sectionCard}>
-        <Card.Content style={styles.sectionCardContent}>
-          <Text variant="titleMedium" style={styles.sectionTitle}>
             Visual timeline (reference)
           </Text>
           <View style={styles.timelineRow}>
@@ -235,17 +207,6 @@ const styles = StyleSheet.create({
   },
   sectionCardContent: {
     gap: 14,
-  },
-  audioControls: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    gap: 8,
-  },
-  actionButton: {
-    minHeight: 44,
-  },
-  compactActionButton: {
-    minHeight: 40,
   },
   timelineRow: {
     flexDirection: "row",

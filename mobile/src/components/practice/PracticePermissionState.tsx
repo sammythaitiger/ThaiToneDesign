@@ -19,15 +19,16 @@ export function PracticePermissionState({
         <Card.Content style={styles.heroContent}>
           <View style={styles.badge}>
             <Text variant="labelMedium" style={styles.badgeText}>
-              Microphone access
+              Before you record
             </Text>
           </View>
           <Text variant="headlineSmall" style={styles.title}>
-            Microphone permission required
+            We only need the microphone for your pronunciation attempt
           </Text>
           <Text variant="bodyLarge" style={styles.copy}>
-            To record your pronunciation, the app needs microphone access before
-            you can begin the practice flow.
+            Thai Tones asks for microphone access only when you choose to
+            record. That lets the app capture your attempt, compare the tone
+            contour, and show coaching feedback right after.
           </Text>
         </Card.Content>
       </Card>
@@ -35,26 +36,46 @@ export function PracticePermissionState({
       <Card style={styles.stepsCard}>
         <Card.Content style={styles.stepsContent}>
           <Text variant="titleMedium" style={styles.sectionTitle}>
-            How to enable it
+            What to expect
           </Text>
           <Text variant="bodyMedium" style={styles.stepText}>
-            1. Grant microphone permission below
+            1. Tap the button below when you are ready to record
           </Text>
           <Text variant="bodyMedium" style={styles.stepText}>
-            2. If needed later, open system settings and enable the mic
+            2. Record one short attempt for the selected word
           </Text>
           <Text variant="bodyMedium" style={styles.stepText}>
-            3. Return to the practice screen and start recording
+            3. See your score, graph, and next coaching step immediately after
+          </Text>
+        </Card.Content>
+      </Card>
+
+      <Card style={styles.reassuranceCard}>
+        <Card.Content style={styles.reassuranceContent}>
+          <Text variant="titleMedium" style={styles.sectionTitle}>
+            Why this feels safe
+          </Text>
+          <Text variant="bodyMedium" style={styles.stepText}>
+            The permission prompt appears only at the moment you start the
+            practice flow.
+          </Text>
+          <Text variant="bodyMedium" style={styles.stepText}>
+            If you are not ready yet, you can go back to the word list without
+            losing your place.
+          </Text>
+          <Text variant="bodyMedium" style={styles.stepText}>
+            If permission was denied before, you can retry from here instead of
+            hunting through the app.
           </Text>
         </Card.Content>
       </Card>
 
       <View style={styles.actions}>
         <Button mode="contained" onPress={onGrant} contentStyle={styles.primaryButton}>
-          Grant permission
+          Continue to microphone prompt
         </Button>
         <Button mode="outlined" onPress={onBack} contentStyle={styles.primaryButton}>
-          Back to word list
+          Not now
         </Button>
       </View>
     </View>
@@ -100,7 +121,16 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: appColors.outlineVariant,
   },
+  reassuranceCard: {
+    borderRadius: 24,
+    backgroundColor: appColors.surfaceAlt,
+    borderWidth: 1,
+    borderColor: appColors.outlineVariant,
+  },
   stepsContent: {
+    gap: 10,
+  },
+  reassuranceContent: {
     gap: 10,
   },
   sectionTitle: {

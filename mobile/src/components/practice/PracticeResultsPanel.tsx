@@ -2,8 +2,11 @@ import React from "react";
 import { StyleSheet, View } from "react-native";
 import { Button, Card, ProgressBar, Surface, Text } from "react-native-paper";
 
+import { useMockPlayback } from "../../hooks/useMockPlayback";
 import { AnalyzeResponse } from "../../types/practice";
 import { appColors } from "../../theme/colors";
+import { elevation, radii, spacing, typography } from "../../theme/tokens";
+import { buildCoachingSignal } from "../../utils/coaching";
 import { getNativeContourPoints, getUserContourPoints } from "../../utils/contours";
 import { PitchContourGraph } from "./PitchContourGraph";
 import { ToneChip } from "./ToneChip";
@@ -65,11 +68,37 @@ function getAccuracyTone(accuracy: number) {
   };
 }
 
+function getGraphCue(
+  expectedTone: AnalyzeResponse["syllables"][number]["expected_tone"],
+  detectedTone: AnalyzeResponse["syllables"][number]["detected_tone"]
+) {
+  if (expectedTone === detectedTone) {
+    return "The two curves should stay close together, so focus on keeping that contour stable on the next pass.";
+  }
+
+  if (expectedTone === "falling" && detectedTone === "high") {
+    return "On the graph, the native line should fall earlier while your line is holding too high for too long.";
+  }
+
+  if (expectedTone === "mid" && detectedTone === "rising") {
+    return "On the graph, the native line stays flatter while your line lifts at the end.";
+  }
+
+  if (expectedTone === "low" && detectedTone === "high") {
+    return "On the graph, the target line sits lower while your line peaks too early.";
+  }
+
+  return "Use the graph to compare where the native contour changes direction and try to match that shape more closely.";
+}
+
 export function PracticeResultsPanel({
   analysis,
   onTryAgain,
   onBackToWords,
 }: PracticeResultsPanelProps) {
+  const playback = useMockPlayback({
+    durationMs: Math.max(analysis.syllables.length * 900, 2000),
+  });
   const weakestSyllable = analysis.syllables.reduce((lowest, current) => {
     return current.accuracy < lowest.accuracy ? current : lowest;
   }, analysis.syllables[0]);
@@ -79,6 +108,11 @@ export function PracticeResultsPanel({
   const weakCount = analysis.syllables.filter(
     (syllable) => getAccuracyTier(syllable.accuracy) === "weak"
   ).length;
+  const coachingSignal = buildCoachingSignal(analysis);
+  const coachingReason = weakestSyllable?.feedback ?? coachingSignal.whyCopy;
+  const coachingGraphCue = weakestSyllable
+    ? getGraphCue(weakestSyllable.expected_tone, weakestSyllable.detected_tone)
+    : coachingSignal.graphCopy;
 
   return (
     <View style={styles.container}>
@@ -130,6 +164,12 @@ export function PracticeResultsPanel({
             style={styles.progress}
           />
 
+          <View style={styles.summaryNote}>
+            <Text variant="bodyMedium" style={styles.summaryNoteText}>
+              Focus {coachingSignal.focusSyllable}. {coachingSignal.nextAction}
+            </Text>
+          </View>
+
           <View style={styles.summaryStatsRow}>
             <View style={styles.summaryStatCard}>
               <Text variant="labelSmall" style={styles.summaryStatLabel}>
@@ -159,26 +199,78 @@ export function PracticeResultsPanel({
         </Card.Content>
       </Card>
 
-      <Card style={styles.nextStepCard}>
-        <Card.Content style={styles.nextStepContent}>
-          <View style={styles.nextStepTopRow}>
-            <Text variant="labelMedium" style={styles.nextStepLabel}>
-              Next step
-            </Text>
-            {weakestSyllable ? (
-              <View style={styles.nextStepFocusPill}>
-                <Text variant="labelMedium" style={styles.nextStepFocusText}>
-                  Focus {weakestSyllable.syllable}
+      <Card style={styles.compareCard}>
+        <Card.Content style={styles.compareContent}>
+          <View style={styles.compareTopRow}>
+            <View style={styles.compareHeaderBlock}>
+              <Text variant="labelMedium" style={styles.compareLabel}>
+                Audio comparison
+              </Text>
+              <Text variant="headlineSmall" style={styles.compareTitle}>
+                Listen to the native sample, then your attempt
+              </Text>
+              <Text variant="bodyLarge" style={styles.compareCopy}>
+                Keep both recordings in one place so the comparison stays fast
+                and easy to explain.
+              </Text>
+            </View>
+            <View style={styles.compareFocusPill}>
+              <Text variant="labelMedium" style={styles.compareFocusText}>
+                Focus {coachingSignal.focusSyllable}
+              </Text>
+            </View>
+          </View>
+
+          <View style={styles.audioRows}>
+            <View style={styles.audioRow}>
+              <View style={styles.audioRowCopy}>
+                <Text variant="titleMedium" style={styles.audioRowTitle}>
+                  Native reference
+                </Text>
+                <Text variant="bodySmall" style={styles.audioRowText}>
+                  Play the target contour first.
                 </Text>
               </View>
-            ) : null}
+              <Button
+                mode="contained"
+                icon={playback.getStatus("native-model") === "playing" ? "pause-circle" : "play-circle"}
+                onPress={() => playback.toggle("native-model")}
+                loading={playback.getStatus("native-model") === "loading"}
+                disabled={playback.getStatus("user-attempt") === "loading"}
+                contentStyle={styles.audioButtonContent}
+              >
+                {playback.getStatus("native-model") === "playing" ? "Pause" : "Play native"}
+              </Button>
+            </View>
+
+            <View style={styles.audioRow}>
+              <View style={styles.audioRowCopy}>
+                <Text variant="titleMedium" style={styles.audioRowTitle}>
+                  Your attempt
+                </Text>
+                <Text variant="bodySmall" style={styles.audioRowText}>
+                  Then replay your recording and compare the shape.
+                </Text>
+              </View>
+              <Button
+                mode="contained"
+                icon={playback.getStatus("user-attempt") === "playing" ? "pause-circle" : "play-circle"}
+                onPress={() => playback.toggle("user-attempt")}
+                loading={playback.getStatus("user-attempt") === "loading"}
+                disabled={playback.getStatus("native-model") === "loading"}
+                contentStyle={styles.audioButtonContent}
+              >
+                {playback.getStatus("user-attempt") === "playing" ? "Pause" : "Play yours"}
+              </Button>
+            </View>
           </View>
-          <Text variant="headlineSmall" style={styles.nextStepTitle}>
-            Improve the weakest moment first.
-          </Text>
-          <Text variant="bodyLarge" style={styles.nextStepText}>
-            {analysis.next_step}
-          </Text>
+
+          <View style={styles.compareHint}>
+            <Text variant="bodySmall" style={styles.compareHintText}>
+              Step 1: hear the native model. Step 2: listen to your own take.
+              Step 3: compare both with the graph below.
+            </Text>
+          </View>
         </Card.Content>
       </Card>
 
@@ -188,7 +280,7 @@ export function PracticeResultsPanel({
             Syllable breakdown
           </Text>
           <Text variant="bodySmall" style={styles.sectionCopy}>
-            Strong syllables are separated from the ones that need another pass.
+            Each syllable shows the graph first, then the score and feedback.
           </Text>
         </View>
       </View>
@@ -197,12 +289,15 @@ export function PracticeResultsPanel({
         {analysis.syllables.map((result) => (
           (() => {
             const tone = getAccuracyTone(result.accuracy);
+            const isFocus = weakestSyllable?.syllable === result.syllable;
+            const graphCue = getGraphCue(result.expected_tone, result.detected_tone);
 
             return (
               <Surface
                 key={result.syllable}
                 style={[
                   styles.resultCard,
+                  isFocus ? styles.resultCardFocus : null,
                   {
                     backgroundColor: tone.cardBackground,
                     borderColor: tone.cardBorder,
@@ -218,39 +313,23 @@ export function PracticeResultsPanel({
                       {result.syllable}
                     </Text>
                     <Text variant="bodySmall" style={styles.resultSubtitle}>
-                      Tone contour comparison
+                      {isFocus ? "Primary coaching target" : "Tone contour comparison"}
                     </Text>
                   </View>
-                  <View style={[styles.badge, { backgroundColor: tone.badgeBackground }]}>
-                    <Text
-                      variant="labelMedium"
-                      style={[styles.badgeText, { color: tone.badgeText }]}
-                    >
-                      {result.accuracy}%
-                    </Text>
-                  </View>
-                </View>
-
-                <View style={styles.compareRow}>
-                  <View style={styles.compareGroup}>
-                    <Text variant="labelSmall" style={styles.compareLabel}>
-                      Expected
-                    </Text>
-                    <ToneChip tone={result.expected_tone} compact />
-                  </View>
-                  <View style={styles.compareGroup}>
-                    <Text variant="labelSmall" style={styles.compareLabel}>
-                      Detected
-                    </Text>
-                    <ToneChip tone={result.detected_tone} compact />
-                  </View>
-                  <View style={styles.compareGroup}>
-                    <Text variant="labelSmall" style={styles.compareLabel}>
-                      Match
-                    </Text>
-                    <View style={styles.matchPill}>
-                      <Text variant="labelSmall" style={styles.matchPillText}>
-                        {result.expected_tone === result.detected_tone ? "Matched" : "Different"}
+                  <View style={styles.resultBadgeColumn}>
+                    {isFocus ? (
+                      <View style={styles.focusBadge}>
+                        <Text variant="labelSmall" style={styles.focusBadgeText}>
+                          Focus now
+                        </Text>
+                      </View>
+                    ) : null}
+                    <View style={[styles.badge, { backgroundColor: tone.badgeBackground }]}>
+                      <Text
+                        variant="labelMedium"
+                        style={[styles.badgeText, { color: tone.badgeText }]}
+                      >
+                        {result.accuracy}%
                       </Text>
                     </View>
                   </View>
@@ -273,6 +352,40 @@ export function PracticeResultsPanel({
                   accuracy={result.accuracy}
                   detectedTone={result.detected_tone}
                 />
+
+                <View style={styles.graphCuePanel}>
+                  <Text variant="labelSmall" style={styles.graphCueLabel}>
+                    Graph reading
+                  </Text>
+                  <Text variant="bodySmall" style={styles.graphCueText}>
+                    {graphCue}
+                  </Text>
+                </View>
+
+                <View style={styles.compareRow}>
+                  <View style={styles.compareGroup}>
+                    <Text variant="labelSmall" style={styles.syllableCompareLabel}>
+                      Expected
+                    </Text>
+                    <ToneChip tone={result.expected_tone} compact />
+                  </View>
+                  <View style={styles.compareGroup}>
+                    <Text variant="labelSmall" style={styles.syllableCompareLabel}>
+                      Detected
+                    </Text>
+                    <ToneChip tone={result.detected_tone} compact />
+                  </View>
+                  <View style={styles.compareGroup}>
+                    <Text variant="labelSmall" style={styles.syllableCompareLabel}>
+                      Match
+                    </Text>
+                    <View style={styles.matchPill}>
+                      <Text variant="labelSmall" style={styles.matchPillText}>
+                        {result.expected_tone === result.detected_tone ? "Matched" : "Different"}
+                      </Text>
+                    </View>
+                  </View>
+                </View>
 
                 <View
                   style={[
@@ -307,39 +420,39 @@ export function PracticeResultsPanel({
 
 const styles = StyleSheet.create({
   container: {
-    gap: 16,
+    gap: spacing.large,
   },
   summaryCard: {
-    borderRadius: 28,
+    borderRadius: radii.large,
     backgroundColor: appColors.heroPrimary,
   },
   summaryContent: {
-    gap: 14,
+    gap: spacing.large,
   },
   summaryTopRow: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    gap: 12,
+    gap: spacing.medium,
   },
   summaryBadge: {
-    borderRadius: 999,
+    borderRadius: radii.pill,
     backgroundColor: "rgba(255,255,255,0.12)",
-    paddingHorizontal: 12,
-    paddingVertical: 8,
+    paddingHorizontal: spacing.medium,
+    paddingVertical: spacing.small,
   },
   summaryBadgeText: {
     color: appColors.heroText,
     fontWeight: "700",
     textTransform: "uppercase",
-    letterSpacing: 0.7,
+    letterSpacing: typography.trackingLabel,
   },
   summaryMeta: {
     color: appColors.heroAccent,
   },
   summaryHeroRow: {
     flexDirection: "row",
-    gap: 14,
+    gap: spacing.large,
     alignItems: "stretch",
   },
   summaryScoreBlock: {
@@ -353,15 +466,15 @@ const styles = StyleSheet.create({
   },
   summaryInsightCard: {
     flex: 0.9,
-    borderRadius: 22,
+    borderRadius: radii.small,
     backgroundColor: "rgba(255,255,255,0.08)",
-    padding: 14,
-    gap: 6,
+    padding: spacing.large,
+    gap: spacing.xsmall,
   },
   summaryInsightLabel: {
     color: appColors.heroAccent,
     textTransform: "uppercase",
-    letterSpacing: 0.7,
+    letterSpacing: typography.trackingLabel,
   },
   summaryInsightValue: {
     color: appColors.heroText,
@@ -374,25 +487,35 @@ const styles = StyleSheet.create({
   },
   summaryCopy: {
     color: appColors.heroTextSoft,
-    lineHeight: 23,
+    lineHeight: typography.lineHeightBodyLarge,
   },
   summaryStatsRow: {
     flexDirection: "row",
     flexWrap: "wrap",
-    gap: 10,
+    gap: spacing.small,
+  },
+  summaryNote: {
+    borderRadius: radii.small,
+    backgroundColor: "rgba(255,255,255,0.08)",
+    paddingHorizontal: spacing.large,
+    paddingVertical: spacing.medium,
+  },
+  summaryNoteText: {
+    color: appColors.heroTextSoft,
+    lineHeight: typography.lineHeightBody,
   },
   summaryStatCard: {
     flex: 1,
     minWidth: 92,
-    borderRadius: 20,
+    borderRadius: radii.small,
     backgroundColor: "rgba(255,255,255,0.08)",
-    padding: 14,
-    gap: 4,
+    padding: spacing.large,
+    gap: spacing.micro,
   },
   summaryStatLabel: {
     color: appColors.heroAccent,
     textTransform: "uppercase",
-    letterSpacing: 0.6,
+    letterSpacing: typography.trackingLabel,
   },
   summaryStatValue: {
     color: appColors.heroText,
@@ -400,41 +523,49 @@ const styles = StyleSheet.create({
   },
   progress: {
     height: 12,
-    borderRadius: 999,
+    borderRadius: radii.pill,
     backgroundColor: "rgba(255,255,255,0.12)",
   },
   sectionHeader: {
-    gap: 4,
+    gap: spacing.micro,
   },
   sectionTitle: {
     color: appColors.textPrimary,
   },
   sectionCopy: {
     color: appColors.textSecondary,
-    lineHeight: 20,
+    lineHeight: typography.lineHeightBody,
   },
   resultsList: {
-    gap: 14,
+    gap: spacing.large,
   },
   resultCard: {
-    borderRadius: 24,
+    borderRadius: radii.medium,
     padding: 18,
-    gap: 14,
+    gap: spacing.large,
     borderWidth: 1,
+  },
+  resultCardFocus: {
+    borderWidth: 2,
+    ...elevation.focusCard,
   },
   resultHeader: {
     flexDirection: "row",
     justifyContent: "space-between",
-    gap: 12,
-    alignItems: "center",
+    gap: spacing.medium,
+    alignItems: "flex-start",
   },
   resultTitleGroup: {
     flex: 1,
-    gap: 4,
+    gap: spacing.micro,
+  },
+  resultBadgeColumn: {
+    alignItems: "flex-end",
+    gap: spacing.small,
   },
   resultEyebrow: {
     textTransform: "uppercase",
-    letterSpacing: 0.7,
+    letterSpacing: typography.trackingLabel,
     fontWeight: "700",
   },
   resultTitle: {
@@ -444,32 +575,44 @@ const styles = StyleSheet.create({
     color: appColors.textMuted,
   },
   badge: {
-    borderRadius: 999,
-    paddingHorizontal: 12,
-    paddingVertical: 8,
+    borderRadius: radii.pill,
+    paddingHorizontal: spacing.medium,
+    paddingVertical: spacing.small,
   },
   badgeText: {
     fontWeight: "700",
   },
+  focusBadge: {
+    borderRadius: radii.pill,
+    backgroundColor: appColors.heroPrimary,
+    paddingHorizontal: 10,
+    paddingVertical: spacing.xsmall,
+  },
+  focusBadgeText: {
+    color: appColors.heroText,
+    fontWeight: "700",
+    textTransform: "uppercase",
+    letterSpacing: typography.trackingLabel,
+  },
   compareRow: {
     flexDirection: "row",
-    gap: 14,
+    gap: spacing.large,
     flexWrap: "wrap",
   },
   compareGroup: {
-    gap: 6,
+    gap: spacing.xsmall,
   },
-  compareLabel: {
+  syllableCompareLabel: {
     color: appColors.textMuted,
     textTransform: "uppercase",
-    letterSpacing: 0.7,
+    letterSpacing: typography.trackingLabel,
   },
   matchPill: {
     alignSelf: "flex-start",
-    borderRadius: 999,
+    borderRadius: radii.pill,
     backgroundColor: appColors.surface,
     paddingHorizontal: 10,
-    paddingVertical: 6,
+    paddingVertical: spacing.xsmall,
     borderWidth: 1,
     borderColor: appColors.outlineVariant,
   },
@@ -478,54 +621,112 @@ const styles = StyleSheet.create({
     fontWeight: "700",
   },
   feedbackPanel: {
-    borderRadius: 18,
+    borderRadius: radii.small,
     paddingHorizontal: 12,
     paddingVertical: 12,
   },
-  feedbackText: {
-    lineHeight: 20,
-  },
-  nextStepCard: {
-    borderRadius: 26,
-    backgroundColor: "#17324F",
+  graphCuePanel: {
+    borderRadius: radii.small,
+    backgroundColor: appColors.surface,
+    paddingHorizontal: 12,
+    paddingVertical: 12,
     borderWidth: 1,
-    borderColor: "#294A70",
+    borderColor: appColors.outlineVariant,
+    gap: spacing.xsmall,
   },
-  nextStepContent: {
-    gap: 10,
+  graphCueLabel: {
+    color: appColors.textMuted,
+    textTransform: "uppercase",
+    letterSpacing: typography.trackingLabel,
   },
-  nextStepTopRow: {
+  graphCueText: {
+    color: appColors.textSecondary,
+    lineHeight: typography.lineHeightBody,
+  },
+  feedbackText: {
+    lineHeight: typography.lineHeightBody,
+  },
+  compareCard: {
+    borderRadius: radii.medium,
+    backgroundColor: appColors.surface,
+    borderWidth: 1,
+    borderColor: appColors.outlineVariant,
+  },
+  compareContent: {
+    gap: spacing.large,
+  },
+  compareTopRow: {
     flexDirection: "row",
     justifyContent: "space-between",
-    alignItems: "center",
-    gap: 12,
+    alignItems: "flex-start",
+    gap: spacing.medium,
   },
-  nextStepLabel: {
-    color: appColors.heroAccent,
+  compareHeaderBlock: {
+    flex: 1,
+    gap: spacing.xsmall,
+  },
+  compareLabel: {
+    color: appColors.textMuted,
     textTransform: "uppercase",
-    letterSpacing: 0.7,
+    letterSpacing: typography.trackingLabel,
   },
-  nextStepFocusPill: {
-    borderRadius: 999,
-    backgroundColor: "rgba(255,255,255,0.12)",
-    paddingHorizontal: 12,
-    paddingVertical: 8,
+  compareTitle: {
+    color: appColors.textPrimary,
   },
-  nextStepFocusText: {
-    color: appColors.heroText,
+  compareCopy: {
+    color: appColors.textSecondary,
+    lineHeight: typography.lineHeightBody,
+  },
+  compareFocusPill: {
+    borderRadius: radii.pill,
+    backgroundColor: appColors.infoSurface,
+    paddingHorizontal: spacing.medium,
+    paddingVertical: spacing.small,
+  },
+  compareFocusText: {
+    color: appColors.infoText,
     fontWeight: "700",
   },
-  nextStepTitle: {
-    color: appColors.heroText,
+  audioRows: {
+    gap: spacing.small,
   },
-  nextStepText: {
-    color: appColors.heroText,
-    lineHeight: 24,
+  audioRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    gap: spacing.medium,
+    flexWrap: "wrap",
+    borderRadius: radii.small,
+    backgroundColor: appColors.surfaceAlt,
+    padding: spacing.large,
+  },
+  audioRowCopy: {
+    flex: 1,
+    gap: spacing.xsmall,
+    minWidth: 180,
+  },
+  audioRowTitle: {
+    color: appColors.textPrimary,
+  },
+  audioRowText: {
+    color: appColors.textSecondary,
+  },
+  audioButtonContent: {
+    minHeight: 48,
+  },
+  compareHint: {
+    borderRadius: radii.small,
+    backgroundColor: appColors.infoSurface,
+    padding: spacing.large,
+  },
+  compareHintText: {
+    color: appColors.infoText,
+    lineHeight: typography.lineHeightBody,
   },
   actions: {
     flexDirection: "row",
     flexWrap: "wrap",
-    gap: 10,
+    gap: spacing.small,
     marginTop: 2,
   },
   actionButton: {

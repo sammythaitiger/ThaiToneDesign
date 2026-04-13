@@ -142,7 +142,7 @@ export function ToneWordPracticeScreen({
             <Text variant="bodyMedium" style={styles.modeBannerCopy}>
               {practiceStage === "recording"
                 ? "Keep speaking until the full word feels natural, then stop to run analysis."
-                : "Listen to the reference, inspect each syllable, then begin recording when you are ready."}
+                : "Listen to the reference, review the cues, and begin recording only when the word feels clear."}
             </Text>
           </View>
           </AnimatedEntrance>

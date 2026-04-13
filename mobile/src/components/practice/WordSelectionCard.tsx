@@ -3,6 +3,7 @@ import { StyleSheet, View } from "react-native";
 import { Button, Card, Text } from "react-native-paper";
 
 import { appColors } from "../../theme/colors";
+import { radii, spacing, statusColors, typography } from "../../theme/tokens";
 import { PracticeWord } from "../../types/practice";
 import { ToneChip } from "./ToneChip";
 
@@ -83,19 +84,19 @@ export function WordSelectionCard({
 
 const styles = StyleSheet.create({
   card: {
-    borderRadius: 24,
+    borderRadius: radii.medium,
     backgroundColor: appColors.surface,
     borderWidth: 1,
     borderColor: appColors.outlineVariant,
   },
   content: {
-    gap: 14,
+    gap: spacing.large,
   },
   headerRow: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "flex-start",
-    gap: 12,
+    gap: spacing.medium,
   },
   titleBlock: {
     flex: 1,
@@ -105,29 +106,29 @@ const styles = StyleSheet.create({
   },
   transcription: {
     color: appColors.textSecondary,
-    marginTop: 4,
-    lineHeight: 21,
+    marginTop: spacing.micro,
+    lineHeight: typography.lineHeightBody,
   },
   practiceBadge: {
-    borderRadius: 999,
-    backgroundColor: appColors.infoSurface,
-    paddingHorizontal: 12,
-    paddingVertical: 8,
+    borderRadius: radii.pill,
+    backgroundColor: statusColors.info.badgeSurface,
+    paddingHorizontal: spacing.medium,
+    paddingVertical: spacing.small,
   },
   practiceBadgeText: {
-    color: appColors.infoText,
+    color: statusColors.info.badgeText,
     fontWeight: "700",
   },
   metaRow: {
     flexDirection: "row",
     flexWrap: "wrap",
-    gap: 8,
+    gap: spacing.small,
   },
   metaPill: {
-    borderRadius: 999,
+    borderRadius: radii.pill,
     backgroundColor: appColors.surfaceAlt,
-    paddingHorizontal: 12,
-    paddingVertical: 8,
+    paddingHorizontal: spacing.medium,
+    paddingVertical: spacing.small,
   },
   metaText: {
     color: appColors.textMuted,
@@ -135,13 +136,13 @@ const styles = StyleSheet.create({
   tonesRow: {
     flexDirection: "row",
     flexWrap: "wrap",
-    gap: 8,
+    gap: spacing.small,
   },
   actions: {
     justifyContent: "flex-end",
-    paddingHorizontal: 12,
-    paddingBottom: 12,
-    paddingTop: 4,
+    paddingHorizontal: spacing.medium,
+    paddingBottom: spacing.medium,
+    paddingTop: spacing.micro,
   },
   buttonContent: {
     minHeight: 44,

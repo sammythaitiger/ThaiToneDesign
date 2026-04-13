@@ -3,6 +3,7 @@ import { StyleSheet, View } from "react-native";
 import { Button, Card, Text } from "react-native-paper";
 
 import { appColors } from "../../theme/colors";
+import { radii, spacing, statusColors, typography } from "../../theme/tokens";
 
 type PracticeStateTone = "neutral" | "warning" | "danger";
 
@@ -28,21 +29,21 @@ const toneStyles: Record<
   }
 > = {
   neutral: {
-    cardBackground: appColors.surface,
-    badgeBackground: appColors.infoSurface,
-    badgeText: appColors.infoText,
+    cardBackground: statusColors.neutral.surface,
+    badgeBackground: statusColors.info.badgeSurface,
+    badgeText: statusColors.info.badgeText,
     borderColor: appColors.outlineVariant,
   },
   warning: {
-    cardBackground: appColors.warningSurface,
-    badgeBackground: "#FDE7BF",
-    badgeText: appColors.warningText,
+    cardBackground: statusColors.warning.surface,
+    badgeBackground: statusColors.warning.badgeSurface,
+    badgeText: statusColors.warning.badgeText,
     borderColor: appColors.outlineVariant,
   },
   danger: {
-    cardBackground: appColors.dangerSurface,
-    badgeBackground: "#F9D5D2",
-    badgeText: appColors.dangerText,
+    cardBackground: statusColors.danger.surface,
+    badgeBackground: statusColors.danger.badgeSurface,
+    badgeText: statusColors.danger.badgeText,
     borderColor: appColors.outlineVariant,
   },
 };
@@ -133,40 +134,40 @@ export function PracticeStateCard({
 
 const styles = StyleSheet.create({
   card: {
-    borderRadius: 24,
+    borderRadius: radii.medium,
     borderWidth: 1,
   },
   content: {
-    gap: 14,
+    gap: spacing.large,
   },
   badge: {
     alignSelf: "flex-start",
-    borderRadius: 999,
-    paddingHorizontal: 12,
-    paddingVertical: 8,
+    borderRadius: radii.pill,
+    paddingHorizontal: spacing.medium,
+    paddingVertical: spacing.small,
   },
   badgeText: {
     fontWeight: "700",
     textTransform: "uppercase",
-    letterSpacing: 0.7,
+    letterSpacing: typography.trackingLabel,
   },
   copyBlock: {
-    gap: 8,
+    gap: spacing.small,
   },
   title: {
     color: appColors.textPrimary,
   },
   description: {
     color: appColors.textSecondary,
-    lineHeight: 21,
+    lineHeight: typography.lineHeightBody,
   },
   children: {
-    gap: 12,
+    gap: spacing.medium,
   },
   actions: {
     flexDirection: "row",
     flexWrap: "wrap",
-    gap: 10,
+    gap: spacing.small,
   },
   buttonContent: {
     minHeight: 46,

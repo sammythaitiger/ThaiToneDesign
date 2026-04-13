@@ -11,10 +11,10 @@ import { PracticeResultsPanel } from "../components/practice/PracticeResultsPane
 import { PracticeStateCard } from "../components/practice/PracticeStateCard";
 import { WordSelectionCard } from "../components/practice/WordSelectionCard";
 import { appColors } from "../theme/colors";
+import { radii, spacing, typography } from "../theme/tokens";
 import {
-  showcaseAnalysis,
-  showcaseWord,
-  showcaseWords,
+  DemoScenarioId,
+  demoScenarios,
 } from "../utils/showcaseData";
 
 type UIShowcaseScreenProps = {
@@ -46,13 +46,19 @@ function ShowcaseSection({
 }
 
 export function UIShowcaseScreen({ onBack }: UIShowcaseScreenProps) {
+  const [activeScenarioId, setActiveScenarioId] =
+    React.useState<DemoScenarioId>("medium");
+  const activeScenario =
+    demoScenarios.find((scenario) => scenario.id === activeScenarioId) ??
+    demoScenarios[1];
+
   return (
     <View style={styles.screen}>
       <Appbar.Header style={styles.appbar}>
         <Appbar.BackAction onPress={onBack} />
         <Appbar.Content
-          title="UI Showcase"
-          subtitle="All main states in one place"
+          title="Demo Mode"
+          subtitle="Stable presentation-safe flow"
         />
       </Appbar.Header>
 
@@ -60,86 +66,126 @@ export function UIShowcaseScreen({ onBack }: UIShowcaseScreenProps) {
         <Card style={styles.heroCard}>
           <Card.Content style={styles.heroContent}>
             <Text variant="labelLarge" style={styles.heroEyebrow}>
-              Dev tool
+              Investor-ready
             </Text>
             <Text variant="headlineMedium" style={styles.heroTitle}>
-              Visual review board
+              Controlled frontend demo mode
             </Text>
             <Text variant="bodyLarge" style={styles.heroCopy}>
-              Use this screen to quickly inspect all important UI states without
-              reproducing the real user flow every time.
+              This flow stays stable even without live backend timing. Pick the
+              scenario you want to present and walk through one coherent product
+              story from selection to coaching.
             </Text>
+            <View style={styles.heroMetaRow}>
+              <View style={styles.heroMetaPill}>
+                <Text variant="labelMedium" style={styles.heroMetaText}>
+                  Deterministic data
+                </Text>
+              </View>
+              <View style={styles.heroMetaPill}>
+                <Text variant="labelMedium" style={styles.heroMetaText}>
+                  No backend dependency
+                </Text>
+              </View>
+            </View>
           </Card.Content>
         </Card>
 
         <ShowcaseSection
-          title="Selection"
-          description="Word cards and the reusable states used on the practice library screen."
+          title="Scenario Switcher"
+          description="Swap between best, medium, and weak outcomes without changing the surrounding flow."
         >
-          {showcaseWords.map((word) => (
-            <WordSelectionCard
-              key={word.id}
-              word={word}
-              onPractice={() => undefined}
-            />
-          ))}
+          <PracticeStateCard
+            eyebrow="Demo runtime"
+            title={activeScenario.heroTitle}
+            description={activeScenario.heroCopy}
+          >
+            <View style={styles.scenarioButtons}>
+              {demoScenarios.map((scenario) => (
+                <Button
+                  key={scenario.id}
+                  mode={scenario.id === activeScenario.id ? "contained" : "outlined"}
+                  icon={
+                    scenario.id === "best"
+                      ? "trophy-outline"
+                      : scenario.id === "medium"
+                        ? "chart-line"
+                        : "shield-check-outline"
+                  }
+                  onPress={() => setActiveScenarioId(scenario.id)}
+                  contentStyle={styles.scenarioButtonContent}
+                >
+                  {scenario.label}
+                </Button>
+              ))}
+            </View>
+          </PracticeStateCard>
+        </ShowcaseSection>
 
-          <PracticeStateCard
-            eyebrow="Loading"
-            title="Preparing your practice library"
-            description="Fetching Thai tone words and getting the screen ready for practice."
+        <Divider />
+
+        <ShowcaseSection
+          title="Word Selection"
+          description="A single chosen word keeps the setup controlled and visually coherent for the whole presentation."
+        >
+          <WordSelectionCard
+            word={activeScenario.word}
+            onPractice={() => undefined}
           />
           <PracticeStateCard
-            eyebrow="Error"
-            title="Unable to load practice words"
-            description="The server did not respond in time. Retry after checking the backend."
-            tone="danger"
-            primaryActionLabel="Retry"
-            onPrimaryAction={() => undefined}
-          />
-          <PracticeStateCard
-            eyebrow="No matches"
-            title="No words match your criteria"
-            description="Try broadening your filters or clearing the search query."
-            primaryActionLabel="Clear all filters"
-            onPrimaryAction={() => undefined}
+            eyebrow="Operator note"
+            title="What to say while presenting"
+            description={activeScenario.operatorNote}
+            tone="neutral"
           />
         </ShowcaseSection>
 
         <Divider />
 
         <ShowcaseSection
-          title="Practice Flow"
-          description="Permission, countdown, recording, upload/analyze, and final results."
+          title="Recording Setup"
+          description="Permission, countdown, and progress states are still available, but they now support a cleaner scripted demo path."
         >
           <PracticePermissionState
             onGrant={() => undefined}
             onBack={() => undefined}
           />
           <PracticeCountdownState
-            word={showcaseWord}
+            word={activeScenario.word}
             countdownValue={3}
             onCancel={() => undefined}
           />
           <PracticeRecordingState
-            word={showcaseWord}
+            word={activeScenario.word}
             recordingSeconds={7}
-            activeSyllableIndex={1}
+            activeSyllableIndex={Math.min(1, activeScenario.word.syllables.length - 1)}
             onStop={() => undefined}
             onCancel={() => undefined}
           />
           <PracticeAnalyzingState phase="uploading" />
           <PracticeAnalyzingState phase="analyzing" />
+          <PracticeStateCard
+            eyebrow="Safe fallback"
+            title="Presentation-safe path"
+            description="If a live recording is not ideal, this mode still lands on a curated result state with the same visual quality and pacing."
+            primaryActionLabel="Use selected scenario"
+            onPrimaryAction={() => undefined}
+          />
         </ShowcaseSection>
 
         <Divider />
 
         <ShowcaseSection
           title="Results"
-          description="The full premium results panel with coaching, syllable breakdown, and graph states."
+          description="Each scenario keeps the same polished result layout while changing only the outcome quality and coaching emphasis."
         >
+          <PracticeStateCard
+            eyebrow={activeScenario.label}
+            title="Curated result story"
+            description={activeScenario.resultSummary}
+          />
           <PracticeResultsPanel
-            analysis={showcaseAnalysis}
+            analysis={activeScenario.analysis}
             onTryAgain={() => undefined}
             onBackToWords={() => undefined}
           />
@@ -148,21 +194,23 @@ export function UIShowcaseScreen({ onBack }: UIShowcaseScreenProps) {
         <Divider />
 
         <ShowcaseSection
-          title="Shared Elements"
-          description="Extra reusable pieces that are used across screens."
+          title="Fallback Surfaces"
+          description="These are the supporting states that keep the demo stable if you want to narrate loading, recovery, or an unavailable path."
         >
           <PracticeStateCard
-            eyebrow="Neutral"
-            title="Shared state card"
-            description="This is the neutral version of the reusable system card."
-            primaryActionLabel="Primary action"
+            eyebrow="Loading"
+            title="Preparing the guided demo"
+            description="Curated assets and practice states are loading so the walkthrough stays smooth."
+          />
+          <PracticeStateCard
+            eyebrow="Recovery"
+            title="Switch to another prepared scenario"
+            description="If the current result is not the story you want to tell, move to another curated outcome without losing the polished flow."
+            primaryActionLabel="Switch scenario"
             onPrimaryAction={() => undefined}
-            secondaryActionLabel="Secondary action"
+            secondaryActionLabel="Stay on current path"
             onSecondaryAction={() => undefined}
           />
-          <Button mode="contained" onPress={() => undefined}>
-            Sample CTA
-          </Button>
         </ShowcaseSection>
       </ScrollView>
 
@@ -182,44 +230,67 @@ const styles = StyleSheet.create({
     borderBottomColor: appColors.outlineVariant,
   },
   content: {
-    padding: 16,
-    gap: 20,
+    padding: spacing.large,
+    gap: spacing.xlarge,
     paddingBottom: 36,
   },
   heroCard: {
-    borderRadius: 28,
+    borderRadius: radii.large,
     backgroundColor: appColors.heroPrimary,
   },
   heroContent: {
-    gap: 10,
+    gap: spacing.small,
   },
   heroEyebrow: {
     color: appColors.heroAccent,
     fontWeight: "700",
     textTransform: "uppercase",
-    letterSpacing: 0.8,
+    letterSpacing: typography.trackingHero,
   },
   heroTitle: {
     color: appColors.heroText,
   },
   heroCopy: {
     color: appColors.heroTextSoft,
-    lineHeight: 23,
+    lineHeight: typography.lineHeightBodyLarge,
+  },
+  heroMetaRow: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: spacing.small,
+  },
+  heroMetaPill: {
+    borderRadius: radii.pill,
+    backgroundColor: "rgba(255,255,255,0.12)",
+    paddingHorizontal: spacing.medium,
+    paddingVertical: spacing.small,
+  },
+  heroMetaText: {
+    color: appColors.heroText,
+    fontWeight: "700",
   },
   section: {
-    gap: 14,
+    gap: spacing.large,
   },
   sectionHeader: {
-    gap: 4,
+    gap: spacing.micro,
   },
   sectionTitle: {
     color: appColors.textPrimary,
   },
   sectionDescription: {
     color: appColors.textSecondary,
-    lineHeight: 21,
+    lineHeight: typography.lineHeightBody,
   },
   sectionBody: {
-    gap: 16,
+    gap: spacing.large,
+  },
+  scenarioButtons: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: spacing.small,
+  },
+  scenarioButtonContent: {
+    minHeight: 44,
   },
 });

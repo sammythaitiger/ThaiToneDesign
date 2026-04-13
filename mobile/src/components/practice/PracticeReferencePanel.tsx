@@ -2,8 +2,11 @@ import React from "react";
 import { StyleSheet, View } from "react-native";
 import { Button, Card, Text } from "react-native-paper";
 
+import { useMockPlayback } from "../../hooks/useMockPlayback";
 import { appColors, toneColors } from "../../theme/colors";
+import { radii, spacing, typography } from "../../theme/tokens";
 import { PracticeWord } from "../../types/practice";
+import { PracticePlaybackCard } from "./PracticePlaybackCard";
 import { ToneChip } from "./ToneChip";
 
 type PracticeReferencePanelProps = {
@@ -19,6 +22,10 @@ export function PracticeReferencePanel({
   word,
   onAnalyze,
 }: PracticeReferencePanelProps) {
+  const playback = useMockPlayback({
+    durationMs: Math.max(word.syllables.length * 850, 1800),
+  });
+
   return (
     <View style={styles.container}>
       <Card style={styles.heroCard}>
@@ -48,6 +55,40 @@ export function PracticeReferencePanel({
       <Text variant="titleMedium" style={styles.sectionTitle}>
         Syllable breakdown
       </Text>
+
+      <PracticePlaybackCard
+        eyebrow="Reference audio"
+        title="Native pronunciation guide"
+        description="Preview the full word before recording so the pacing and tone movement feel intentional."
+        meta={`${word.transcription} • ${word.syllables.length} syllables`}
+        sourceLabel="Native"
+        status={playback.getStatus("native-reference")}
+        progress={playback.getProgress("native-reference")}
+        onPrimaryAction={() => playback.toggle("native-reference")}
+        secondaryLabel="Start recording"
+        onSecondaryAction={onAnalyze}
+      />
+
+      <Card style={styles.sectionCard}>
+        <Card.Content style={styles.sectionCardContent}>
+          <Text variant="titleMedium" style={styles.sectionTitle}>
+            Before you start
+          </Text>
+          <View style={styles.instructionsList}>
+            <Text variant="bodyMedium" style={styles.instructionText}>
+              Take one calm breath and listen to the native preview first.
+            </Text>
+            <Text variant="bodyMedium" style={styles.instructionText}>
+              You only need one smooth take. The app will guide you after the
+              analysis if anything sounds off.
+            </Text>
+            <Text variant="bodyMedium" style={styles.instructionText}>
+              If you are not ready, go back to the word list and return when
+              you want to try again.
+            </Text>
+          </View>
+        </Card.Content>
+      </Card>
 
       <View style={styles.syllableGrid}>
         {word.syllables.map((syllable, index) => (
@@ -101,13 +142,13 @@ export function PracticeReferencePanel({
           </Text>
           <View style={styles.instructionsList}>
             <Text variant="bodyMedium" style={styles.instructionText}>
-              1. Press the practice button below
+              1. Play the native preview once before recording
             </Text>
             <Text variant="bodyMedium" style={styles.instructionText}>
-              2. Pronounce each syllable clearly
+              2. Pronounce each syllable clearly and in one smooth take
             </Text>
             <Text variant="bodyMedium" style={styles.instructionText}>
-              3. Try to match the tone pattern
+              3. Match the tone pattern, then stop to compare your result
             </Text>
           </View>
         </Card.Content>
@@ -116,12 +157,15 @@ export function PracticeReferencePanel({
       <View style={styles.ctaPanel}>
         <Button
           mode="contained"
-          icon="record-circle"
+          icon="microphone"
           contentStyle={styles.ctaButton}
           onPress={onAnalyze}
         >
-          Record and analyze
+          Start recording
         </Button>
+        <Text variant="bodySmall" style={styles.ctaHint}>
+          The microphone prompt only appears when you choose to record.
+        </Text>
       </View>
     </View>
   );
@@ -129,33 +173,33 @@ export function PracticeReferencePanel({
 
 const styles = StyleSheet.create({
   container: {
-    gap: 18,
+    gap: spacing.xlarge,
   },
   heroCard: {
-    borderRadius: 30,
+    borderRadius: radii.hero,
     backgroundColor: appColors.heroPrimary,
   },
   summaryContent: {
-    gap: 10,
-    paddingVertical: 6,
+    gap: spacing.small,
+    paddingVertical: spacing.xsmall,
   },
   summaryTopRow: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    gap: 12,
+    gap: spacing.medium,
   },
   summaryBadge: {
-    borderRadius: 999,
+    borderRadius: radii.pill,
     backgroundColor: appColors.primary,
-    paddingHorizontal: 12,
-    paddingVertical: 8,
+    paddingHorizontal: spacing.medium,
+    paddingVertical: spacing.small,
   },
   summaryBadgeText: {
     color: appColors.onPrimary,
     fontWeight: "700",
     textTransform: "uppercase",
-    letterSpacing: 0.7,
+    letterSpacing: typography.trackingLabel,
   },
   summaryMeta: {
     color: appColors.heroAccent,
@@ -168,7 +212,7 @@ const styles = StyleSheet.create({
   },
   summaryCopy: {
     color: appColors.heroTextSoft,
-    lineHeight: 24,
+    lineHeight: typography.lineHeightBodyRelaxed,
   },
   sectionTitle: {
     color: appColors.textPrimary,
@@ -176,19 +220,19 @@ const styles = StyleSheet.create({
   syllableGrid: {
     flexDirection: "row",
     flexWrap: "wrap",
-    gap: 12,
+    gap: spacing.medium,
   },
   syllableCard: {
     width: "31%",
     minWidth: 96,
-    borderRadius: 20,
+    borderRadius: radii.small,
     backgroundColor: appColors.surface,
     borderWidth: 1,
     borderColor: appColors.outlineVariant,
   },
   syllableContent: {
     alignItems: "center",
-    gap: 8,
+    gap: spacing.small,
   },
   syllableThai: {
     color: appColors.textPrimary,
@@ -200,23 +244,23 @@ const styles = StyleSheet.create({
     color: appColors.textMuted,
   },
   sectionCard: {
-    borderRadius: 22,
+    borderRadius: radii.small,
     backgroundColor: appColors.surface,
     borderWidth: 1,
     borderColor: appColors.outlineVariant,
   },
   sectionCardContent: {
-    gap: 14,
+    gap: spacing.large,
   },
   timelineRow: {
     flexDirection: "row",
-    gap: 8,
+    gap: spacing.small,
   },
   timelineSegment: {
     flex: 1,
-    borderRadius: 18,
-    paddingVertical: 18,
-    paddingHorizontal: 8,
+    borderRadius: radii.small,
+    paddingVertical: spacing.xlarge,
+    paddingHorizontal: spacing.small,
     alignItems: "center",
     minHeight: 92,
     justifyContent: "center",
@@ -230,18 +274,24 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   instructionsList: {
-    gap: 8,
+    gap: spacing.small,
   },
   instructionText: {
     color: appColors.textSecondary,
-    lineHeight: 21,
+    lineHeight: typography.lineHeightBody,
   },
   ctaPanel: {
-    borderRadius: 28,
+    borderRadius: radii.large,
     backgroundColor: appColors.heroPrimary,
-    padding: 20,
+    padding: spacing.xlarge,
+    gap: spacing.small,
   },
   ctaButton: {
     minHeight: 56,
+  },
+  ctaHint: {
+    color: appColors.heroTextMuted,
+    lineHeight: typography.lineHeightBody,
+    textAlign: "center",
   },
 });
